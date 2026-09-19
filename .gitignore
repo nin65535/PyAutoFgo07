@@ -1,1 +1,21 @@
 *.code-workspace
+# Environment and local state
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+
+# Frontend dependencies and build output
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+pytest-cache-files-*/
+
+# Editors and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

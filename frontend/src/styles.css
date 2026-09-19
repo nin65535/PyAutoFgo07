@@ -1,0 +1,16 @@
+:root {
+  color: #f5f7fa;
+  background: #171a21;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 200px;
+}
+
+main {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+}
