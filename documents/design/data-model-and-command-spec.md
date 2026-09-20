@@ -389,6 +389,34 @@ type CommandTimeoutDetails = {
 
 `400 Bad Request`と`422 Unprocessable Content`は区別する。
 
+### 6.7 操作手順API
+
+操作手順は、既定ではプロジェクト直下の`scenarios`フォルダーで管理する。保存場所は
+`AUTOFGO_SCENARIO_DIRECTORY`で上書きできる。
+
+| 項目 | 仕様 |
+| --- | --- |
+| 対象 | 管理フォルダー直下にある、拡張子が小文字の`.json`である通常ファイル |
+| ID | UTF-8のファイル名（拡張子を含む）を、パディングなしのURL-safe Base64で符号化した値 |
+| 表示名 | 拡張子を除いたファイル名 |
+| 並び順 | 表示名のUnicode casefoldによる昇順。同値の場合はIDの昇順 |
+| 更新日時 | ファイルの最終更新日時をUTC、ミリ秒精度、末尾`Z`で返す |
+| 同名 | 単一フォルダーの通常ファイルを対象とするため、同一ファイル名は共存しない。表示名が同じでもIDは拡張子込みのファイル名に基づく |
+
+```http
+GET /api/scenarios
+GET /api/scenarios/{scenario_id}
+```
+
+一覧取得は`data.scenarios`に`id`、`displayName`、`modifiedAt`を持つ配列を返す。
+内容取得は同じメタデータと、JSONとして解析した値を`data.content`へ返す。バックエンドは
+JSON構文だけを検証し、操作手順スキーマと命令の意味検証はフロントエンドが担当する。
+
+IDの復号結果が単一ファイル名でない場合、管理フォルダー外を指す場合、`.json`以外の場合は、
+実在の有無を開示せず`SCENARIO_NOT_FOUND`として扱う。不正JSONは
+`SCENARIO_INVALID_JSON`、文字コードまたはファイル読み取りの失敗は
+`SCENARIO_READ_FAILED`として区別する。管理フォルダーが未作成の場合、一覧取得は空配列を返す。
+
 ## 7. SSEイベント
 
 ### 7.1 イベント名

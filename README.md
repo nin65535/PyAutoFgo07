@@ -18,6 +18,8 @@ python -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"
 ```
 
 必要なら `.env.example` を `.env` にコピーして設定を上書きします。
+操作手順JSONは既定でプロジェクト直下の`scenarios`へ配置します。保存場所は
+`AUTOFGO_SCENARIO_DIRECTORY`で変更できます。
 
 ## 開発コマンド
 
