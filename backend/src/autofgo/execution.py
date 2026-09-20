@@ -55,6 +55,7 @@ class CommandCancelledError(Exception):
 
 
 CommandHandler = Callable[[Any, ExecutionControl], Any]
+EventSink = Callable[[str, dict[str, Any], str | None], Any]
 
 
 @dataclass(slots=True)
@@ -74,7 +75,7 @@ class QueuedCommand:
 class ExecutionManager:
     """Serial command queue with cooperative pause and priority cancellation."""
 
-    def __init__(self, *, start_worker: bool = True) -> None:
+    def __init__(self, *, start_worker: bool = True, event_sink: EventSink | None = None) -> None:
         self._condition = Condition()
         self._commands: dict[str, QueuedCommand] = {}
         self._pending: deque[str] = deque()
@@ -84,6 +85,7 @@ class ExecutionManager:
         self._shutdown = False
         self._cancel_event = Event()
         self._worker: Thread | None = None
+        self._event_sink = event_sink
         if start_worker:
             self._worker = Thread(target=self._run, name="command-queue", daemon=True)
             self._worker.start()
@@ -104,25 +106,32 @@ class ExecutionManager:
                 return existing, True
             if not self._accepting:
                 raise ExecutionUnavailableError
+            previous = self._state
             if self._state in {ExecutionState.IDLE, ExecutionState.COMPLETED}:
                 self._state = ExecutionState.RUNNING
             elif self._state not in {ExecutionState.RUNNING}:
                 raise InvalidExecutionStateError(self._state, (ExecutionState.RUNNING,))
             self._commands[item.command_id] = item
             self._pending.append(item.command_id)
+            self._emit("command.accepted", {"status": "queued"}, item.command_id)
+            self._emit_state(previous, self._state)
             self._condition.notify_all()
             return item, False
 
     def pause(self) -> None:
         with self._condition:
             self._require(ExecutionState.RUNNING)
+            previous = self._state
             self._state = ExecutionState.PAUSING if self._current else ExecutionState.PAUSED
+            self._emit_state(previous, self._state)
             self._condition.notify_all()
 
     def resume(self) -> None:
         with self._condition:
             self._require(ExecutionState.PAUSED, ExecutionState.PAUSING)
+            previous = self._state
             self._state = ExecutionState.RUNNING
+            self._emit_state(previous, self._state)
             self._condition.notify_all()
 
     def stop(self) -> None:
@@ -136,12 +145,16 @@ class ExecutionManager:
             self._require(ExecutionState.RUNNING)
             if self._current is not None or self._pending:
                 raise InvalidExecutionStateError(self._state, (ExecutionState.RUNNING,))
+            previous = self._state
             self._state = ExecutionState.COMPLETED
+            self._emit_state(previous, self._state)
 
     def wait_if_paused(self) -> None:
         with self._condition:
             if self._state == ExecutionState.PAUSING:
+                previous = self._state
                 self._state = ExecutionState.PAUSED
+                self._emit_state(previous, self._state)
                 self._condition.notify_all()
             while self._state == ExecutionState.PAUSED and not self._cancel_event.is_set():
                 self._condition.wait()
@@ -173,10 +186,12 @@ class ExecutionManager:
             )
             if self._state not in allowed:
                 raise InvalidExecutionStateError(self._state, allowed)
+            previous = self._state
             self._accepting = False
             self._state = (
                 ExecutionState.EMERGENCY_STOPPING if emergency else ExecutionState.STOPPING
             )
+            self._emit_state(previous, self._state, reason)
             self._cancel_event.set()
             now = datetime.now(UTC)
             while self._pending:
@@ -184,10 +199,17 @@ class ExecutionManager:
                 item.state = CommandState.CANCELLED
                 item.cancel_reason = reason
                 item.finished_at = now
+                self._emit(
+                    "command.cancelled",
+                    {"status": "cancelled", "reason": reason},
+                    item.command_id,
+                )
             if self._current is not None:
                 self._current.cancel_reason = reason
             if not emergency and self._current is None:
+                previous = self._state
                 self._state = ExecutionState.STOPPED
+                self._emit_state(previous, self._state, reason)
             self._condition.notify_all()
 
     def _run(self) -> None:
@@ -203,6 +225,7 @@ class ExecutionManager:
                 self._current = item
                 item.state = CommandState.RUNNING
                 item.started_at = datetime.now(UTC)
+                self._emit("command.started", {"status": "running"}, item.command_id)
             try:
                 item.result = item.handler(item.command, ExecutionControl(self._cancel_event, self))
                 if self._cancel_event.is_set():
@@ -214,19 +237,48 @@ class ExecutionManager:
                 item.state = CommandState.FAILED
                 item.error = type(error).__name__
                 with self._condition:
+                    previous = self._state
                     self._state = ExecutionState.ERROR
                     self._accepting = False
+                    self._emit_state(previous, self._state, "execution_failed")
                     self._cancel_pending("execution_failed")
             else:
                 item.state = CommandState.COMPLETED
             finally:
                 item.finished_at = datetime.now(UTC)
+                if item.state == CommandState.COMPLETED:
+                    assert item.started_at is not None
+                    duration = item.finished_at - item.started_at
+                    self._emit(
+                        "command.completed",
+                        {"status": "completed", "durationMs": int(duration.total_seconds() * 1000)},
+                        item.command_id,
+                    )
+                elif item.state == CommandState.CANCELLED:
+                    self._emit(
+                        "command.cancelled",
+                        {"status": "cancelled", "reason": item.cancel_reason},
+                        item.command_id,
+                    )
+                elif item.state == CommandState.FAILED:
+                    self._emit(
+                        "command.failed",
+                        {
+                            "code": "COMMAND_EXECUTION_FAILED",
+                            "message": "指令の実行に失敗しました。",
+                        },
+                        item.command_id,
+                    )
                 with self._condition:
                     self._current = None
                     if self._state == ExecutionState.PAUSING:
+                        previous = self._state
                         self._state = ExecutionState.PAUSED
+                        self._emit_state(previous, self._state)
                     elif self._state == ExecutionState.STOPPING:
+                        previous = self._state
                         self._state = ExecutionState.STOPPED
+                        self._emit_state(previous, self._state, item.cancel_reason)
                     self._condition.notify_all()
 
     def _cancel_pending(self, reason: str) -> None:
@@ -236,6 +288,25 @@ class ExecutionManager:
             item.state = CommandState.CANCELLED
             item.cancel_reason = reason
             item.finished_at = now
+            self._emit(
+                "command.cancelled",
+                {"status": "cancelled", "reason": reason},
+                item.command_id,
+            )
+
+    def _emit(self, event_type: str, data: dict[str, Any], command_id: str | None = None) -> None:
+        if self._event_sink is not None:
+            self._event_sink(event_type, data, command_id)
+
+    def _emit_state(
+        self, previous: ExecutionState, current: ExecutionState, reason: str | None = None
+    ) -> None:
+        if previous == current:
+            return
+        data: dict[str, Any] = {"previousState": previous.value, "currentState": current.value}
+        if reason is not None:
+            data["reason"] = reason
+        self._emit("execution.state_changed", data)
 
     def _require(self, *states: ExecutionState) -> None:
         if self._state not in states:

@@ -11,12 +11,14 @@ from autofgo.commands import (
 from autofgo.commands import (
     router as command_router,
 )
+from autofgo.events import router as event_router
 from autofgo.execution import ExecutionUnavailableError, InvalidExecutionStateError
 from autofgo.scenarios import ScenarioError, router, scenario_error_handler
 
 app = FastAPI(title="autoFgo API", version="0.1.0")
 app.include_router(router)
 app.include_router(command_router)
+app.include_router(event_router)
 app.add_exception_handler(ScenarioError, scenario_error_handler)
 app.add_exception_handler(CommandConflictError, command_conflict_handler)
 app.add_exception_handler(InvalidExecutionStateError, invalid_state_handler)

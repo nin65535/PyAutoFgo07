@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from autofgo.events import event_broker
 from autofgo.execution import (
     ExecutionControl,
     ExecutionManager,
@@ -135,7 +136,13 @@ class CommandRegistry:
         return queued, duplicate
 
 
-_command_registry = CommandRegistry(ExecutionManager())
+_command_registry = CommandRegistry(
+    ExecutionManager(
+        event_sink=lambda event_type, data, command_id: event_broker.publish(
+            event_type, data, command_id=command_id
+        )
+    )
+)
 
 
 def get_command_registry() -> CommandRegistry:
