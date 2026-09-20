@@ -87,3 +87,23 @@ def test_rejects_malformed_json_with_common_error(client: TestClient) -> None:
 
 def test_dispatch_table_contains_only_supported_commands() -> None:
     assert set(COMMAND_HANDLERS) == {"skill", "master_skill", "attack", "swap"}
+
+
+def test_status_reports_queue_state(client: TestClient) -> None:
+    response = client.get("/api/commands/status")
+
+    assert response.status_code == 200
+    assert response.json()["data"] == {
+        "state": "idle",
+        "currentCommandId": None,
+        "queuedCount": 0,
+        "acceptingCommands": True,
+    }
+
+
+def test_invalid_control_transition_returns_common_error(client: TestClient) -> None:
+    response = client.post("/api/commands/pause")
+
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "INVALID_STATE"
+    assert response.json()["error"]["details"]["currentState"] == "idle"

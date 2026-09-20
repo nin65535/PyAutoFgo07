@@ -1,12 +1,19 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+
+from autofgo.execution import (
+    ExecutionControl,
+    ExecutionManager,
+    ExecutionUnavailableError,
+    InvalidExecutionStateError,
+    QueuedCommand,
+)
 
 
 class CommandModel(BaseModel):
@@ -63,31 +70,32 @@ class CommandRequest(CommandModel):
     command: ScenarioCommand
 
 
-OperationHandler = Callable[[ScenarioCommand], None]
-
-
-def _skill_handler(command: ScenarioCommand) -> None:
+def _skill_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
+    control.checkpoint()
     if not isinstance(command, SkillCommand):
         raise TypeError("skill handler received an incompatible command")
 
 
-def _master_skill_handler(command: ScenarioCommand) -> None:
+def _master_skill_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
+    control.checkpoint()
     if not isinstance(command, MasterSkillCommand):
         raise TypeError("master_skill handler received an incompatible command")
 
 
-def _attack_handler(command: ScenarioCommand) -> None:
+def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
+    control.checkpoint()
     if not isinstance(command, AttackCommand):
         raise TypeError("attack handler received an incompatible command")
 
 
-def _swap_handler(command: ScenarioCommand) -> None:
+def _swap_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
+    control.checkpoint()
     if not isinstance(command, SwapCommand):
         raise TypeError("swap handler received an incompatible command")
 
 
 # This table is deliberately source-defined. Request values are never used as Python names.
-COMMAND_HANDLERS: dict[str, OperationHandler] = {
+COMMAND_HANDLERS = {
     "skill": _skill_handler,
     "master_skill": _master_skill_handler,
     "attack": _attack_handler,
@@ -100,36 +108,34 @@ class CommandConflictError(Exception):
         self.command_id = command_id
 
 
-class AcceptedCommand(BaseModel):
-    request: CommandRequest
-    accepted_at: datetime
-    handler: OperationHandler
-
-
 class CommandRegistry:
-    """Holds accepted commands until R07 replaces storage with the execution queue."""
+    """Idempotent command intake backed by the serial execution queue."""
 
-    def __init__(self) -> None:
-        self._commands: dict[str, AcceptedCommand] = {}
+    def __init__(self, manager: ExecutionManager | None = None) -> None:
+        self.manager = manager or ExecutionManager(start_worker=False)
+        self._requests: dict[str, CommandRequest] = {}
 
-    def accept(self, command_request: CommandRequest) -> tuple[AcceptedCommand, bool]:
-        existing = self._commands.get(command_request.command_id)
-        if existing is not None:
-            if existing.request.command != command_request.command:
+    def accept(self, command_request: CommandRequest) -> tuple[QueuedCommand, bool]:
+        existing_request = self._requests.get(command_request.command_id)
+        if existing_request is not None:
+            if existing_request.command != command_request.command:
                 raise CommandConflictError(command_request.command_id)
+            existing = self.manager.get(command_request.command_id)
+            assert existing is not None
             return existing, True
 
         handler = COMMAND_HANDLERS[command_request.command.type]
-        accepted = AcceptedCommand(
-            request=command_request,
-            accepted_at=datetime.now(UTC),
+        accepted = QueuedCommand(
+            command_id=command_request.command_id,
+            command=command_request.command,
             handler=handler,
         )
-        self._commands[command_request.command_id] = accepted
-        return accepted, False
+        queued, duplicate = self.manager.enqueue(accepted)
+        self._requests[command_request.command_id] = command_request
+        return queued, duplicate
 
 
-_command_registry = CommandRegistry()
+_command_registry = CommandRegistry(ExecutionManager())
 
 
 def get_command_registry() -> CommandRegistry:
@@ -151,13 +157,42 @@ async def accept_command(
 ) -> JSONResponse:
     accepted, duplicate = registry.accept(command_request)
     data: dict[str, object] = {
-        "commandId": accepted.request.command_id,
-        "status": "queued",
+        "commandId": accepted.command_id,
+        "status": accepted.state.value,
         "acceptedAt": _format_datetime(accepted.accepted_at),
     }
     if duplicate:
         data["duplicate"] = True
     return JSONResponse(status_code=200 if duplicate else 202, content={"data": data})
+
+
+@router.get("/status")
+async def execution_status(registry: CommandRegistryDependency) -> dict[str, object]:
+    return {"data": registry.manager.snapshot()}
+
+
+@router.post("/pause")
+async def pause_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.pause()
+    return {"data": registry.manager.snapshot()}
+
+
+@router.post("/resume")
+async def resume_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.resume()
+    return {"data": registry.manager.snapshot()}
+
+
+@router.post("/stop")
+async def stop_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.stop()
+    return {"data": registry.manager.snapshot()}
+
+
+@router.post("/emergency-stop")
+async def emergency_stop_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.emergency_stop()
+    return {"data": registry.manager.snapshot()}
 
 
 async def command_conflict_handler(request: Request, error: CommandConflictError) -> JSONResponse:
@@ -168,6 +203,36 @@ async def command_conflict_handler(request: Request, error: CommandConflictError
                 "code": "COMMAND_ID_CONFLICT",
                 "message": "同じ指令IDで異なる指令は受け付けられません。",
                 "details": {"commandId": error.command_id},
+            }
+        },
+    )
+
+
+async def invalid_state_handler(
+    request: Request, error: InvalidExecutionStateError
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=409,
+        content={
+            "error": {
+                "code": "INVALID_STATE",
+                "message": "現在の実行状態ではこの操作を行えません。",
+                "details": {
+                    "currentState": error.current.value,
+                    "requiredStates": [state.value for state in error.required],
+                },
+            }
+        },
+    )
+
+
+async def unavailable_handler(request: Request, error: ExecutionUnavailableError) -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={
+            "error": {
+                "code": "SERVICE_UNAVAILABLE",
+                "message": "停止処理中のため指令を受け付けられません。",
             }
         },
     )
