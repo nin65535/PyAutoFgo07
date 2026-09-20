@@ -33,4 +33,4 @@ npm --prefix frontend run build
 
 ライブラリは2026-09-20時点の安定版へ固定しています。npm依存は各 `package.json` と `package-lock.json`、Python依存は `backend/pyproject.toml` と `backend/constraints.txt` で管理します。TypeScriptは、`typescript-eslint` が対応する最新安定版の6.0.3を使用します。
 
-設計資料は [documents/basic-design.md](documents/basic-design.md)、作業順は [documents/roadmap.md](documents/roadmap.md) を参照してください。
+設計資料は [documents/design/basic-design.md](documents/design/basic-design.md)、作業順は [documents/roadmap.md](documents/roadmap.md) を参照してください。
