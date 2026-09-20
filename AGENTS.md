@@ -22,3 +22,17 @@
 - 最後に次のロードマップ項目を記載する
 
 実装ログは `documents/implementation-logs` フォルダーへ保存し、既存の `documents/implementation-logs/2026-09-20-R01-project-setup.md` を記載形式の基準とします。ロードマップのチェックを完了へ変更する際は、同じ作業内で実装ログも作成または更新してください。
+
+## Python開発環境
+
+バックエンドのPythonコマンドは、必ずプロジェクト直下の仮想環境 `.venv` を使用してください。システムPythonは使用しません。
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend/tests
+.\.venv\Scripts\python.exe -m ruff check backend
+.\.venv\Scripts\python.exe -m ruff format --check backend
+```
+
+pytest実行時に、実行環境の権限制約によって `.pytest_cache` の作成が拒否される場合があります。テスト本体が成功している場合、このキャッシュ警告はテスト失敗として扱いません。一時ディレクトリを必要とするテスト自体の失敗は、この例外に含めません。
+
+テストでファイルの読み取りだけが必要な場合は、`backend/tests/fixtures` 配下の固定fixtureを使用します。固定fixtureはテストから変更しないでください。ファイルの作成、更新、削除を検証する場合は、固定fixtureを直接操作せず、書き込み可能な作業用コピーを使用してください。
