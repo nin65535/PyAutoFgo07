@@ -107,3 +107,10 @@ def test_invalid_control_transition_returns_common_error(client: TestClient) -> 
     assert response.status_code == 409
     assert response.json()["error"]["code"] == "INVALID_STATE"
     assert response.json()["error"]["details"]["currentState"] == "idle"
+
+
+def test_start_control_moves_idle_execution_to_running(client: TestClient) -> None:
+    response = client.post("/api/commands/start")
+
+    assert response.status_code == 200
+    assert response.json()["data"]["state"] == "running"

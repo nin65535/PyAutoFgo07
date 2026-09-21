@@ -31,6 +31,13 @@ npm test             # Vitest と pytest
 npm --prefix frontend run build
 ```
 
+通常のpytestはOS資産を使用しない単体テストだけを実行し、キャッシュを残しません。
+実ファイルシステムを使う結合テストは、サンドボックス外の通常ターミナルから明示的に実行します。
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend/tests -m integration -o "addopts=-q -p no:cacheprovider"
+```
+
 開発時のフロントエンドは `http://127.0.0.1:5173`、API は `http://127.0.0.1:8000` で待ち受けます。Vite は `/api` をバックエンドへプロキシします。
 
 専用Chromeを含めて起動する場合は、先にフロントエンドを起動し、別のターミナルから

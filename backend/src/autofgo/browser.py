@@ -7,6 +7,7 @@ import sys
 from collections.abc import Callable, Sequence
 from contextlib import suppress
 from pathlib import Path
+from typing import Protocol
 
 from autofgo.config import Settings
 
@@ -28,15 +29,22 @@ def chrome_candidates() -> tuple[Path, ...]:
     return ()
 
 
-def find_chrome(configured_path: Path | None = None) -> Path:
+PathPredicate = Callable[[Path], bool]
+
+
+def find_chrome(
+    configured_path: Path | None = None,
+    *,
+    is_file: PathPredicate = lambda path: path.is_file(),
+) -> Path:
     if configured_path is not None:
         path = configured_path.expanduser().resolve()
-        if not path.is_file():
+        if not is_file(path):
             raise BrowserLaunchError(f"Configured Chrome executable does not exist: {path}")
         return path
 
     for candidate in chrome_candidates():
-        if candidate.is_file():
+        if is_file(candidate):
             return candidate.resolve()
 
     for name in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
@@ -59,37 +67,77 @@ def _process_exists(pid: int) -> bool:
     return True
 
 
+class LockStore(Protocol):
+    def try_create(self, owner: int) -> bool: ...
+
+    def read_owner(self) -> int: ...
+
+    def remove(self) -> None: ...
+
+
+class FileLockStore:
+    def __init__(self, path: Path) -> None:
+        self.path = path
+
+    def try_create(self, owner: int) -> bool:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            descriptor = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            return False
+        with os.fdopen(descriptor, "w", encoding="ascii") as lock_file:
+            lock_file.write(str(owner))
+        return True
+
+    def read_owner(self) -> int:
+        return int(self.path.read_text(encoding="ascii").strip())
+
+    def remove(self) -> None:
+        self.path.unlink(missing_ok=True)
+
+
 class ProfileLock:
-    def __init__(self, profile_directory: Path) -> None:
+    def __init__(
+        self,
+        profile_directory: Path,
+        *,
+        store: LockStore | None = None,
+        process_exists: Callable[[int], bool] = _process_exists,
+        owner_pid: int | None = None,
+    ) -> None:
         self.path = profile_directory / ".autofgo.lock"
+        self._store = store or FileLockStore(self.path)
+        self._process_exists = process_exists
+        self._owner_pid = owner_pid if owner_pid is not None else os.getpid()
         self._held = False
 
     def acquire(self) -> None:
-        self.path.parent.mkdir(parents=True, exist_ok=True)
         for attempt in range(2):
             try:
-                descriptor = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            except FileExistsError:
+                created = self._store.try_create(self._owner_pid)
+            except OSError as error:
+                raise BrowserLaunchError(
+                    "Could not create the dedicated Chrome profile lock."
+                ) from error
+            if not created:
                 try:
-                    owner = int(self.path.read_text(encoding="ascii").strip())
+                    owner = self._store.read_owner()
                 except (OSError, ValueError):
                     raise BrowserLaunchError(
                         "The dedicated Chrome profile lock is unreadable."
                     ) from None
-                if _process_exists(owner):
+                if self._process_exists(owner):
                     raise BrowserLaunchError(
                         f"The dedicated Chrome profile is already in use by process {owner}."
                     ) from None
                 if attempt == 0:
                     with suppress(FileNotFoundError):
-                        self.path.unlink()
+                        self._store.remove()
                     continue
                 raise BrowserLaunchError(
                     "Could not acquire the dedicated Chrome profile lock."
                 ) from None
             else:
-                with os.fdopen(descriptor, "w", encoding="ascii") as lock_file:
-                    lock_file.write(str(os.getpid()))
                 self._held = True
                 return
 
@@ -97,7 +145,7 @@ class ProfileLock:
         if not self._held:
             return
         with suppress(FileNotFoundError):
-            self.path.unlink()
+            self._store.remove()
         self._held = False
 
 
@@ -109,11 +157,15 @@ class ChromeLauncher:
         self,
         settings: Settings,
         process_factory: ProcessFactory = subprocess.Popen,
+        *,
+        executable_finder: Callable[[Path | None], Path] = find_chrome,
+        profile_lock: ProfileLock | None = None,
     ) -> None:
         self.settings = settings
         self._process_factory = process_factory
+        self._executable_finder = executable_finder
         self._profile_directory = settings.chrome_profile_directory.expanduser().resolve()
-        self._lock = ProfileLock(self._profile_directory)
+        self._lock = profile_lock or ProfileLock(self._profile_directory)
         self.process: subprocess.Popen[bytes] | None = None
 
     def arguments(self, executable: Path) -> list[str]:
@@ -130,7 +182,7 @@ class ChromeLauncher:
         ]
 
     def launch(self) -> subprocess.Popen[bytes]:
-        executable = find_chrome(self.settings.chrome_executable)
+        executable = self._executable_finder(self.settings.chrome_executable)
         self._lock.acquire()
         try:
             self.process = self._process_factory(self.arguments(executable))

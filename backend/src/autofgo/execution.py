@@ -118,6 +118,20 @@ class ExecutionManager:
             self._condition.notify_all()
             return item, False
 
+    def start(self) -> None:
+        with self._condition:
+            self._require(
+                ExecutionState.IDLE,
+                ExecutionState.STOPPED,
+                ExecutionState.COMPLETED,
+            )
+            previous = self._state
+            self._cancel_event.clear()
+            self._accepting = True
+            self._state = ExecutionState.RUNNING
+            self._emit_state(previous, self._state)
+            self._condition.notify_all()
+
     def pause(self) -> None:
         with self._condition:
             self._require(ExecutionState.RUNNING)

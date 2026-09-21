@@ -149,3 +149,16 @@ def test_invalid_transition_is_rejected() -> None:
 
     with pytest.raises(InvalidExecutionStateError):
         manager.pause()
+
+
+def test_start_allows_a_stopped_manager_to_accept_commands_again() -> None:
+    manager = ExecutionManager(start_worker=False)
+    manager.start()
+    manager.stop()
+
+    manager.start()
+    item = QueuedCommand("next", "next", lambda value, control: None)
+    manager.enqueue(item)
+
+    assert manager.state == ExecutionState.RUNNING
+    assert manager.snapshot()["acceptingCommands"] is True

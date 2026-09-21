@@ -28,7 +28,10 @@ packages = ["src/autofgo"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not integration' -p no:cacheprovider"
+markers = [
+  "integration: tests that use operating-system resources and require an unrestricted environment",
+]
 
 [tool.ruff]
 target-version = "py312"

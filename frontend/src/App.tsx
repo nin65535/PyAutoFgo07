@@ -7,30 +7,28 @@ import {
 } from "./events/sseClient";
 import { createScenarioApi, type ScenarioApi } from "./scenarios/api";
 import {
+  createExecutionApi,
+  type ExecutionAction,
+  type ExecutionApi,
+  type ExecutionState,
+} from "./execution/api";
+import {
   validateScenario,
   type ScenarioSummary,
   type ScenarioValidation,
 } from "./scenarios/scenario";
 
-type ExecutionState =
-  | "idle"
-  | "running"
-  | "pausing"
-  | "paused"
-  | "stopping"
-  | "stopped"
-  | "completed"
-  | "error"
-  | "emergency_stopping";
 type SseConnection = Pick<SseClient, "connect" | "close">;
 export type AppProps = {
   createSseClient?: (options: SseClientOptions) => SseConnection;
   scenarioApi?: ScenarioApi;
+  executionApi?: ExecutionApi;
 };
 
 const defaultCreateSseClient = (options: SseClientOptions): SseConnection =>
   new SseClient(options);
 const defaultScenarioApi = createScenarioApi();
+const defaultExecutionApi = createExecutionApi();
 
 const connectionLabels: Record<ConnectionState, string> = {
   connecting: "接続中",
@@ -66,6 +64,7 @@ function executionStateFrom(event: SseEvent): ExecutionState | undefined {
 export function App({
   createSseClient = defaultCreateSseClient,
   scenarioApi = defaultScenarioApi,
+  executionApi = defaultExecutionApi,
 }: AppProps) {
   const [connection, setConnection] = useState<ConnectionState>("connecting");
   const [execution, setExecution] = useState<ExecutionState>("idle");
@@ -77,6 +76,8 @@ export function App({
     "loading" | "ready" | "empty" | "error"
   >("loading");
   const [scenarioError, setScenarioError] = useState<string>();
+  const [controlPending, setControlPending] = useState(false);
+  const [controlError, setControlError] = useState<string>();
 
   useEffect(() => {
     const client = createSseClient({
@@ -124,6 +125,22 @@ export function App({
     };
   }, [scenarioApi]);
 
+  useEffect(() => {
+    if (connection !== "active") return;
+    let active = true;
+    executionApi
+      .status()
+      .then((snapshot) => {
+        if (active) setExecution(snapshot.state);
+      })
+      .catch(() => {
+        if (active) setControlError("実行状態を取得できませんでした");
+      });
+    return () => {
+      active = false;
+    };
+  }, [connection, executionApi]);
+
   const selectScenario = async (summary: ScenarioSummary) => {
     setSelected(summary);
     setValidation(undefined);
@@ -141,6 +158,32 @@ export function App({
   };
 
   const inactive = connection !== "active";
+  const activeExecution = [
+    "running",
+    "pausing",
+    "paused",
+    "stopping",
+    "emergency_stopping",
+  ].includes(execution);
+  const canStart =
+    !inactive &&
+    !controlPending &&
+    validation?.valid === true &&
+    ["idle", "stopped", "completed"].includes(execution);
+  const runControl = async (action: ExecutionAction) => {
+    setControlPending(true);
+    setControlError(undefined);
+    try {
+      const snapshot = await executionApi.act(action);
+      setExecution(snapshot.state);
+    } catch (error) {
+      setControlError(
+        error instanceof Error ? error.message : "実行操作に失敗しました",
+      );
+    } finally {
+      setControlPending(false);
+    }
+  };
   return (
     <main className="app-shell">
       <header className="app-header">
@@ -169,7 +212,14 @@ export function App({
             ? `指令: ${currentCommand}`
             : "実行中の指令はありません"}
         </p>
-        <button className="emergency-button" type="button" disabled={inactive}>
+        <button
+          className="emergency-button"
+          type="button"
+          disabled={
+            inactive || controlPending || execution === "emergency_stopping"
+          }
+          onClick={() => void runControl("emergency-stop")}
+        >
           緊急停止
         </button>
       </section>
@@ -186,22 +236,53 @@ export function App({
             <p className="section-number">01</p>
             <h2 id="controls-title">実行コントロール</h2>
           </div>
-          <span className="coming-soon">準備中</span>
+          <span className="coming-soon">
+            {controlPending ? "操作中" : executionLabels[execution]}
+          </span>
         </div>
         <div className="control-grid">
-          <button type="button" disabled>
+          <button
+            type="button"
+            disabled={!canStart}
+            onClick={() => void runControl("start")}
+          >
             開始
           </button>
-          <button type="button" disabled>
+          <button
+            type="button"
+            disabled={inactive || controlPending || execution !== "running"}
+            onClick={() => void runControl("pause")}
+          >
             一時停止
           </button>
-          <button type="button" disabled>
+          <button
+            type="button"
+            disabled={
+              inactive ||
+              controlPending ||
+              !["paused", "pausing"].includes(execution)
+            }
+            onClick={() => void runControl("resume")}
+          >
             再開
           </button>
-          <button type="button" disabled>
+          <button
+            type="button"
+            disabled={
+              inactive ||
+              controlPending ||
+              !["running", "paused", "pausing"].includes(execution)
+            }
+            onClick={() => void runControl("stop")}
+          >
             通常停止
           </button>
         </div>
+        {controlError && (
+          <p className="scenario-error" role="alert">
+            {controlError}
+          </p>
+        )}
       </section>
 
       <section className="panel" aria-labelledby="scenario-title">
@@ -236,6 +317,7 @@ export function App({
                 }
                 key={scenario.id}
                 type="button"
+                disabled={activeExecution || controlPending}
                 aria-pressed={selected?.id === scenario.id}
                 onClick={() => void selectScenario(scenario)}
               >

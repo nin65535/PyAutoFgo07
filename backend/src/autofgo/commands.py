@@ -178,6 +178,12 @@ async def execution_status(registry: CommandRegistryDependency) -> dict[str, obj
     return {"data": registry.manager.snapshot()}
 
 
+@router.post("/start")
+async def start_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.start()
+    return {"data": registry.manager.snapshot()}
+
+
 @router.post("/pause")
 async def pause_execution(registry: CommandRegistryDependency) -> dict[str, object]:
     registry.manager.pause()

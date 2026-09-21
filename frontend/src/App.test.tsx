@@ -1,14 +1,26 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { App, type AppProps } from "./App";
 import type { SseClientOptions } from "./events/sseClient";
 import type { ScenarioApi } from "./scenarios/api";
+import type { ExecutionApi, ExecutionState } from "./execution/api";
 
 const emptyScenarioApi: ScenarioApi = {
   list: async () => [],
   get: async () => {
     throw new Error("not found");
   },
+};
+
+const snapshot = (state: ExecutionState) => ({
+  state,
+  currentCommandId: null,
+  queuedCount: 0,
+  acceptingCommands: state !== "emergency_stopping",
+});
+const idleExecutionApi: ExecutionApi = {
+  status: async () => snapshot("idle"),
+  act: async (action) => snapshot(action === "start" ? "running" : "idle"),
 };
 
 function clientFactory(
@@ -26,13 +38,14 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={emptyScenarioApi}
+        executionApi={idleExecutionApi}
       />,
     );
     expect(
       screen.getByRole("heading", { name: "autoFgo" }),
     ).toBeInTheDocument();
     expect(await screen.findByText("接続済み")).toBeInTheDocument();
-    expect(screen.getByText("待機中")).toBeInTheDocument();
+    expect(screen.getAllByText("待機中")).toHaveLength(2);
     expect(screen.getByRole("button", { name: "緊急停止" })).toBeEnabled();
     expect(
       screen.getByRole("heading", { name: "実行コントロール" }),
@@ -48,6 +61,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("inactive")}
         scenarioApi={emptyScenarioApi}
+        executionApi={idleExecutionApi}
       />,
     );
     expect(await screen.findByText("切断")).toBeInTheDocument();
@@ -79,6 +93,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={scenarioApi}
+        executionApi={idleExecutionApi}
       />,
     );
     fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
@@ -108,6 +123,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={scenarioApi}
+        executionApi={idleExecutionApi}
       />,
     );
     fireEvent.click(await screen.findByRole("button", { name: /Bad file/ }));
@@ -115,5 +131,64 @@ describe("App", () => {
       "未対応の命令",
     );
     expect(screen.getByText("要確認")).toBeInTheDocument();
+  });
+
+  it("enables mouse controls only for transitions allowed by the current state", async () => {
+    const scenarioApi: ScenarioApi = {
+      list: async () => [
+        {
+          id: "alpha",
+          displayName: "Alpha",
+          modifiedAt: "2026-09-22T00:00:00.000Z",
+        },
+      ],
+      get: async () => ({
+        id: "alpha",
+        displayName: "Alpha",
+        modifiedAt: "2026-09-22T00:00:00.000Z",
+        content: { schemaVersion: 1, members: ["A"], commands: [["attack()"]] },
+      }),
+    };
+    const act = vi.fn(
+      async (
+        action: "start" | "pause" | "resume" | "stop" | "emergency-stop",
+      ) =>
+        snapshot(
+          action === "start"
+            ? "running"
+            : action === "pause"
+              ? "paused"
+              : "stopped",
+        ),
+    );
+    render(
+      <App
+        createSseClient={clientFactory("active")}
+        scenarioApi={scenarioApi}
+        executionApi={{ status: async () => snapshot("idle"), act }}
+      />,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
+    const start = await screen.findByRole("button", { name: "開始" });
+    await waitFor(() => expect(start).toBeEnabled());
+    fireEvent.click(start);
+    await waitFor(() => expect(act).toHaveBeenCalledWith("start"));
+    expect(screen.getByRole("button", { name: /Alpha/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "一時停止" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "開始" })).toBeDisabled();
+  });
+
+  it("sends emergency stop from the persistent control", async () => {
+    const act = vi.fn(async () => snapshot("emergency_stopping"));
+    render(
+      <App
+        createSseClient={clientFactory("active")}
+        scenarioApi={emptyScenarioApi}
+        executionApi={{ status: async () => snapshot("idle"), act }}
+      />,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "緊急停止" }));
+    await waitFor(() => expect(act).toHaveBeenCalledWith("emergency-stop"));
   });
 });
