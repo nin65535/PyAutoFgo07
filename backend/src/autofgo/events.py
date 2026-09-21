@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from threading import Lock
@@ -36,7 +36,12 @@ class EventEnvelope:
 class EventBroker:
     """Process-local fan-out for live events. Events are deliberately not replayed."""
 
-    def __init__(self, *, heartbeat_seconds: float = 3.0) -> None:
+    def __init__(
+        self,
+        *,
+        heartbeat_seconds: float = 3.0,
+        connection_observer: Callable[[str], None] | None = None,
+    ) -> None:
         self.session_id = str(uuid4())
         self.heartbeat_seconds = heartbeat_seconds
         self._next_id = 1
@@ -44,6 +49,17 @@ class EventBroker:
         self._subscribers: set[tuple[asyncio.AbstractEventLoop, asyncio.Queue[EventEnvelope]]] = (
             set()
         )
+        self._connection_observer = connection_observer
+
+    def set_connection_observer(self, observer: Callable[[str], None] | None) -> None:
+        with self._lock:
+            self._connection_observer = observer
+
+    def _observe_connection(self, state: str) -> None:
+        with self._lock:
+            observer = self._connection_observer
+        if observer is not None:
+            observer(state)
 
     def publish(
         self, event_type: str, data: dict[str, Any], *, command_id: str | None = None
@@ -69,6 +85,7 @@ class EventBroker:
         subscriber = (loop, queue)
         with self._lock:
             self._subscribers.add(subscriber)
+        self._observe_connection("connected")
         try:
             while not await request.is_disconnected():
                 try:
@@ -87,6 +104,7 @@ class EventBroker:
         finally:
             with self._lock:
                 self._subscribers.discard(subscriber)
+            self._observe_connection("disconnected")
 
 
 event_broker = EventBroker()

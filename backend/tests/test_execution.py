@@ -112,6 +112,16 @@ def test_emergency_stop_immediately_discards_pending_commands() -> None:
     assert manager.snapshot()["acceptingCommands"] is False
 
 
+def test_emergency_stop_from_idle_disables_command_intake() -> None:
+    manager = ExecutionManager(start_worker=False)
+
+    manager.emergency_stop("chrome_process_exited")
+    manager.emergency_stop("duplicate")
+
+    assert manager.state == ExecutionState.EMERGENCY_STOPPING
+    assert manager.snapshot()["acceptingCommands"] is False
+
+
 def test_handler_failure_moves_execution_to_error_and_discards_following() -> None:
     manager = ExecutionManager()
     release_failure = Event()

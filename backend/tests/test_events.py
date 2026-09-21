@@ -47,6 +47,21 @@ def test_heartbeat_has_no_event_id() -> None:
     asyncio.run(exercise())
 
 
+def test_connection_observer_sees_establishment_and_disconnect() -> None:
+    async def exercise() -> None:
+        states: list[str] = []
+        broker = EventBroker(heartbeat_seconds=1, connection_observer=states.append)
+        stream = broker.stream(ConnectedRequest())  # type: ignore[arg-type]
+        pending = asyncio.create_task(anext(stream))
+        await asyncio.sleep(0)
+        broker.publish("ready", {})
+        await pending
+        await stream.aclose()
+        assert states == ["connected", "disconnected"]
+
+    asyncio.run(exercise())
+
+
 def test_execution_manager_emits_ordered_command_events() -> None:
     events: list[tuple[str, dict[str, Any], str | None]] = []
     manager = ExecutionManager(

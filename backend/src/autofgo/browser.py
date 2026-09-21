@@ -141,3 +141,7 @@ class ChromeLauncher:
 
     def close(self) -> None:
         self._lock.release()
+
+    def terminate(self) -> None:
+        if self.process is not None and self.process.poll() is None:
+            self.process.terminate()

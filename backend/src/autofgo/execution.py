@@ -138,7 +138,18 @@ class ExecutionManager:
         self._cancel("normal_stop", emergency=False)
 
     def emergency_stop(self, reason: str = "emergency_stop") -> None:
-        self._cancel(reason, emergency=True)
+        with self._condition:
+            if self._state == ExecutionState.EMERGENCY_STOPPING:
+                return
+            previous = self._state
+            self._accepting = False
+            self._state = ExecutionState.EMERGENCY_STOPPING
+            self._emit_state(previous, self._state, reason)
+            self._cancel_event.set()
+            self._cancel_pending(reason)
+            if self._current is not None:
+                self._current.cancel_reason = reason
+            self._condition.notify_all()
 
     def complete(self) -> None:
         with self._condition:

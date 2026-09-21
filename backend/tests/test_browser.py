@@ -88,3 +88,14 @@ def test_launcher_releases_lock_when_process_creation_fails(tmp_path: Path) -> N
         launcher.launch()
 
     assert not (profile / ".autofgo.lock").exists()
+
+
+def test_launcher_terminates_running_process() -> None:
+    process = Mock()
+    process.poll.return_value = None
+    launcher = ChromeLauncher(Settings())
+    launcher.process = process
+
+    launcher.terminate()
+
+    process.terminate.assert_called_once_with()
