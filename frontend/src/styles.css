@@ -62,6 +62,10 @@ h1 {
 h2 {
   font-size: 1rem;
 }
+h3 {
+  margin: 0;
+  font-size: 0.92rem;
+}
 .eyebrow,
 .section-number {
   color: #6fb6b1;
@@ -164,6 +168,81 @@ dd {
   color: #7f8c97;
   font-size: 0.78rem;
   line-height: 1.6;
+}
+.scenario-list {
+  display: grid;
+  gap: 8px;
+}
+.scenario-item {
+  display: flex;
+  min-width: 0;
+  padding: 10px 12px;
+  align-items: flex-start;
+  flex-direction: column;
+  text-align: left;
+}
+.scenario-item span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.scenario-item time {
+  margin-top: 3px;
+  color: #84919c;
+  font-size: 0.68rem;
+  font-weight: 400;
+}
+.scenario-item--selected {
+  border-color: #57c5a4;
+  background: #17302f;
+}
+.scenario-detail {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #25313b;
+}
+.scenario-facts {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.scenario-facts dd {
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+}
+.command-group {
+  margin-top: 8px;
+  color: #cbd4dc;
+  font-size: 0.75rem;
+}
+.command-group summary {
+  min-height: 32px;
+  cursor: pointer;
+}
+.command-group ol {
+  margin: 4px 0 10px;
+  padding-left: 26px;
+}
+.command-group li {
+  padding: 2px 0;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, monospace;
+}
+.validation-ok,
+.scenario-error,
+.validation-errors {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+.validation-ok {
+  color: #8bd9c0;
+}
+.scenario-error,
+.validation-errors {
+  color: #f0aeb3;
+}
+.validation-errors {
+  padding-left: 20px;
 }
 .details-panel summary {
   min-height: 32px;
