@@ -13,6 +13,10 @@ import {
   type ExecutionState,
 } from "./execution/api";
 import {
+  ScenarioEngine,
+  type ScenarioProgress,
+} from "./execution/scenarioEngine";
+import {
   validateScenario,
   type ScenarioSummary,
   type ScenarioValidation,
@@ -78,14 +82,38 @@ export function App({
   const [scenarioError, setScenarioError] = useState<string>();
   const [controlPending, setControlPending] = useState(false);
   const [controlError, setControlError] = useState<string>();
+  const [progress, setProgress] = useState<ScenarioProgress>();
+  const [engine] = useState(
+    () =>
+      new ScenarioEngine({
+        submit: executionApi.submit,
+        complete: async () => {
+          const snapshot = await executionApi.complete();
+          setExecution(snapshot.state);
+        },
+        onProgress: (next) => {
+          setProgress(next);
+          if (next.error) {
+            setControlError(next.error);
+            setExecution("error");
+          }
+        },
+      }),
+  );
 
   useEffect(() => {
     const client = createSseClient({
       url: "/api/events",
       onStateChange: setConnection,
       onEvent: (event) => {
+        engine.handleEvent(event);
         const nextState = executionStateFrom(event);
-        if (nextState) setExecution(nextState);
+        if (nextState) {
+          setExecution(nextState);
+          engine.setPaused(nextState === "pausing" || nextState === "paused");
+          if (["stopping", "stopped", "emergency_stopping"].includes(nextState))
+            engine.cancel();
+        }
         if (event.event === "command.started" && event.data) {
           const commandId = (event.data as { commandId?: unknown }).commandId;
           setCurrentCommand(
@@ -101,8 +129,11 @@ export function App({
       },
     });
     void client.connect();
-    return () => client.close();
-  }, [createSseClient]);
+    return () => {
+      engine.cancel();
+      client.close();
+    };
+  }, [createSseClient, engine]);
 
   useEffect(() => {
     let active = true;
@@ -176,6 +207,11 @@ export function App({
     try {
       const snapshot = await executionApi.act(action);
       setExecution(snapshot.state);
+      if (action === "start" && validation?.valid)
+        engine.start(validation.scenario);
+      if (action === "pause") engine.setPaused(true);
+      if (action === "resume") engine.setPaused(false);
+      if (action === "stop" || action === "emergency-stop") engine.cancel();
     } catch (error) {
       setControlError(
         error instanceof Error ? error.message : "実行操作に失敗しました",
@@ -281,6 +317,15 @@ export function App({
         {controlError && (
           <p className="scenario-error" role="alert">
             {controlError}
+          </p>
+        )}
+        {progress && (
+          <p className="execution-progress" role="status">
+            {progress.error
+              ? `停止: ${progress.error}`
+              : progress.completedCount === progress.totalCount
+                ? `${progress.totalCount}件の命令を完了しました`
+                : `グループ${progress.groupIndex + 1}・命令${progress.commandIndex + 1} / ${progress.totalCount}件（${progress.waiting ? "完了通知待ち" : "処理中"}）`}
           </p>
         )}
       </section>

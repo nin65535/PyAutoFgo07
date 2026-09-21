@@ -208,6 +208,12 @@ async def emergency_stop_execution(registry: CommandRegistryDependency) -> dict[
     return {"data": registry.manager.snapshot()}
 
 
+@router.post("/complete")
+async def complete_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    registry.manager.complete()
+    return {"data": registry.manager.snapshot()}
+
+
 async def command_conflict_handler(request: Request, error: CommandConflictError) -> JSONResponse:
     return JSONResponse(
         status_code=409,

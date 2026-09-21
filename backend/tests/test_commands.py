@@ -114,3 +114,12 @@ def test_start_control_moves_idle_execution_to_running(client: TestClient) -> No
 
     assert response.status_code == 200
     assert response.json()["data"]["state"] == "running"
+
+
+def test_complete_control_moves_empty_running_execution_to_completed(client: TestClient) -> None:
+    assert client.post("/api/commands/start").status_code == 200
+
+    response = client.post("/api/commands/complete")
+
+    assert response.status_code == 200
+    assert response.json()["data"]["state"] == "completed"

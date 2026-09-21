@@ -21,7 +21,16 @@ const snapshot = (state: ExecutionState) => ({
 const idleExecutionApi: ExecutionApi = {
   status: async () => snapshot("idle"),
   act: async (action) => snapshot(action === "start" ? "running" : "idle"),
+  submit: async () => undefined,
+  complete: async () => snapshot("completed"),
 };
+
+const executionApiWith = (act: ExecutionApi["act"]): ExecutionApi => ({
+  status: async () => snapshot("idle"),
+  act,
+  submit: async () => undefined,
+  complete: async () => snapshot("completed"),
+});
 
 function clientFactory(
   state: "active" | "inactive",
@@ -165,7 +174,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={scenarioApi}
-        executionApi={{ status: async () => snapshot("idle"), act }}
+        executionApi={executionApiWith(act)}
       />,
     );
 
@@ -185,7 +194,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={emptyScenarioApi}
-        executionApi={{ status: async () => snapshot("idle"), act }}
+        executionApi={executionApiWith(act)}
       />,
     );
     fireEvent.click(await screen.findByRole("button", { name: "緊急停止" }));

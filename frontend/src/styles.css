@@ -229,10 +229,14 @@ dd {
 }
 .validation-ok,
 .scenario-error,
-.validation-errors {
+.validation-errors,
+.execution-progress {
   margin-top: 12px;
   font-size: 0.75rem;
   line-height: 1.55;
+}
+.execution-progress {
+  color: #9fcac7;
 }
 .validation-ok {
   color: #8bd9c0;

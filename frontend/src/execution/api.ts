@@ -22,6 +22,11 @@ export type ExecutionAction =
 export type ExecutionApi = {
   status(): Promise<ExecutionSnapshot>;
   act(action: ExecutionAction): Promise<ExecutionSnapshot>;
+  submit(
+    commandId: string,
+    command: import("../commands/types").ScenarioCommand,
+  ): Promise<void>;
+  complete(): Promise<ExecutionSnapshot>;
 };
 
 export function createExecutionApi(
@@ -41,5 +46,19 @@ export function createExecutionApi(
   return {
     status: () => request("/status"),
     act: (action) => request(`/${action}`, { method: "POST" }),
+    submit: async (commandId, command) => {
+      const response = await fetchImpl("/api/commands", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commandId, command }),
+      });
+      if (!response.ok) {
+        const body = (await response.json()) as {
+          error?: { message?: string };
+        };
+        throw new Error(body.error?.message ?? "指令を送信できませんでした");
+      }
+    },
+    complete: () => request("/complete", { method: "POST" }),
   };
 }

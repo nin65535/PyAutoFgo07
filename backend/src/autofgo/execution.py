@@ -168,7 +168,13 @@ class ExecutionManager:
     def complete(self) -> None:
         with self._condition:
             self._require(ExecutionState.RUNNING)
-            if self._current is not None or self._pending:
+            # The terminal SSE event is published immediately before the worker
+            # releases its current item. Accept completion during that narrow
+            # window when the item is already known to have completed.
+            current_is_active = (
+                self._current is not None and self._current.state is not CommandState.COMPLETED
+            )
+            if current_is_active or self._pending:
                 raise InvalidExecutionStateError(self._state, (ExecutionState.RUNNING,))
             previous = self._state
             self._state = ExecutionState.COMPLETED
