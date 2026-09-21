@@ -33,6 +33,19 @@ npm --prefix frontend run build
 
 開発時のフロントエンドは `http://127.0.0.1:5173`、API は `http://127.0.0.1:8000` で待ち受けます。Vite は `/api` をバックエンドへプロキシします。
 
+専用Chromeを含めて起動する場合は、先にフロントエンドを起動し、別のターミナルから
+Pythonエントリーポイントを実行します。バックエンドの待受開始後、専用プロファイルと
+左上200×1000ピクセルのアプリウィンドウでChromeが自動起動します。
+
+```powershell
+npm run dev:frontend
+.\.venv\Scripts\python.exe -m autofgo
+```
+
+Chromeの場所、プロファイル保存先、表示URL、ウィンドウ位置・サイズは `.env` で変更できます。
+設定項目は `.env.example` を参照してください。同じ専用プロファイルを使用するautoFgoが
+起動済みの場合、二重起動を拒否します。
+
 ライブラリは2026-09-20時点の安定版へ固定しています。npm依存は各 `package.json` と `package-lock.json`、Python依存は `backend/pyproject.toml` と `backend/constraints.txt` で管理します。TypeScriptは、`typescript-eslint` が対応する最新安定版の6.0.3を使用します。
 
 設計資料は [documents/design/basic-design.md](documents/design/basic-design.md)、作業順は [documents/roadmap.md](documents/roadmap.md) を参照してください。
