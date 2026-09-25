@@ -1,6 +1,7 @@
 import base64
 import binascii
 import json
+import logging
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated, Any
@@ -9,6 +10,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 
 from autofgo.config import Settings, get_settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/scenarios", tags=["scenarios"])
 MAX_SCENARIO_FILE_BYTES = 1024 * 1024
@@ -113,6 +116,11 @@ def list_scenarios(repository: Repository) -> dict[str, Any]:
 @router.get("/{scenario_id}")
 def get_scenario(scenario_id: str, repository: Repository) -> dict[str, Any]:
     metadata, content = repository.get(scenario_id)
+    logger.info(
+        "Scenario selected: %s",
+        metadata["displayName"],
+        extra={"event_type": "scenario.selected"},
+    )
     return {"data": {**metadata, "content": content}}
 
 

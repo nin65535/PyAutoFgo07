@@ -9,12 +9,25 @@ from autofgo.browser import BrowserLaunchError, ChromeLauncher
 from autofgo.commands import get_command_registry
 from autofgo.config import get_settings
 from autofgo.events import event_broker
+from autofgo.logging_config import configure_logging
 from autofgo.security import session_security
 from autofgo.shutdown import EmergencyShutdown
 
 
 async def run() -> None:
     settings = get_settings()
+    log_path = configure_logging(
+        settings.log_directory,
+        level=settings.log_level,
+        max_bytes=settings.log_max_bytes,
+        backup_count=settings.log_backup_count,
+    )
+    logger = logging.getLogger(__name__)
+    logger.info(
+        "autoFgo backend starting; log=%s",
+        log_path,
+        extra={"event_type": "application.started"},
+    )
     server = uvicorn.Server(
         uvicorn.Config(
             "autofgo.main:app",
@@ -48,6 +61,7 @@ async def run() -> None:
             await server_task
             return
         process = launcher.launch()
+        logger.info("Dedicated Chrome started", extra={"event_type": "browser.started"})
         process_task = asyncio.create_task(asyncio.to_thread(process.wait))
         disconnect_task = asyncio.create_task(connection_lost.wait())
         done, _ = await asyncio.wait(

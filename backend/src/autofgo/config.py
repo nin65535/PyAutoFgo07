@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8000
     log_level: str = "INFO"
+    log_directory: Path = Path(".autofgo/logs")
+    log_max_bytes: int = 2_000_000
+    log_backup_count: int = 5
     scenario_directory: Path = Path("scenarios")
     screen_left: int = 0
     screen_top: int = 0
@@ -42,6 +45,8 @@ class Settings(BaseSettings):
             raise ValueError("screen operation timings must be positive")
         if self.chrome_window_width <= 0 or self.chrome_window_height <= 0:
             raise ValueError("Chrome window width and height must be positive")
+        if self.log_max_bytes <= 0 or self.log_backup_count < 0:
+            raise ValueError("log rotation settings must be non-negative")
         if not self.chrome_app_url.startswith(("http://127.0.0.1", "http://localhost")):
             raise ValueError("Chrome app URL must use HTTP on localhost")
         return self

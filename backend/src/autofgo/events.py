@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from collections.abc import AsyncIterator, Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -12,6 +13,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
 from autofgo.security import session_security
+
+logger = logging.getLogger(__name__)
 
 
 def _utc_now() -> str:
@@ -76,6 +79,12 @@ class EventBroker:
             )
             self._next_id += 1
             subscribers = tuple(self._subscribers)
+        severity = logging.ERROR if event_type == "command.failed" else logging.INFO
+        logger.log(
+            severity,
+            "Runtime event emitted",
+            extra={"event_type": event_type, "command_id": command_id},
+        )
         for loop, queue in subscribers:
             loop.call_soon_threadsafe(queue.put_nowait, event)
         return event

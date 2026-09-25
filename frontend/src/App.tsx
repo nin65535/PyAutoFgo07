@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   SseClient,
   type ConnectionState,
   type SseClientOptions,
   type SseEvent,
 } from "./events/sseClient";
+import {
+  connectionEntry,
+  entryFromSse,
+  localEntry,
+  type LogEntry,
+} from "./events/logEntries";
 import { createScenarioApi, type ScenarioApi } from "./scenarios/api";
 import {
   createExecutionApi,
@@ -83,6 +89,11 @@ export function App({
   const [controlPending, setControlPending] = useState(false);
   const [controlError, setControlError] = useState<string>();
   const [progress, setProgress] = useState<ScenarioProgress>();
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const appendLog = useCallback(
+    (entry: LogEntry) => setLogs((current) => [...current.slice(-199), entry]),
+    [],
+  );
   const [engine] = useState(
     () =>
       new ScenarioEngine({
@@ -104,8 +115,13 @@ export function App({
   useEffect(() => {
     const client = createSseClient({
       url: "/api/events",
-      onStateChange: setConnection,
+      onStateChange: (state) => {
+        setConnection(state);
+        appendLog(connectionEntry(state));
+      },
       onEvent: (event) => {
+        const logEntry = entryFromSse(event);
+        if (logEntry) appendLog(logEntry);
         engine.handleEvent(event);
         const nextState = executionStateFrom(event);
         if (nextState) {
@@ -133,7 +149,7 @@ export function App({
       engine.cancel();
       client.close();
     };
-  }, [createSseClient, engine]);
+  }, [appendLog, createSseClient, engine]);
 
   useEffect(() => {
     let active = true;
@@ -179,7 +195,23 @@ export function App({
     try {
       const detail = await scenarioApi.get(summary.id);
       setValidation(validateScenario(detail.content));
+      appendLog(
+        localEntry(
+          "scenario.selected",
+          `操作手順「${summary.displayName}」を選択しました。`,
+          "info",
+          { scenarioId: summary.id },
+        ),
+      );
     } catch (error) {
+      appendLog(
+        localEntry(
+          "scenario.load_failed",
+          "操作手順を読み込めませんでした。",
+          "error",
+          error instanceof Error ? error.message : String(error),
+        ),
+      );
       setScenarioError(
         error instanceof Error
           ? error.message
@@ -432,8 +464,39 @@ export function App({
       </section>
 
       <details className="panel details-panel">
-        <summary>ログと詳細</summary>
-        <p className="empty-state">表示できるログはまだありません。</p>
+        <summary>
+          <span>ログと詳細</span>（{logs.length}件）
+        </summary>
+        {logs.length === 0 ? (
+          <p className="empty-state">表示できるログはまだありません。</p>
+        ) : (
+          <ol className="event-log" aria-label="実行ログ">
+            {[...logs].reverse().map((entry) => (
+              <li
+                className={`event-log__item event-log__item--${entry.severity}`}
+                key={entry.id}
+              >
+                <div className="event-log__heading">
+                  <time dateTime={entry.occurredAt}>
+                    {new Date(entry.occurredAt).toLocaleTimeString("ja-JP")}
+                  </time>
+                  <span>{entry.severity.toUpperCase()}</span>
+                </div>
+                <p>{entry.message}</p>
+                <code>
+                  {entry.eventType}
+                  {entry.commandId ? ` / ${entry.commandId}` : ""}
+                </code>
+                {entry.detail !== undefined && (
+                  <details>
+                    <summary>開発者向け詳細</summary>
+                    <pre>{JSON.stringify(entry.detail, null, 2)}</pre>
+                  </details>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
       </details>
     </main>
   );

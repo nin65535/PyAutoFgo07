@@ -257,6 +257,50 @@ dd {
 .details-panel[open] summary {
   margin-bottom: 12px;
 }
+.event-log {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.event-log__item {
+  padding: 10px;
+  border-left: 3px solid #57c5a4;
+  border-radius: 4px;
+  background: #172129;
+  overflow-wrap: anywhere;
+}
+.event-log__item--warning {
+  border-left-color: #e0ad57;
+}
+.event-log__item--error {
+  border-left-color: #da5961;
+}
+.event-log__heading {
+  display: flex;
+  justify-content: space-between;
+  color: #84919c;
+  font-size: 0.65rem;
+}
+.event-log__item p {
+  margin-top: 5px;
+  font-size: 0.75rem;
+}
+.event-log__item code {
+  color: #8fa2b1;
+  font-size: 0.65rem;
+}
+.event-log__item details {
+  margin-top: 6px;
+  font-size: 0.68rem;
+}
+.event-log__item pre {
+  max-height: 10rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #aebbc5;
+}
 @media (max-width: 240px) {
   .app-shell {
     padding-inline: 8px;

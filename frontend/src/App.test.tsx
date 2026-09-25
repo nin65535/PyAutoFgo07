@@ -200,4 +200,33 @@ describe("App", () => {
     fireEvent.click(await screen.findByRole("button", { name: "緊急停止" }));
     await waitFor(() => expect(act).toHaveBeenCalledWith("emergency-stop"));
   });
+
+  it("shows user-facing event text separately from developer details", async () => {
+    render(
+      <App
+        createSseClient={(options) => ({
+          connect: async () => {
+            options.onStateChange("active");
+            options.onEvent({
+              event: "command.failed",
+              id: "9",
+              data: {
+                eventId: 9,
+                occurredAt: "2026-09-25T00:00:00Z",
+                commandId: "cmd-9",
+                data: { code: "COMMAND_EXECUTION_FAILED" },
+              },
+            });
+          },
+          close: () => undefined,
+        })}
+        scenarioApi={emptyScenarioApi}
+        executionApi={idleExecutionApi}
+      />,
+    );
+    fireEvent.click(await screen.findByText("ログと詳細"));
+    expect(screen.getByText("指令の実行に失敗しました。")).toBeInTheDocument();
+    expect(screen.getByText("command.failed / cmd-9")).toBeInTheDocument();
+    expect(screen.getByText("開発者向け詳細")).toBeInTheDocument();
+  });
 });
