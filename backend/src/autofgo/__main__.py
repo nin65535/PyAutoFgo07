@@ -9,6 +9,7 @@ from autofgo.browser import BrowserLaunchError, ChromeLauncher
 from autofgo.commands import get_command_registry
 from autofgo.config import get_settings
 from autofgo.events import event_broker
+from autofgo.security import session_security
 from autofgo.shutdown import EmergencyShutdown
 
 
@@ -71,6 +72,7 @@ async def run() -> None:
         await server_task
         raise
     finally:
+        session_security.invalidate()
         event_broker.set_connection_observer(None)
         launcher.close()
 

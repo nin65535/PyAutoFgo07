@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from autofgo.config import Settings, get_settings
 
 router = APIRouter(prefix="/api/scenarios", tags=["scenarios"])
+MAX_SCENARIO_FILE_BYTES = 1024 * 1024
 
 
 class ScenarioError(Exception):
@@ -69,6 +70,10 @@ class ScenarioRepository:
         try:
             if not path.is_file():
                 raise _not_found()
+            if path.stat().st_size > MAX_SCENARIO_FILE_BYTES:
+                raise ScenarioError(
+                    413, "SCENARIO_TOO_LARGE", "操作手順のサイズが上限を超えています。"
+                )
             raw_content = path.read_text(encoding="utf-8")
             modified_at = _format_datetime(path.stat().st_mtime)
         except ScenarioError:

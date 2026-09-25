@@ -1,4 +1,5 @@
 import type { ScenarioSummary } from "./scenario";
+import { authenticatedFetch } from "../api/session";
 
 export type ScenarioDetail = ScenarioSummary & { content: unknown };
 
@@ -12,7 +13,9 @@ type Fetch = (
   init?: RequestInit,
 ) => Promise<Response>;
 
-export function createScenarioApi(fetcher: Fetch = fetch): ScenarioApi {
+export function createScenarioApi(
+  fetcher: Fetch = authenticatedFetch,
+): ScenarioApi {
   return {
     async list() {
       const response = await fetcher("/api/scenarios");

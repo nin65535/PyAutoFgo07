@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 
 from autofgo.commands import COMMAND_HANDLERS, CommandRegistry, get_command_registry
 from autofgo.main import app
+from tests.helpers import authentication_headers
 
 COMMAND_ID = "0195d84e-7c82-7a31-a261-a1db5a3f7190"
 
@@ -11,7 +12,7 @@ COMMAND_ID = "0195d84e-7c82-7a31-a261-a1db5a3f7190"
 def client() -> TestClient:
     registry = CommandRegistry()
     app.dependency_overrides[get_command_registry] = lambda: registry
-    yield TestClient(app)
+    yield TestClient(app, headers=authentication_headers())
     app.dependency_overrides.clear()
 
 

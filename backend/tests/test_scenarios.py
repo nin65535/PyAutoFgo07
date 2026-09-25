@@ -6,8 +6,13 @@ from fastapi.testclient import TestClient
 
 from autofgo.main import app
 from autofgo.scenarios import ScenarioRepository, get_scenario_repository
+from tests.helpers import authentication_headers
 
 FIXTURE_DIRECTORY = Path(__file__).parent / "fixtures" / "scenarios"
+
+
+def client() -> TestClient:
+    return TestClient(app, headers=authentication_headers())
 
 
 @pytest.fixture
@@ -21,7 +26,7 @@ def scenario_directory() -> Path:
 def test_list_scenarios_returns_only_lowercase_json_sorted_by_display_name(
     scenario_directory: Path,
 ) -> None:
-    response = TestClient(app).get("/api/scenarios")
+    response = client().get("/api/scenarios")
 
     assert response.status_code == 200
     scenarios = response.json()["data"]["scenarios"]
@@ -37,7 +42,7 @@ def test_get_scenario_returns_metadata_and_unvalidated_json(scenario_directory: 
         "commands": [["attack()"]],
     }
 
-    response = TestClient(app).get(f"/api/scenarios/{_scenario_id('Alpha.json')}")
+    response = client().get(f"/api/scenarios/{_scenario_id('Alpha.json')}")
 
     assert response.status_code == 200
     assert response.json()["data"]["displayName"] == "Alpha"
@@ -48,7 +53,7 @@ def test_get_scenario_returns_metadata_and_unvalidated_json(scenario_directory: 
 def test_get_scenario_hides_invalid_or_outside_paths(
     scenario_directory: Path, scenario_id: str
 ) -> None:
-    response = TestClient(app).get(f"/api/scenarios/{scenario_id}")
+    response = client().get(f"/api/scenarios/{scenario_id}")
 
     assert response.status_code == 404
     assert response.json() == {
@@ -60,7 +65,7 @@ def test_get_scenario_hides_invalid_or_outside_paths(
 
 
 def test_get_scenario_distinguishes_invalid_json(scenario_directory: Path) -> None:
-    response = TestClient(app).get(f"/api/scenarios/{_scenario_id('broken.json')}")
+    response = client().get(f"/api/scenarios/{_scenario_id('broken.json')}")
 
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "SCENARIO_INVALID_JSON"
@@ -73,7 +78,7 @@ def test_list_scenarios_returns_empty_list_when_directory_does_not_exist(
         scenario_directory / "missing"
     )
     try:
-        response = TestClient(app).get("/api/scenarios")
+        response = client().get("/api/scenarios")
     finally:
         app.dependency_overrides.clear()
 

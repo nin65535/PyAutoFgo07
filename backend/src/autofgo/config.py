@@ -30,6 +30,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_screen_settings(self) -> Settings:
+        if self.host not in {"127.0.0.1", "localhost", "::1"}:
+            raise ValueError("host must be a loopback address")
         if (self.screen_width is None) != (self.screen_height is None):
             raise ValueError("screen width and height must both be set or both be omitted")
         if self.screen_width is not None and self.screen_width <= 0:

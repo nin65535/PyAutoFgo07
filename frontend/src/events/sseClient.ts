@@ -1,3 +1,5 @@
+import { authenticatedFetch } from "../api/session";
+
 export type ConnectionState = "connecting" | "active" | "inactive";
 
 export type SseEvent = {
@@ -26,7 +28,7 @@ export class SseClient {
   private readonly receivedEventKeys = new Set<string>();
 
   constructor(private readonly options: SseClientOptions) {
-    this.fetchImpl = options.fetchImpl ?? fetch;
+    this.fetchImpl = options.fetchImpl ?? authenticatedFetch;
     this.inactivityMs = options.inactivityMs ?? 10_000;
     this.now = options.now ?? Date.now;
   }

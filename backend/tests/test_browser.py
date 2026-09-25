@@ -69,7 +69,9 @@ def test_launcher_uses_dedicated_profile_and_window_settings() -> None:
     assert f"--user-data-dir={profile.resolve()}" in arguments
     assert "--window-position=-200,10" in arguments
     assert "--window-size=240,900" in arguments
-    assert "--app=http://127.0.0.1:5173/app" in arguments
+    launch_argument = next(argument for argument in arguments if argument.startswith("--app="))
+    assert launch_argument.startswith("--app=http://127.0.0.1:5173/app#autofgoSession=")
+    assert "&autofgoToken=" in launch_argument
     lock.acquire.assert_called_once_with()
 
     launcher.close()

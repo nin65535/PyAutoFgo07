@@ -8,8 +8,10 @@ from collections.abc import Callable, Sequence
 from contextlib import suppress
 from pathlib import Path
 from typing import Protocol
+from urllib.parse import urlsplit, urlunsplit
 
 from autofgo.config import Settings
+from autofgo.security import session_fragment
 
 
 class BrowserLaunchError(RuntimeError):
@@ -170,6 +172,8 @@ class ChromeLauncher:
 
     def arguments(self, executable: Path) -> list[str]:
         settings = self.settings
+        app_url = urlsplit(settings.chrome_app_url)
+        launch_url = urlunsplit((*app_url[:4], session_fragment()))
         return [
             str(executable),
             f"--user-data-dir={self._profile_directory}",
@@ -178,7 +182,7 @@ class ChromeLauncher:
             "--new-window",
             f"--window-position={settings.chrome_window_left},{settings.chrome_window_top}",
             f"--window-size={settings.chrome_window_width},{settings.chrome_window_height}",
-            f"--app={settings.chrome_app_url}",
+            f"--app={launch_url}",
         ]
 
     def launch(self) -> subprocess.Popen[bytes]:

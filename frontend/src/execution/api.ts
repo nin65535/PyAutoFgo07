@@ -1,3 +1,5 @@
+import { authenticatedFetch } from "../api/session";
+
 export type ExecutionState =
   | "idle"
   | "running"
@@ -30,7 +32,7 @@ export type ExecutionApi = {
 };
 
 export function createExecutionApi(
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = authenticatedFetch,
 ): ExecutionApi {
   const request = async (path: string, init?: RequestInit) => {
     const response = await fetchImpl(`/api/commands${path}`, init);

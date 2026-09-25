@@ -7,10 +7,11 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from threading import Lock
 from typing import Any
-from uuid import uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
+
+from autofgo.security import session_security
 
 
 def _utc_now() -> str:
@@ -42,7 +43,7 @@ class EventBroker:
         heartbeat_seconds: float = 3.0,
         connection_observer: Callable[[str], None] | None = None,
     ) -> None:
-        self.session_id = str(uuid4())
+        self.session_id = session_security.session_id
         self.heartbeat_seconds = heartbeat_seconds
         self._next_id = 1
         self._lock = Lock()
