@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "キャストリア",
+    "LA",
+    "ダ・ヴィンチ（騎）"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1,2)",
+      "skill(2,2)",
+      "skill(3,2)",
+      "skill(4)",
+      "skill(6)",
+      "skill(8)",
+      "attack(2)"
+    ],
+    [
+      "attack(2)"
+    ],
+    [
+      "attack(2)"
+    ]
+  ]
+}

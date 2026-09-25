@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "姉なるもの",
+    "キャストリア guest",
+    "弓王",
+    "キャストリア"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(3)",
+      "skill(4,0)",
+      "skill(5,0)",
+      "swap(1,3)",
+      "skill(3)",
+      "skill(5,0)",
+      "attack(1,0)"
+    ],
+    [
+      "master_skill(0)",
+      "attack(0)"
+    ],
+    [
+      "skill(6)",
+      "skill(8)",
+      "attack(2,0)"
+    ]
+  ]
+}

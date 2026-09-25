@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "メルトリリス",
+    "レディアヴァロン",
+    "オベロン",
+    "闇のコヤンスカヤ"
+  ],
+  "commands": [
+    [
+      "master_skill(0)",
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(3,0)",
+      "skill(4)",
+      "skill(5)",
+      "swap(1,3)",
+      "skill(3)",
+      "skill(4,1)",
+      "skill(5)",
+      "skill(6)",
+      "skill(7,0)",
+      "skill(8,0)",
+      "attack(0)"
+    ]
+  ]
+}

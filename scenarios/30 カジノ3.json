@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "水着徐福",
+    "ニトクリス",
+    "水着式"
+  ],
+  "commands": [
+    [
+      "skill(6)",
+      "skill(7,4)",
+      "skill(8)",
+      "attack(2)"
+    ],
+    [
+      "skill(3)",
+      "skill(4)",
+      "skill(5)",
+      "attack(1)"
+    ],
+    [
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "attack(0)"
+    ]
+  ]
+}

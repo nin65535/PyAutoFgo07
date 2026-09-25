@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "光のコヤンスカヤ",
+    "モルガン",
+    "光のコヤンスカヤ",
+    "オベロン"
+  ],
+  "commands": [
+    [
+      "skill(1,1)",
+      "skill(2,1)",
+      "skill(3)",
+      "skill(4,1)",
+      "skill(5)",
+      "skill(7,1)",
+      "skill(8,1)",
+      "attack(1)"
+    ],
+    [
+      "skill(0,1)",
+      "skill(6,1)",
+      "attack(1)"
+    ],
+    [
+      "swap(2,3)",
+      "master_skill(0)",
+      "skill(3)",
+      "skill(4,1)",
+      "skill(6)",
+      "skill(7,1)",
+      "skill(8,1)",
+      "attack(1)"
+    ]
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "キャストリア",
+    "アナスタシア",
+    "キャストリア",
+    "殺式"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1,1)",
+      "skill(2,1)",
+      "skill(3)",
+      "skill(4)",
+      "skill(6)",
+      "skill(7,1)",
+      "skill(8,1)",
+      "attack(0,1)"
+    ],
+    [
+      "skill(5)",
+      "attack(1)"
+    ],
+    [
+      "swap(2,3)",
+      "skill(6)",
+      "skill(7)",
+      "skill(8)",
+      "attack(2)"
+    ]
+  ]
+}

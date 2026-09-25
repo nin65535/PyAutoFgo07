@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "キャストリア",
+    "LA",
+    "ダ・ヴィンチ",
+    "オベロン"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1,2)",
+      "skill(2,2)",
+      "skill(3,2)",
+      "skill(4)",
+      "skill(5)",
+      "skill(6)",
+      "skill(8)",
+      "attack(1,2)"
+    ],
+    [
+      "attack(0,2)"
+    ],
+    [
+      "swap(1,3)",
+      "master_skill(0)",
+      "skill(3)",
+      "skill(4,2)",
+      "skill(5,2)",
+      "attack(2)"
+    ]
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "ジャンぬ",
+    "光のコヤンスカヤ",
+    "光のコヤンスカヤ",
+    "マーリン"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1,2)",
+      "skill(2)",
+      "skill(3)",
+      "skill(4)",
+      "skill(5,1)",
+      "skill(6)",
+      "skill(7,2)",
+      "skill(8)",
+      "master_skill(0)",
+      "attack(0,1,2)"
+    ]
+  ]
+}

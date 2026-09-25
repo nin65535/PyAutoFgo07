@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "カーマ",
+    "ステンノ",
+    "コヤンスカヤ",
+    "楊貴妃"
+  ],
+  "commands": [
+    [
+      "skill(6,1)",
+      "skill(7,0)",
+      "skill(8,0)",
+      "swap(2,4)",
+      "skill(0,0)",
+      "skill(1)",
+      "skill(2)",
+      "master_skill(0)",
+      "skill(3)",
+      "skill(4)",
+      "skill(5)",
+      "skill(6)",
+      "skill(7)",
+      "skill(8)",
+      "attack(2,1,0)"
+    ]
+  ]
+}

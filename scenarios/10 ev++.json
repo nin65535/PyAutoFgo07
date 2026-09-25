@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "バーヴァン・シー",
+    "ダイダロス",
+    "アーラシュ",
+    "オベロン"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(3,0)",
+      "attack(0)"
+    ],
+    [
+      "skill(4)",
+      "skill(5)",
+      "attack(1)"
+    ],
+    [
+      "skill(6)",
+      "skill(7)",
+      "skill(8)",
+      "swap(0,3)",
+      "master_skill(0)",
+      "skill(0)",
+      "skill(1,2)",
+      "skill(2,2)",
+      "attack(2)"
+    ]
+  ]
+}

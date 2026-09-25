@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "水着スカディ",
+    "アストライア",
+    "水着ダ・ヴィンチ",
+    "ガネーシャ"
+  ],
+  "commands": [
+    [
+      "master_skill(0)",
+      "skill(0,0)",
+      "skill(1)",
+      "skill(2,1)",
+      "skill(3,0)",
+      "skill(4)",
+      "skill(5)",
+      "skill(6,1)",
+      "skill(7,1)",
+      "skill(8)",
+      "swap(2,3)",
+      "skill(6)",
+      "attack(0,1)"
+    ]
+  ]
+}

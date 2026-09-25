@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "アルトリア",
+    "光のコヤンスカヤ",
+    "光のコヤンスカヤ",
+    "オベロン"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(3,0)",
+      "skill(4,0)",
+      "skill(5,0)",
+      "skill(7,0)",
+      "skill(8,0)",
+      "attack(0)"
+    ],
+    [
+      "skill(6,0)",
+      "swap(2,3)",
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(6)",
+      "skill(7,0)",
+      "skill(8,0)",
+      "attack(0)"
+    ]
+  ]
+}

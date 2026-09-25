@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    "エウリュアレ",
+    "ギルガメッシュ",
+    "ティアマト",
+    "ナイチンゲール"
+  ],
+  "commands": [
+    [
+      "skill(0)",
+      "skill(1)",
+      "skill(2)",
+      "skill(3)",
+      "skill(4)",
+      "skill(5)",
+      "skill(6)",
+      "skill(7)",
+      "skill(8)",
+      "swap(1,3)",
+      "skill(3)",
+      "skill(4,0)",
+      "skill(5)",
+      "master_skill(0)",
+      "attack(2,0)"
+    ]
+  ]
+}
