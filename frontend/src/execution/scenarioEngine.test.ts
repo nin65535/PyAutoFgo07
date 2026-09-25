@@ -93,4 +93,68 @@ describe("ScenarioEngine", () => {
     engine.handleEvent(terminalEvent("command.failed", "id"));
     expect(progress.at(-1)?.error).toContain("失敗");
   });
+
+  it("stops immediately when a command is cancelled", () => {
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit: async () => undefined,
+      complete: async () => undefined,
+      onProgress: (value) => progress.push(value),
+      createCommandId: () => "id",
+    });
+    engine.start(scenario);
+
+    engine.handleEvent(terminalEvent("command.cancelled", "id"));
+
+    expect(progress.at(-1)).toMatchObject({
+      completedCount: 0,
+      waiting: false,
+      error: "指令はキャンセルされました",
+    });
+  });
+
+  it("reports submission failures without dispatching the next command", async () => {
+    const submit = vi.fn(async () => {
+      throw new Error("送信エラー");
+    });
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit,
+      complete: async () => undefined,
+      onProgress: (value) => progress.push(value),
+      createCommandId: () => "id",
+    });
+
+    engine.start(scenario);
+
+    await vi.waitFor(() =>
+      expect(progress.at(-1)).toMatchObject({
+        completedCount: 0,
+        waiting: false,
+        error: "送信エラー",
+      }),
+    );
+    expect(submit).toHaveBeenCalledOnce();
+  });
+
+  it("completes an empty scenario without submitting a command", async () => {
+    const submit = vi.fn(async () => undefined);
+    const complete = vi.fn(async () => undefined);
+    const engine = new ScenarioEngine({
+      submit,
+      complete,
+      onProgress: () => undefined,
+    });
+    const emptyScenario: ValidatedScenario = {
+      schemaVersion: 1,
+      members: [],
+      commandSources: [],
+      commands: [],
+    };
+
+    engine.start(emptyScenario);
+
+    await vi.waitFor(() => expect(complete).toHaveBeenCalledOnce());
+    expect(submit).not.toHaveBeenCalled();
+  });
 });

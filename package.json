@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n backend,frontend -c blue,green \"npm:dev:backend\" \"npm:dev:frontend\"",
-    "dev:backend": "python -m uvicorn autofgo.main:app --app-dir backend/src --reload --host 127.0.0.1 --port 8000",
+    "dev:backend": ".\\.venv\\Scripts\\python.exe -m uvicorn autofgo.main:app --app-dir backend/src --reload --host 127.0.0.1 --port 8000",
     "dev:frontend": "npm --prefix frontend run dev",
-    "format": "npm --prefix frontend run format && python -m ruff format backend",
-    "lint": "npm --prefix frontend run lint && python -m ruff check backend",
-    "test": "npm --prefix frontend run test && python -m pytest backend/tests"
+    "format": "npm --prefix frontend run format && .\\.venv\\Scripts\\python.exe -m ruff format backend",
+    "format:check": "npm --prefix frontend run format:check && .\\.venv\\Scripts\\python.exe -m ruff format --check backend",
+    "lint": "npm --prefix frontend run lint && .\\.venv\\Scripts\\python.exe -m ruff check backend",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "npm --prefix frontend run test",
+    "test:backend": ".\\.venv\\Scripts\\python.exe -m pytest backend/tests"
   },
   "devDependencies": {
     "concurrently": "10.0.5"

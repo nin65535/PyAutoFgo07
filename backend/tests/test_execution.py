@@ -112,6 +112,33 @@ def test_emergency_stop_immediately_discards_pending_commands() -> None:
     assert manager.snapshot()["acceptingCommands"] is False
 
 
+def test_emergency_stop_cancels_running_command_without_waiting_for_queue() -> None:
+    manager = ExecutionManager()
+    entered = Event()
+
+    def cancellable_handler(value: str, control: ExecutionControl) -> None:
+        entered.set()
+        while True:
+            control.checkpoint()
+            time.sleep(0.001)
+
+    current = QueuedCommand("current", "current", cancellable_handler)
+    pending = QueuedCommand("pending", "pending", lambda value, control: None)
+    manager.enqueue(current)
+    manager.enqueue(pending)
+    assert entered.wait(1)
+
+    manager.emergency_stop("test_emergency")
+    assert manager.state == ExecutionState.EMERGENCY_STOPPING
+    assert pending.state == CommandState.CANCELLED
+    wait_until(lambda: current.state == CommandState.CANCELLED)
+
+    assert current.cancel_reason == "test_emergency"
+    assert pending.cancel_reason == "test_emergency"
+    assert manager.snapshot()["acceptingCommands"] is False
+    manager.close()
+
+
 def test_emergency_stop_from_idle_disables_command_intake() -> None:
     manager = ExecutionManager(start_worker=False)
 

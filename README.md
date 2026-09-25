@@ -27,11 +27,15 @@ python -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"
 npm run dev          # フロントエンドとバックエンドを同時起動
 npm run lint         # ESLint と Ruff
 npm run format       # Prettier と Ruff formatter
+npm run format:check # Prettier と Ruff formatter の差分確認
 npm test             # Vitest と pytest
+npm run test:frontend
+npm run test:backend
 npm --prefix frontend run build
 ```
 
-通常のpytestはOS資産を使用しない単体テストだけを実行し、キャッシュを残しません。
+ルートのnpmスクリプトを含め、バックエンドのPythonコマンドは常にプロジェクト直下の
+`.venv`を使用します。通常のpytestはOS資産を使用しない単体テストだけを実行し、キャッシュを残しません。
 実ファイルシステムを使う結合テストは、サンドボックス外の通常ターミナルから明示的に実行します。
 
 ```powershell
