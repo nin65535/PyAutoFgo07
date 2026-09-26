@@ -53,15 +53,17 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "autoFgo" }),
     ).toBeInTheDocument();
-    expect(await screen.findByText("接続済み")).toBeInTheDocument();
-    expect(screen.getAllByText("待機中")).toHaveLength(2);
+    expect(
+      await screen.findByRole("img", { name: "バックエンド：接続済み" }),
+    ).toHaveAttribute("title", "バックエンド：接続済み");
+    expect(
+      screen.getByRole("img", { name: "実行状態：待機中" }),
+    ).toHaveAttribute("title", "実行状態：待機中");
     expect(screen.getByRole("button", { name: "緊急停止" })).toBeEnabled();
     expect(
-      screen.getByRole("heading", { name: "実行コントロール" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "操作手順" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Control" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Stages" })).toBeInTheDocument();
     expect(screen.getByText("ログと詳細")).toBeInTheDocument();
   });
 
@@ -73,12 +75,14 @@ describe("App", () => {
         executionApi={idleExecutionApi}
       />,
     );
-    expect(await screen.findByText("切断")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("img", { name: "バックエンド：切断" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("alert")).toHaveTextContent("操作できません");
     expect(screen.getByRole("button", { name: "緊急停止" })).toBeDisabled();
   });
 
-  it("shows a selected valid scenario's members, groups, and executable state", async () => {
+  it("shows selected Stage members on separate lines and a compact validation state", async () => {
     const scenarioApi: ScenarioApi = {
       list: async () => [
         {
@@ -107,11 +111,27 @@ describe("App", () => {
     );
     fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
     expect(await screen.findByText("実行可能")).toBeInTheDocument();
-    expect(screen.getByText("A / B")).toBeInTheDocument();
+    expect(screen.getByText("A")).toBeInTheDocument();
+    expect(screen.getByText("B")).toBeInTheDocument();
     expect(
-      screen.getByText("wave 1 / グループ 1（2命令）"),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/検証に成功しました/)).toBeInTheDocument();
+      screen.queryByRole("button", { name: /Alpha/ }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("命令グループ")).not.toBeInTheDocument();
+    expect(screen.queryByText(/wave 1 \/ グループ/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/2026\/09\/22/)).not.toBeInTheDocument();
+    const showAll = screen.getByRole("button", { name: "Allの命令を見る" });
+    fireEvent.click(showAll);
+    expect(showAll).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("region", { name: "Allの命令詳細" }),
+    ).toHaveTextContent("skill(0)");
+    expect(
+      screen.getByRole("region", { name: "Allの命令詳細" }),
+    ).toHaveTextContent("attack()");
+    fireEvent.click(showAll);
+    expect(
+      screen.queryByRole("region", { name: "Allの命令詳細" }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows a command location and reason when validation fails", async () => {
@@ -141,7 +161,9 @@ describe("App", () => {
     expect(await screen.findByText(/グループ1・命令1/)).toHaveTextContent(
       "未対応の命令",
     );
-    expect(screen.getByText("要確認")).toBeInTheDocument();
+    expect(
+      screen.getByText("検証に失敗したため実行できません。"),
+    ).toBeInTheDocument();
   });
 
   it("enables mouse controls only for transitions allowed by the current state", async () => {
@@ -181,18 +203,62 @@ describe("App", () => {
     );
 
     fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
-    const start = await screen.findByRole("button", { name: "開始" });
-    expect(start).toBeDisabled();
-    fireEvent.click(screen.getByRole("radio", { name: "全wave（1命令）" }));
-    await waitFor(() => expect(start).toBeEnabled());
+    const start = await screen.findByRole("button", { name: "All(0/1)" });
+    expect(
+      screen.getByRole("heading", { name: "Control" }),
+    ).toBeInTheDocument();
+    expect(start).toBeEnabled();
     fireEvent.click(start);
     await waitFor(() => expect(act).toHaveBeenCalledWith("start"));
-    expect(screen.getByRole("button", { name: /Alpha/ })).toBeDisabled();
+    expect(
+      screen.queryByRole("button", { name: /Alpha/ }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "一時停止" })).toBeEnabled();
-    expect(screen.getByRole("button", { name: "開始" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "All(0/1)" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "All(0/1)" })).toHaveClass(
+      "wave-action__active",
+    );
+    expect(
+      screen.getByRole("button", { name: "Controlを閉じる" }),
+    ).toBeDisabled();
   });
 
-  it("requires a fresh wave choice after changing scenarios and locks it during execution", async () => {
+  it("closes Control and clears the selected Stage while idle", async () => {
+    const scenarioApi: ScenarioApi = {
+      list: async () => [
+        {
+          id: "alpha",
+          displayName: "Alpha",
+          modifiedAt: "2026-09-22T00:00:00.000Z",
+        },
+      ],
+      get: async () => ({
+        id: "alpha",
+        displayName: "Alpha",
+        modifiedAt: "2026-09-22T00:00:00.000Z",
+        content: { schemaVersion: 1, members: ["A"], commands: [["attack()"]] },
+      }),
+    };
+    render(
+      <App
+        createSseClient={clientFactory("active")}
+        scenarioApi={scenarioApi}
+        executionApi={idleExecutionApi}
+      />,
+    );
+    const stage = await screen.findByRole("button", { name: /Alpha/ });
+    fireEvent.click(stage);
+    expect(
+      await screen.findByRole("heading", { name: "Control" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Controlを閉じる" }));
+    expect(
+      screen.queryByRole("heading", { name: "Control" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Alpha/ })).toBeInTheDocument();
+  });
+
+  it("starts only the selected wave and locks start buttons during execution", async () => {
     const scenarioApi: ScenarioApi = {
       list: async () =>
         ["Alpha", "Beta"].map((name) => ({
@@ -211,7 +277,7 @@ describe("App", () => {
         },
       }),
     };
-    const submit = vi.fn(async () => undefined);
+    const submit = vi.fn<ExecutionApi["submit"]>(async () => undefined);
     const executionApi: ExecutionApi = {
       ...idleExecutionApi,
       submit,
@@ -225,28 +291,102 @@ describe("App", () => {
     );
 
     fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
-    fireEvent.click(
-      await screen.findByRole("radio", { name: "wave 2（グループ 2・1命令）" }),
-    );
-    expect(screen.getByText("開始対象: wave 2")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: "Wave2(0/1)" }),
+    ).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Controlを閉じる" }));
     fireEvent.click(screen.getByRole("button", { name: /Beta/ }));
-    expect(screen.getByRole("button", { name: "開始" })).toBeDisabled();
-    expect(await screen.findByText("開始対象: 未確認")).toBeInTheDocument();
     fireEvent.click(
-      screen.getByRole("radio", { name: "wave 2（グループ 2・1命令）" }),
+      await screen.findByRole("button", { name: "Wave2の命令を見る" }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "開始" }));
+    const detail = screen.getByRole("region", { name: "Wave2の命令詳細" });
+    const command = detail.querySelector("li");
+    expect(command).not.toBeNull();
+    vi.spyOn(detail, "getBoundingClientRect").mockReturnValue({
+      top: 100,
+      bottom: 200,
+    } as DOMRect);
+    vi.spyOn(command!, "getBoundingClientRect").mockReturnValue({
+      top: 230,
+      bottom: 250,
+    } as DOMRect);
+    fireEvent.click(await screen.findByRole("button", { name: "Wave2(0/1)" }));
     await waitFor(() =>
       expect(submit).toHaveBeenCalledWith(expect.any(String), {
         type: "attack",
         noblePhantasmIndexes: [],
       }),
     );
+    expect(screen.getByRole("button", { name: "Wave2(0/1)" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Wave2(0/1)" })).toHaveClass(
+      "wave-action__active",
+    );
+    expect(screen.getByRole("button", { name: "All(0/2)" })).not.toHaveClass(
+      "wave-action__active",
+    );
     expect(
-      screen.getByRole("radio", { name: "wave 2（グループ 2・1命令）" }),
-    ).toBeDisabled();
-    expect(screen.getByRole("button", { name: /Alpha/ })).toBeDisabled();
+      screen.queryByRole("button", { name: /Alpha/ }),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/wave 2: 0\/1件完了/)).toBeInTheDocument();
+    expect(
+      screen
+        .getByRole("region", { name: "Wave2の命令詳細" })
+        .querySelector("[aria-current='step']"),
+    ).toHaveTextContent("attack()");
+    expect(detail.scrollTop).toBe(54);
+  });
+
+  it("updates All and Wave completed counts from command completion events", async () => {
+    const scenarioApi: ScenarioApi = {
+      list: async () => [
+        {
+          id: "alpha",
+          displayName: "Alpha",
+          modifiedAt: "2026-09-22T00:00:00.000Z",
+        },
+      ],
+      get: async () => ({
+        id: "alpha",
+        displayName: "Alpha",
+        modifiedAt: "2026-09-22T00:00:00.000Z",
+        content: {
+          schemaVersion: 1,
+          members: ["A"],
+          commands: [["skill(0)"], ["attack()"]],
+        },
+      }),
+    };
+    const submit = vi.fn<ExecutionApi["submit"]>(async () => undefined);
+    let onEvent: SseClientOptions["onEvent"] = () => undefined;
+    render(
+      <App
+        createSseClient={(options) => {
+          onEvent = options.onEvent;
+          return {
+            connect: async () => options.onStateChange("active"),
+            close: () => undefined,
+          };
+        }}
+        scenarioApi={scenarioApi}
+        executionApi={{ ...idleExecutionApi, submit }}
+      />,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "All(0/2)" }));
+    await waitFor(() => expect(submit).toHaveBeenCalledTimes(1));
+    const firstId = submit.mock.calls[0][0];
+    onEvent({ event: "command.completed", data: { commandId: firstId } });
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "All(1/2)" }),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByRole("button", { name: "Wave1(1/1)" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Wave2(0/1)" }),
+    ).toBeInTheDocument();
   });
 
   it("sends emergency stop from the persistent control", async () => {

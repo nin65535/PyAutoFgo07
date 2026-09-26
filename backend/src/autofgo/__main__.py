@@ -12,6 +12,7 @@ from autofgo.events import event_broker
 from autofgo.logging_config import configure_logging
 from autofgo.security import session_security
 from autofgo.shutdown import EmergencyShutdown
+from autofgo.space_pause import GlobalSpacePause
 
 
 async def run() -> None:
@@ -38,6 +39,7 @@ async def run() -> None:
     )
     server_task = asyncio.create_task(server.serve())
     launcher = ChromeLauncher(settings)
+    space_pause = GlobalSpacePause(get_command_registry().manager)
     connection_lost = asyncio.Event()
     was_connected = False
 
@@ -61,6 +63,7 @@ async def run() -> None:
             await server_task
             return
         process = launcher.launch()
+        space_pause.start()
         logger.info("Dedicated Chrome started", extra={"event_type": "browser.started"})
         process_task = asyncio.create_task(asyncio.to_thread(process.wait))
         disconnect_task = asyncio.create_task(connection_lost.wait())
@@ -68,6 +71,7 @@ async def run() -> None:
             {server_task, process_task, disconnect_task},
             return_when=asyncio.FIRST_COMPLETED,
         )
+        space_pause.close()
         if process_task in done:
             shutdown.trigger("chrome_process_exited")
         elif disconnect_task in done:
@@ -86,6 +90,7 @@ async def run() -> None:
         await server_task
         raise
     finally:
+        space_pause.close()
         session_security.invalidate()
         event_broker.set_connection_observer(None)
         launcher.close()

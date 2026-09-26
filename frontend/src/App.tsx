@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   SseClient,
   type ConnectionState,
@@ -56,6 +62,17 @@ const executionLabels: Record<ExecutionState, string> = {
   error: "エラー",
   emergency_stopping: "緊急停止処理中",
 };
+const executionIcons: Record<ExecutionState, string> = {
+  idle: "◷",
+  running: "▶",
+  pausing: "⏳",
+  paused: "⏸",
+  stopping: "■",
+  stopped: "■",
+  completed: "✓",
+  error: "!",
+  emergency_stopping: "!",
+};
 
 function executionStateFrom(event: SseEvent): ExecutionState | undefined {
   if (
@@ -82,9 +99,13 @@ export function App({
   const [scenarios, setScenarios] = useState<ScenarioSummary[]>([]);
   const [selected, setSelected] = useState<ScenarioSummary>();
   const [validation, setValidation] = useState<ScenarioValidation>();
-  const [waveTarget, setWaveTarget] = useState<number | "all">();
   const [runningTarget, setRunningTarget] = useState<string>();
+  const [runningWaveTarget, setRunningWaveTarget] = useState<number | "all">();
+  const [expandedDetails, setExpandedDetails] = useState<Set<number | "all">>(
+    () => new Set(),
+  );
   const selectionRequest = useRef(0);
+  const appRoot = useRef<HTMLElement>(null);
   const [scenarioStatus, setScenarioStatus] = useState<
     "loading" | "ready" | "empty" | "error"
   >("loading");
@@ -92,6 +113,28 @@ export function App({
   const [controlPending, setControlPending] = useState(false);
   const [controlError, setControlError] = useState<string>();
   const [progress, setProgress] = useState<ScenarioProgress>();
+  useLayoutEffect(() => {
+    if (
+      !progress ||
+      progress.error ||
+      progress.completedCount >= progress.totalCount
+    )
+      return;
+    const currentItems = appRoot.current?.querySelectorAll<HTMLElement>(
+      '.command-detail [aria-current="step"]',
+    );
+    currentItems?.forEach((item) => {
+      const detail = item.closest<HTMLElement>(".command-detail");
+      if (!detail) return;
+      const itemBounds = item.getBoundingClientRect();
+      const detailBounds = detail.getBoundingClientRect();
+      if (itemBounds.top < detailBounds.top) {
+        detail.scrollTop -= detailBounds.top - itemBounds.top + 4;
+      } else if (itemBounds.bottom > detailBounds.bottom) {
+        detail.scrollTop += itemBounds.bottom - detailBounds.bottom + 4;
+      }
+    });
+  }, [progress, expandedDetails, execution]);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const appendLog = useCallback(
     (entry: LogEntry) => setLogs((current) => [...current.slice(-199), entry]),
@@ -195,8 +238,9 @@ export function App({
     const request = ++selectionRequest.current;
     setSelected(summary);
     setValidation(undefined);
-    setWaveTarget(undefined);
     setProgress(undefined);
+    setRunningWaveTarget(undefined);
+    setExpandedDetails(new Set());
     setScenarioError(undefined);
     try {
       const detail = await scenarioApi.get(summary.id);
@@ -228,6 +272,19 @@ export function App({
     }
   };
 
+  const closeControl = () => {
+    if (activeExecution || controlPending) return;
+    ++selectionRequest.current;
+    setSelected(undefined);
+    setValidation(undefined);
+    setProgress(undefined);
+    setRunningWaveTarget(undefined);
+    setExpandedDetails(new Set());
+    setRunningTarget(undefined);
+    setScenarioError(undefined);
+    setControlError(undefined);
+  };
+
   const inactive = connection !== "active";
   const activeExecution = [
     "running",
@@ -240,23 +297,92 @@ export function App({
     !inactive &&
     !controlPending &&
     validation?.valid === true &&
-    waveTarget !== undefined &&
     ["idle", "stopped", "completed"].includes(execution);
-  const runControl = async (action: ExecutionAction) => {
+  const activeRunTarget = ["running", "pausing", "paused"].includes(execution)
+    ? runningWaveTarget
+    : undefined;
+  const completedForWave = (index: number): number => {
+    if (!progress || !validation?.valid) return 0;
+    const groups = validation.scenario.commands;
+    if (runningWaveTarget === index) return progress.completedCount;
+    if (runningWaveTarget !== "all") return 0;
+    const before = groups
+      .slice(0, index)
+      .reduce((count, group) => count + group.length, 0);
+    return Math.max(
+      0,
+      Math.min(groups[index].length, progress.completedCount - before),
+    );
+  };
+  const toggleDetails = (target: number | "all") => {
+    setExpandedDetails((current) => {
+      const next = new Set(current);
+      if (next.has(target)) next.delete(target);
+      else next.add(target);
+      return next;
+    });
+  };
+  const commandDetails = (target: number | "all") => {
+    if (!validation?.valid || !expandedDetails.has(target)) return null;
+    const groups = validation.scenario.commandSources;
+    return (
+      <div
+        className="command-detail"
+        id={`command-details-${target}`}
+        role="region"
+        aria-label={`${target === "all" ? "All" : `Wave${target + 1}`}の命令詳細`}
+      >
+        {groups.map((group, groupIndex) =>
+          target === "all" || target === groupIndex ? (
+            <div key={groupIndex}>
+              {target === "all" && <h3>Wave{groupIndex + 1}</h3>}
+              <ol>
+                {group.map((command, commandIndex) => {
+                  const current =
+                    ["running", "pausing", "paused"].includes(execution) &&
+                    progress &&
+                    !progress.error &&
+                    progress.completedCount < progress.totalCount &&
+                    progress.groupIndex === groupIndex &&
+                    progress.commandIndex === commandIndex;
+                  return (
+                    <li
+                      key={commandIndex}
+                      className={
+                        current ? "command-detail__current" : undefined
+                      }
+                      aria-current={current ? "step" : undefined}
+                    >
+                      {command}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          ) : null,
+        )}
+      </div>
+    );
+  };
+  const controlPendingRef = useRef(false);
+  const runControl = async (
+    action: ExecutionAction,
+    target?: number | "all",
+  ) => {
+    if (controlPendingRef.current) return;
+    if (action === "start" && (!canStart || target === undefined)) return;
+    controlPendingRef.current = true;
     setControlPending(true);
     setControlError(undefined);
     try {
       const snapshot = await executionApi.act(action);
       setExecution(snapshot.state);
-      if (action === "start" && validation?.valid && waveTarget !== undefined) {
-        const label =
-          waveTarget === "all" ? "全wave" : `wave ${waveTarget + 1}`;
+      if (action === "start" && validation?.valid && target !== undefined) {
+        const label = target === "all" ? "全wave" : `wave ${target + 1}`;
         setRunningTarget(label);
+        setRunningWaveTarget(target);
         setProgress(undefined);
-        engine.start(
-          validation.scenario,
-          waveTarget === "all" ? null : waveTarget,
-        );
+        engine.start(validation.scenario, target === "all" ? null : target);
       }
       if (action === "pause") engine.setPaused(true);
       if (action === "resume") engine.setPaused(false);
@@ -266,32 +392,36 @@ export function App({
         error instanceof Error ? error.message : "実行操作に失敗しました",
       );
     } finally {
+      controlPendingRef.current = false;
       setControlPending(false);
     }
   };
   return (
-    <main className="app-shell">
+    <main className="app-shell" ref={appRoot}>
       <header className="app-header">
         <div>
           <p className="eyebrow">AUTO PLAY CONSOLE</p>
           <h1>autoFgo</h1>
         </div>
-        <span className={`status-dot status-dot--${connection}`} aria-hidden />
+        <div className="status-signals">
+          <span
+            className={`status-dot status-dot--${connection}`}
+            role="img"
+            aria-label={`バックエンド：${connectionLabels[connection]}`}
+            title={`バックエンド：${connectionLabels[connection]}`}
+          />
+          <span
+            className={`execution-icon execution-icon--${execution}`}
+            role="img"
+            aria-label={`実行状態：${executionLabels[execution]}`}
+            title={`実行状態：${executionLabels[execution]}`}
+          >
+            {executionIcons[execution]}
+          </span>
+        </div>
       </header>
 
       <section className="sticky-status" aria-label="現在の状態">
-        <dl className="status-grid">
-          <div>
-            <dt>バックエンド</dt>
-            <dd data-testid="connection-state">
-              {connectionLabels[connection]}
-            </dd>
-          </div>
-          <div>
-            <dt>実行状態</dt>
-            <dd>{executionLabels[execution]}</dd>
-          </div>
-        </dl>
         <p className="current-command" title={currentCommand}>
           {currentCommand
             ? `指令: ${currentCommand}`
@@ -315,117 +445,150 @@ export function App({
         </p>
       )}
 
-      <section className="panel" aria-labelledby="controls-title">
-        <div className="section-heading">
-          <div>
-            <p className="section-number">01</p>
-            <h2 id="controls-title">実行コントロール</h2>
+      {selected && (
+        <section className="panel" aria-labelledby="controls-title">
+          <div className="section-heading">
+            <div className="section-title">
+              <p className="section-number">02</p>
+              <h2 id="controls-title">Control</h2>
+            </div>
+            <button
+              className="close-control"
+              type="button"
+              aria-label="Controlを閉じる"
+              disabled={activeExecution || controlPending}
+              onClick={closeControl}
+            >
+              ×
+            </button>
           </div>
-          <span className="coming-soon">
-            {controlPending ? "操作中" : executionLabels[execution]}
-          </span>
-        </div>
-        <div className="control-grid">
-          <button
-            type="button"
-            disabled={!canStart}
-            onClick={() => void runControl("start")}
-          >
-            開始
-          </button>
-          <button
-            type="button"
-            disabled={inactive || controlPending || execution !== "running"}
-            onClick={() => void runControl("pause")}
-          >
-            一時停止
-          </button>
-          <button
-            type="button"
-            disabled={
-              inactive ||
-              controlPending ||
-              !["paused", "pausing"].includes(execution)
-            }
-            onClick={() => void runControl("resume")}
-          >
-            再開
-          </button>
-          <button
-            type="button"
-            disabled={
-              inactive ||
-              controlPending ||
-              !["running", "paused", "pausing"].includes(execution)
-            }
-            onClick={() => void runControl("stop")}
-          >
-            通常停止
-          </button>
-        </div>
-        {selected && validation?.valid && (
-          <fieldset
-            className="wave-target"
-            disabled={activeExecution || controlPending}
-          >
-            <legend>実行対象</legend>
-            <label>
-              <input
-                type="radio"
-                name="wave-target"
-                checked={waveTarget === "all"}
-                onChange={() => setWaveTarget("all")}
-              />
-              全wave（{validation.scenario.commands.flat().length}命令）
-            </label>
-            {validation.scenario.commands.map((group, index) => (
-              <label key={index}>
-                <input
-                  type="radio"
-                  name="wave-target"
-                  checked={waveTarget === index}
-                  onChange={() => setWaveTarget(index)}
-                />
-                wave {index + 1}（グループ {index + 1}・{group.length}命令）
-              </label>
-            ))}
-          </fieldset>
-        )}
-        {selected && validation?.valid && (
-          <p className="execution-target" role="status">
-            開始対象:{" "}
-            {waveTarget === undefined
-              ? "未確認"
-              : waveTarget === "all"
-                ? "全wave"
-                : `wave ${waveTarget + 1}`}
-          </p>
-        )}
-        {controlError && (
-          <p className="scenario-error" role="alert">
-            {controlError}
-          </p>
-        )}
-        {progress && (
-          <p className="execution-progress" role="status">
-            {progress.error
-              ? `停止: ${progress.error}`
-              : progress.completedCount === progress.totalCount
-                ? `${runningTarget}: ${progress.totalCount}件の命令を完了しました`
-                : `${runningTarget}: ${progress.completedCount}/${progress.totalCount}件完了・wave ${progress.groupIndex + 1} 命令${progress.commandIndex + 1}（${progress.waiting ? "完了通知待ち" : "処理中"}）`}
-          </p>
-        )}
-      </section>
+          {validation?.valid && (
+            <div className="wave-actions" aria-label="実行するwave">
+              <div className="wave-action">
+                <div className="wave-action__buttons">
+                  <button
+                    className={
+                      activeRunTarget === "all"
+                        ? "wave-action__active"
+                        : undefined
+                    }
+                    type="button"
+                    disabled={!canStart}
+                    onClick={() => void runControl("start", "all")}
+                  >
+                    All({progress?.completedCount ?? 0}/
+                    {validation.scenario.commands.flat().length})
+                  </button>
+                  <button
+                    type="button"
+                    className="wave-action__details-button"
+                    aria-label="Allの命令を見る"
+                    title="Allの命令を見る"
+                    aria-expanded={expandedDetails.has("all")}
+                    aria-controls="command-details-all"
+                    onClick={() => toggleDetails("all")}
+                  >
+                    <span aria-hidden="true">☷</span>
+                  </button>
+                </div>
+                {commandDetails("all")}
+              </div>
+              {validation.scenario.commands.map((group, index) => (
+                <div className="wave-action" key={index}>
+                  <div className="wave-action__buttons">
+                    <button
+                      className={
+                        activeRunTarget === index
+                          ? "wave-action__active"
+                          : undefined
+                      }
+                      type="button"
+                      disabled={!canStart}
+                      onClick={() => void runControl("start", index)}
+                    >
+                      Wave{index + 1}({completedForWave(index)}/{group.length})
+                    </button>
+                    <button
+                      type="button"
+                      className="wave-action__details-button"
+                      aria-label={`Wave${index + 1}の命令を見る`}
+                      title={`Wave${index + 1}の命令を見る`}
+                      aria-expanded={expandedDetails.has(index)}
+                      aria-controls={`command-details-${index}`}
+                      onClick={() => toggleDetails(index)}
+                    >
+                      <span aria-hidden="true">☷</span>
+                    </button>
+                  </div>
+                  {commandDetails(index)}
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="control-grid">
+            <button
+              className="icon-control"
+              type="button"
+              aria-label="一時停止"
+              title="一時停止"
+              disabled={inactive || controlPending || execution !== "running"}
+              onClick={() => void runControl("pause")}
+            >
+              <span aria-hidden="true">⏸</span>
+            </button>
+            <button
+              className="icon-control"
+              type="button"
+              aria-label="再開"
+              title="再開"
+              disabled={
+                inactive ||
+                controlPending ||
+                !["paused", "pausing"].includes(execution)
+              }
+              onClick={() => void runControl("resume")}
+            >
+              <span aria-hidden="true">▶</span>
+            </button>
+            <button
+              className="icon-control"
+              type="button"
+              aria-label="通常停止"
+              title="通常停止"
+              disabled={
+                inactive ||
+                controlPending ||
+                !["running", "paused", "pausing"].includes(execution)
+              }
+              onClick={() => void runControl("stop")}
+            >
+              <span aria-hidden="true">■</span>
+            </button>
+          </div>
+          {controlError && (
+            <p className="scenario-error" role="alert">
+              {controlError}
+            </p>
+          )}
+          {progress && (
+            <p className="execution-progress" role="status" aria-live="polite">
+              {progress.error
+                ? `停止: ${progress.error}`
+                : progress.completedCount === progress.totalCount
+                  ? `${runningTarget}: ${progress.totalCount}件の命令を完了しました`
+                  : `${runningTarget}: ${progress.completedCount}/${progress.totalCount}件完了・wave ${progress.groupIndex + 1} 命令${progress.commandIndex + 1}（${progress.waiting ? "完了通知待ち" : "処理中"}）`}
+            </p>
+          )}
+        </section>
+      )}
 
       <section className="panel" aria-labelledby="scenario-title">
         <div className="section-heading">
-          <div>
-            <p className="section-number">02</p>
-            <h2 id="scenario-title">操作手順</h2>
+          <div className="section-title">
+            <p className="section-number">01</p>
+            <h2 id="scenario-title">Stages</h2>
           </div>
-          <span className="coming-soon">
-            {validation?.valid ? "実行可能" : selected ? "要確認" : "未選択"}
-          </span>
+          {!selected && <span className="coming-soon">未選択</span>}
         </div>
         {scenarioStatus === "loading" && (
           <p className="empty-state">一覧を読み込み中です。</p>
@@ -438,25 +601,18 @@ export function App({
             {scenarioError}
           </p>
         )}
-        {scenarioStatus === "ready" && (
+        {scenarioStatus === "ready" && !selected && (
           <div className="scenario-list" aria-label="操作手順一覧">
             {scenarios.map((scenario) => (
               <button
-                className={
-                  selected?.id === scenario.id
-                    ? "scenario-item scenario-item--selected"
-                    : "scenario-item"
-                }
+                className="scenario-item"
                 key={scenario.id}
                 type="button"
+                title={scenario.displayName}
                 disabled={activeExecution || controlPending}
-                aria-pressed={selected?.id === scenario.id}
                 onClick={() => void selectScenario(scenario)}
               >
                 <span>{scenario.displayName}</span>
-                <time dateTime={scenario.modifiedAt}>
-                  {new Date(scenario.modifiedAt).toLocaleString("ja-JP")}
-                </time>
               </button>
             ))}
           </div>
@@ -472,31 +628,15 @@ export function App({
             <dl className="scenario-facts">
               <div>
                 <dt>メンバー</dt>
-                <dd>{validation.scenario.members.join(" / ")}</dd>
-              </div>
-              <div>
-                <dt>命令グループ</dt>
-                <dd>{validation.scenario.commands.length}件</dd>
-              </div>
-              <div>
-                <dt>命令数</dt>
-                <dd>{validation.scenario.commands.flat().length}件</dd>
+                <dd className="scenario-members">
+                  {validation.scenario.members.map((member, index) => (
+                    <span key={index}>{member}</span>
+                  ))}
+                </dd>
               </div>
             </dl>
-            {validation.scenario.commandSources.map((group, index) => (
-              <details className="command-group" key={index}>
-                <summary>
-                  wave {index + 1} / グループ {index + 1}（{group.length}命令）
-                </summary>
-                <ol>
-                  {group.map((command, commandIndex) => (
-                    <li key={commandIndex}>{command}</li>
-                  ))}
-                </ol>
-              </details>
-            ))}
             <p className="validation-ok" role="status">
-              検証に成功しました。この操作手順は実行可能です。
+              <span aria-hidden="true">✓</span> 実行可能
             </p>
           </div>
         )}

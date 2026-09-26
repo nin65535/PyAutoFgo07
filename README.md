@@ -23,6 +23,13 @@ python -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"
 
 ## 開発コマンド
 
+Windowsでは、プロジェクト直下の `start-autofgo.cmd` をダブルクリックすると、
+フロントエンド、バックエンド、専用Chromeを順に起動できます。専用Chromeを閉じると
+正常終了して起動用ウィンドウも閉じます。起動失敗や異常終了時はエラーを表示し、
+キー入力までウィンドウを開いたままにします。フロントエンドの起動ログは
+`.autofgo/logs/frontend-launch.*.log` に保存します。初回は下記のセットアップが必要です。
+起動用ウィンドウは実行中に最小化され、異常終了した場合だけ元に戻ります。
+
 ```powershell
 npm run dev          # フロントエンドとバックエンドを同時起動
 npm run lint         # ESLint と Ruff

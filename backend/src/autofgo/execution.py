@@ -86,6 +86,7 @@ class ExecutionManager:
         self._cancel_event = Event()
         self._worker: Thread | None = None
         self._event_sink = event_sink
+        self._pause_input_check: Callable[[], None] | None = None
         if start_worker:
             self._worker = Thread(target=self._run, name="command-queue", daemon=True)
             self._worker.start()
@@ -94,6 +95,14 @@ class ExecutionManager:
     def state(self) -> ExecutionState:
         with self._condition:
             return self._state
+
+    def set_pause_input_check(self, check: Callable[[], None] | None) -> None:
+        self._pause_input_check = check
+
+    def check_pause_input(self) -> None:
+        check = self._pause_input_check
+        if check is not None:
+            check()
 
     def get(self, command_id: str) -> QueuedCommand | None:
         with self._condition:
@@ -181,13 +190,16 @@ class ExecutionManager:
             self._emit_state(previous, self._state)
 
     def wait_if_paused(self) -> None:
-        with self._condition:
-            if self._state == ExecutionState.PAUSING:
-                previous = self._state
-                self._state = ExecutionState.PAUSED
-                self._emit_state(previous, self._state)
-                self._condition.notify_all()
-            while self._state == ExecutionState.PAUSED and not self._cancel_event.is_set():
+        while True:
+            self.check_pause_input()
+            with self._condition:
+                if self._state == ExecutionState.PAUSING:
+                    previous = self._state
+                    self._state = ExecutionState.PAUSED
+                    self._emit_state(previous, self._state)
+                    self._condition.notify_all()
+                if self._state != ExecutionState.PAUSED or self._cancel_event.is_set():
+                    return
                 self._condition.wait()
 
     def snapshot(self) -> dict[str, object]:
