@@ -97,7 +97,10 @@ export function parseScenarioCommand(
   if (!KNOWN_COMMANDS.has(name)) {
     fail("UNKNOWN_COMMAND", location, `未対応の命令です: ${name}`);
   }
-  const args = parseArguments(rawArguments, location);
+  const args =
+    name === "attack" && rawArguments.startsWith("'")
+      ? []
+      : parseArguments(rawArguments, location);
 
   switch (name) {
     case "skill": {
@@ -123,6 +126,32 @@ export function parseScenarioCommand(
       return { type: "master_skill", skillIndex: args[0] };
     }
     case "attack": {
+      if (rawArguments.startsWith("'")) {
+        const tokens = rawArguments.split(",");
+        if (tokens.length < 1 || tokens.length > 3) {
+          fail("INVALID_ARGUMENT_COUNT", location, "カード指定は3枠までです");
+        }
+        const slots = tokens.map((token) => {
+          if (!/^'(?:N[0-2]|(?:[BAQ][0-2])*)'$/.test(token)) {
+            fail("INVALID_FORMAT", location, "カード指定の形式が不正です");
+          }
+          return token.slice(1, -1);
+        });
+        while (slots.length < 3) slots.push("");
+        const nps = slots.filter((slot) => slot.startsWith("N"));
+        if (new Set(nps).size !== nps.length) {
+          fail(
+            "DUPLICATE_ARGUMENT",
+            location,
+            "宝具インデックスは重複指定できません",
+          );
+        }
+        return {
+          type: "attack",
+          noblePhantasmIndexes: [],
+          cardSlots: slots as [string, string, string],
+        };
+      }
       requireArgumentCount(args, [0, 1, 2, 3], location);
       args.forEach((value) =>
         requireRange(value, "noblePhantasmIndex", 0, 2, location),

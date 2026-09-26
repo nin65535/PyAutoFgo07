@@ -38,9 +38,18 @@ class AttackCommand(CommandModel):
     noble_phantasm_indexes: list[int] = Field(
         alias="noblePhantasmIndexes", min_length=0, max_length=3
     )
+    card_slots: list[str] | None = Field(
+        default=None, alias="cardSlots", min_length=3, max_length=3
+    )
 
     @model_validator(mode="after")
     def validate_indexes(self) -> AttackCommand:
+        if self.card_slots is not None:
+            from autofgo.card_selection import validate_slots
+
+            validate_slots(self.card_slots)
+            if self.noble_phantasm_indexes:
+                raise ValueError("cardSlots and noblePhantasmIndexes cannot be combined")
         if any(index < 0 or index > 2 for index in self.noble_phantasm_indexes):
             raise ValueError("宝具インデックスは0以上2以下で指定してください。")
         if len(set(self.noble_phantasm_indexes)) != len(self.noble_phantasm_indexes):
@@ -90,6 +99,8 @@ def _master_skill_handler(command: ScenarioCommand, control: ExecutionControl) -
 def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
     if not isinstance(command, AttackCommand):
         raise TypeError("attack handler received an incompatible command")
+    if command.card_slots is not None:
+        raise RuntimeError("cardSlots execution requires R28 integration")
     from autofgo.game_automation import get_game_automation
 
     get_game_automation().attack(command.noble_phantasm_indexes, control)

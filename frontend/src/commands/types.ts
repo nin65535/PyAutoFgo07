@@ -13,6 +13,7 @@ export type MasterSkillCommand = {
 export type AttackCommand = {
   type: "attack";
   noblePhantasmIndexes: number[];
+  cardSlots?: [string, string, string];
 };
 
 export type SwapCommand = {
