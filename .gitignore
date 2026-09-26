@@ -21,3 +21,4 @@ pytest-cache-files-*/
 .DS_Store
 Thumbs.db
 .autofgo/
+card-data/evaluation/images/
