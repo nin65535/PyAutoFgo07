@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "references": [
+    {
+      "id": "arash-default-01",
+      "characterName": "アーラシュ",
+      "appearanceId": "default",
+      "imagePath": "images/arash-default-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "arash-status-162859",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          832,
+          445,
+          105,
+          100
+        ],
+        "sourceUrl": "https://drive.google.com/file/d/1zewaSWSzczDRAd6I-ZUPwcGE_vZp_wD0/view"
+      },
+      "reviewed": true
+    },
+    {
+      "id": "daidalos-default-01",
+      "characterName": "ダイダロス",
+      "appearanceId": "default",
+      "imagePath": "images/daidalos-default-01.png",
+      "imageSize": [
+        110,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "daidalos-status-163659",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          830,
+          510,
+          110,
+          100
+        ],
+        "sourceUrl": "https://drive.google.com/file/d/15X00UQHJAtMKDQqi7VYYuGxnHf1X8jfc/view"
+      },
+      "reviewed": true
+    },
+    {
+      "id": "baobhan-default-01",
+      "characterName": "バーヴァン・シー",
+      "appearanceId": "default",
+      "imagePath": "images/baobhan-default-01.png",
+      "imageSize": [
+        110,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "baobhan-status-163850",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          828,
+          545,
+          110,
+          100
+        ],
+        "sourceUrl": "https://drive.google.com/file/d/1Bb8rwTbYRSAwzcujFOYDLn69GMJXfKn-/view"
+      },
+      "reviewed": true
+    }
+  ]
+}
