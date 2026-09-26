@@ -24,4 +24,36 @@ describe("log entries", () => {
   it("marks disconnection as an error", () => {
     expect(connectionEntry("inactive").severity).toBe("error");
   });
+
+  it("shows card decisions and failure reasons", () => {
+    const data = {
+      eventId: 4,
+      commandId: "cmd-2",
+      data: {
+        colors: [{ color: "B" }],
+        identities: [{ characterName: "A", reason: "matched" }],
+        choices: [
+          { slot: 1, kind: "card", position: 0, matchedPreference: "B0" },
+        ],
+      },
+    };
+    expect(entryFromSse({ event: "cards.selected", data })?.message).toContain(
+      "1枠=カード1(B0)",
+    );
+    expect(
+      entryFromSse({
+        event: "cards.failed",
+        data: { ...data, data: { ...data.data, reason: "low_similarity" } },
+      }),
+    ).toMatchObject({
+      severity: "error",
+      commandId: "cmd-2",
+    });
+    expect(
+      entryFromSse({
+        event: "cards.failed",
+        data: { ...data, data: { reason: "low_similarity" } },
+      })?.message,
+    ).toContain("low_similarity");
+  });
 });

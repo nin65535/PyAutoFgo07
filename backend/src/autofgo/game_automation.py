@@ -4,9 +4,9 @@ import ctypes
 import sys
 import time
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 from PIL import Image
 
@@ -179,18 +179,25 @@ class GameAutomation:
             self._click(window, ATTACK_CARDS[index], control)
 
     def attack_with_slots(
-        self, slots: list[str], front_members: list[str], control: ExecutionControl
+        self,
+        slots: list[str],
+        front_members: list[str],
+        control: ExecutionControl,
+        *,
+        report: Callable[[str, dict[str, Any]], None] | None = None,
     ) -> None:
+        diagnostics: dict[str, Any] = {"slots": slots, "frontMembers": front_members}
         window = self._wait_for_battle(control)
         self._click(window, ATTACK, control)
         self._wait(0.5, control)
         control.checkpoint()
-        screenshot = self.operator.capture(window, cancel=control.cancel_event)
-        if screenshot.size != (window.width, window.height):
-            raise CardRecognitionError("captured window size differs from expected size")
-        viewport = ScreenRegion(0, 34, 1920, 1080)
         try:
+            screenshot = self.operator.capture(window, cancel=control.cancel_event)
+            if screenshot.size != (window.width, window.height):
+                raise CardRecognitionError("captured window size differs from expected size")
+            viewport = ScreenRegion(0, 34, 1920, 1080)
             colors = detect_card_colors(screenshot, viewport)
+            diagnostics["colors"] = [asdict(color) for color in colors]
             recognizer = self._card_recognizer
             if recognizer is None:
                 recognizer = CardIdentityRecognizer.from_manifest(
@@ -198,6 +205,18 @@ class GameAutomation:
                 )
                 self._card_recognizer = recognizer
             identities = recognizer.recognize(screenshot, viewport)
+            diagnostics["identities"] = [
+                {
+                    "position": identity.position,
+                    "status": identity.status,
+                    "reason": identity.reason,
+                    "characterName": identity.character_name,
+                    "score": identity.score,
+                    "margin": identity.margin,
+                    "candidates": [asdict(candidate) for candidate in identity.candidates],
+                }
+                for identity in identities
+            ]
             if any(identity.status != "recognized" for identity in identities):
                 raise CardRecognitionError(
                     "card identity is uncertain: "
@@ -214,8 +233,22 @@ class GameAutomation:
                 for color in colors
             ]
             choices = select_cards(slots, cards, front_members)
-        except ValueError as error:
+            diagnostics["choices"] = [
+                {
+                    "slot": index + 1,
+                    "kind": choice.kind,
+                    "position": choice.position,
+                    "matchedPreference": choice.matched_preference,
+                }
+                for index, choice in enumerate(choices)
+            ]
+        except (ValueError, CardRecognitionError) as error:
+            diagnostics["reason"] = str(error)
+            if report is not None:
+                report("cards.failed", diagnostics)
             raise CardRecognitionError(str(error)) from error
+        if report is not None:
+            report("cards.selected", diagnostics)
         control.checkpoint()
         for choice in choices:
             element = (

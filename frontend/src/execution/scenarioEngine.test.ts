@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import type { ScenarioCommand } from "../commands/types";
 import type { SseEvent } from "../events/sseClient";
 import type { ValidatedScenario } from "../scenarios/scenario";
 import { ScenarioEngine, type ScenarioProgress } from "./scenarioEngine";
@@ -23,9 +22,7 @@ const terminalEvent = (type: string, commandId: string): SseEvent => ({
 
 describe("ScenarioEngine", () => {
   it("passes current front members to card selection after a swap", async () => {
-    const submit = vi.fn(
-      async (_id: string, _command: ScenarioCommand) => undefined,
-    );
+    const submit = vi.fn(async () => undefined);
     const engine = new ScenarioEngine({
       submit,
       complete: async () => undefined,

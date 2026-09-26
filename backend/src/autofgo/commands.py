@@ -110,7 +110,9 @@ def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None
 
     if command.card_slots is not None:
         assert command.front_members is not None
-        get_game_automation().attack_with_slots(command.card_slots, command.front_members, control)
+        get_game_automation().attack_with_slots(
+            command.card_slots, command.front_members, control, report=control.emit
+        )
     else:
         get_game_automation().attack(command.noble_phantasm_indexes, control)
 

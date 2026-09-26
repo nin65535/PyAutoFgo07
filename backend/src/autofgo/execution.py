@@ -43,6 +43,10 @@ class ExecutionUnavailableError(Exception):
 class ExecutionControl:
     cancel_event: Event
     _manager: ExecutionManager
+    command_id: str = ""
+
+    def emit(self, event_type: str, data: dict[str, Any]) -> None:
+        self._manager._emit(event_type, data, self.command_id)
 
     def checkpoint(self) -> None:
         self._manager.wait_if_paused()
@@ -270,7 +274,9 @@ class ExecutionManager:
                 item.started_at = datetime.now(UTC)
                 self._emit("command.started", {"status": "running"}, item.command_id)
             try:
-                item.result = item.handler(item.command, ExecutionControl(self._cancel_event, self))
+                item.result = item.handler(
+                    item.command, ExecutionControl(self._cancel_event, self, item.command_id)
+                )
                 if self._cancel_event.is_set():
                     raise CommandCancelledError
             except CommandCancelledError:

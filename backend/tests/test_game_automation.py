@@ -123,7 +123,21 @@ def test_card_slots_recognize_and_select_before_card_clicks(
     operator = FakeOperator()
     subject = automation(operator)
     subject._card_recognizer = Recognizer()  # type: ignore[assignment]
-    subject.attack_with_slots(["N0", "B1", "B0"], ["A", "B", "C"], FakeControl())  # type: ignore[arg-type]
+    reports = []
+    subject.attack_with_slots(
+        ["N0", "B1", "B0"],
+        ["A", "B", "C"],
+        FakeControl(),
+        report=lambda *args: reports.append(args),
+    )  # type: ignore[arg-type]
+    assert reports[0][0] == "cards.selected"
+    assert len(reports[0][1]["identities"]) == 5
+    assert reports[0][1]["choices"][1] == {
+        "slot": 2,
+        "kind": "card",
+        "position": 4,
+        "matchedPreference": "B1",
+    }
     assert operator.clicks == [
         Point(1890, 1090),
         Point(720, 350),
@@ -152,8 +166,16 @@ def test_uncertain_card_identity_stops_before_card_click(monkeypatch: pytest.Mon
     operator = FakeOperator()
     subject = automation(operator)
     subject._card_recognizer = Recognizer()  # type: ignore[assignment]
+    reports = []
     with pytest.raises(CardRecognitionError, match="low_similarity"):
-        subject.attack_with_slots(["B0", "", ""], ["A", "B", "C"], FakeControl())  # type: ignore[arg-type]
+        subject.attack_with_slots(
+            ["B0", "", ""],
+            ["A", "B", "C"],
+            FakeControl(),
+            report=lambda *args: reports.append(args),
+        )  # type: ignore[arg-type]
+    assert reports[0][0] == "cards.failed"
+    assert reports[0][1]["identities"][0]["reason"] == "low_similarity"
     assert operator.clicks == [Point(1890, 1090)]
 
 
