@@ -163,6 +163,37 @@ dd {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
+.wave-target {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 12px 0 0;
+  padding: 10px;
+  border: 1px solid #34424e;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+.wave-target legend {
+  padding: 0 4px;
+  color: #9fcac7;
+  font-weight: 700;
+}
+.wave-target label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.wave-target input {
+  flex: 0 0 auto;
+  margin: 3px 0 0;
+}
+.execution-target {
+  margin-top: 10px;
+  color: #9fcac7;
+  font-size: 0.75rem;
+}
 .empty-state {
   overflow-wrap: anywhere;
   color: #7f8c97;

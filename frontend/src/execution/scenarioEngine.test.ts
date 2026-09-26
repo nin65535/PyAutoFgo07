@@ -45,6 +45,45 @@ describe("ScenarioEngine", () => {
     });
   });
 
+  it("sends only the selected wave and counts progress within it", async () => {
+    const submit = vi.fn(async () => undefined);
+    const complete = vi.fn(async () => undefined);
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit,
+      complete,
+      onProgress: (value) => progress.push(value),
+      createCommandId: () => "wave-id",
+    });
+    const multipleWaves: ValidatedScenario = {
+      ...scenario,
+      commands: [
+        scenario.commands[0],
+        [{ type: "attack", noblePhantasmIndexes: [] }],
+      ],
+      commandSources: [scenario.commandSources[0], ["attack()"]],
+    };
+
+    engine.start(multipleWaves, 1);
+    expect(submit).toHaveBeenCalledOnce();
+    expect(submit).toHaveBeenCalledWith(
+      "wave-id",
+      multipleWaves.commands[1][0],
+    );
+    expect(progress.at(-1)).toMatchObject({
+      groupIndex: 1,
+      totalCount: 1,
+      completedCount: 0,
+    });
+    engine.handleEvent(terminalEvent("command.completed", "wave-id"));
+    await vi.waitFor(() => expect(complete).toHaveBeenCalledOnce());
+    expect(progress.at(-1)).toMatchObject({
+      groupIndex: 1,
+      totalCount: 1,
+      completedCount: 1,
+    });
+  });
+
   it("ignores duplicate and unrelated terminal events", async () => {
     const submit = vi.fn(async () => undefined);
     const engine = new ScenarioEngine({

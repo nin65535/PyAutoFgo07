@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SseClient,
   type ConnectionState,
@@ -82,6 +82,9 @@ export function App({
   const [scenarios, setScenarios] = useState<ScenarioSummary[]>([]);
   const [selected, setSelected] = useState<ScenarioSummary>();
   const [validation, setValidation] = useState<ScenarioValidation>();
+  const [waveTarget, setWaveTarget] = useState<number | "all">();
+  const [runningTarget, setRunningTarget] = useState<string>();
+  const selectionRequest = useRef(0);
   const [scenarioStatus, setScenarioStatus] = useState<
     "loading" | "ready" | "empty" | "error"
   >("loading");
@@ -189,11 +192,15 @@ export function App({
   }, [connection, executionApi]);
 
   const selectScenario = async (summary: ScenarioSummary) => {
+    const request = ++selectionRequest.current;
     setSelected(summary);
     setValidation(undefined);
+    setWaveTarget(undefined);
+    setProgress(undefined);
     setScenarioError(undefined);
     try {
       const detail = await scenarioApi.get(summary.id);
+      if (request !== selectionRequest.current) return;
       setValidation(validateScenario(detail.content));
       appendLog(
         localEntry(
@@ -204,6 +211,7 @@ export function App({
         ),
       );
     } catch (error) {
+      if (request !== selectionRequest.current) return;
       appendLog(
         localEntry(
           "scenario.load_failed",
@@ -232,6 +240,7 @@ export function App({
     !inactive &&
     !controlPending &&
     validation?.valid === true &&
+    waveTarget !== undefined &&
     ["idle", "stopped", "completed"].includes(execution);
   const runControl = async (action: ExecutionAction) => {
     setControlPending(true);
@@ -239,8 +248,16 @@ export function App({
     try {
       const snapshot = await executionApi.act(action);
       setExecution(snapshot.state);
-      if (action === "start" && validation?.valid)
-        engine.start(validation.scenario);
+      if (action === "start" && validation?.valid && waveTarget !== undefined) {
+        const label =
+          waveTarget === "all" ? "全wave" : `wave ${waveTarget + 1}`;
+        setRunningTarget(label);
+        setProgress(undefined);
+        engine.start(
+          validation.scenario,
+          waveTarget === "all" ? null : waveTarget,
+        );
+      }
       if (action === "pause") engine.setPaused(true);
       if (action === "resume") engine.setPaused(false);
       if (action === "stop" || action === "emergency-stop") engine.cancel();
@@ -346,6 +363,44 @@ export function App({
             通常停止
           </button>
         </div>
+        {selected && validation?.valid && (
+          <fieldset
+            className="wave-target"
+            disabled={activeExecution || controlPending}
+          >
+            <legend>実行対象</legend>
+            <label>
+              <input
+                type="radio"
+                name="wave-target"
+                checked={waveTarget === "all"}
+                onChange={() => setWaveTarget("all")}
+              />
+              全wave（{validation.scenario.commands.flat().length}命令）
+            </label>
+            {validation.scenario.commands.map((group, index) => (
+              <label key={index}>
+                <input
+                  type="radio"
+                  name="wave-target"
+                  checked={waveTarget === index}
+                  onChange={() => setWaveTarget(index)}
+                />
+                wave {index + 1}（グループ {index + 1}・{group.length}命令）
+              </label>
+            ))}
+          </fieldset>
+        )}
+        {selected && validation?.valid && (
+          <p className="execution-target" role="status">
+            開始対象:{" "}
+            {waveTarget === undefined
+              ? "未確認"
+              : waveTarget === "all"
+                ? "全wave"
+                : `wave ${waveTarget + 1}`}
+          </p>
+        )}
         {controlError && (
           <p className="scenario-error" role="alert">
             {controlError}
@@ -356,8 +411,8 @@ export function App({
             {progress.error
               ? `停止: ${progress.error}`
               : progress.completedCount === progress.totalCount
-                ? `${progress.totalCount}件の命令を完了しました`
-                : `グループ${progress.groupIndex + 1}・命令${progress.commandIndex + 1} / ${progress.totalCount}件（${progress.waiting ? "完了通知待ち" : "処理中"}）`}
+                ? `${runningTarget}: ${progress.totalCount}件の命令を完了しました`
+                : `${runningTarget}: ${progress.completedCount}/${progress.totalCount}件完了・wave ${progress.groupIndex + 1} 命令${progress.commandIndex + 1}（${progress.waiting ? "完了通知待ち" : "処理中"}）`}
           </p>
         )}
       </section>
@@ -431,7 +486,7 @@ export function App({
             {validation.scenario.commandSources.map((group, index) => (
               <details className="command-group" key={index}>
                 <summary>
-                  グループ {index + 1}（{group.length}命令）
+                  wave {index + 1} / グループ {index + 1}（{group.length}命令）
                 </summary>
                 <ol>
                   {group.map((command, commandIndex) => (

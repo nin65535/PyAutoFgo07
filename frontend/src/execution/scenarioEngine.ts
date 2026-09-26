@@ -42,14 +42,16 @@ export class ScenarioEngine {
     this.remainingMs = this.timeoutMs;
   }
 
-  start(scenario: ValidatedScenario): void {
+  start(scenario: ValidatedScenario, waveIndex: number | null = null): void {
     this.cancel();
     this.entries = scenario.commands.flatMap((group, groupIndex) =>
-      group.map((command, commandIndex) => ({
-        command,
-        groupIndex,
-        commandIndex,
-      })),
+      waveIndex === null || groupIndex === waveIndex
+        ? group.map((command, commandIndex) => ({
+            command,
+            groupIndex,
+            commandIndex,
+          }))
+        : [],
     );
     this.index = 0;
     this.active = true;
