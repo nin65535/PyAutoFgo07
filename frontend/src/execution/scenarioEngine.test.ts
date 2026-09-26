@@ -81,6 +81,24 @@ describe("ScenarioEngine", () => {
     vi.useRealTimers();
   });
 
+  it("allows the backend's 50-second battle wait before the default timeout", () => {
+    vi.useFakeTimers();
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit: async () => undefined,
+      complete: async () => undefined,
+      onProgress: (value) => progress.push(value),
+      createCommandId: () => "id",
+    });
+
+    engine.start(scenario);
+    vi.advanceTimersByTime(50_000);
+    expect(progress.at(-1)?.error).toBeUndefined();
+    vi.advanceTimersByTime(40_001);
+    expect(progress.at(-1)?.error).toContain("タイムアウト");
+    vi.useRealTimers();
+  });
+
   it("stops immediately when a command fails", () => {
     const progress: ScenarioProgress[] = [];
     const engine = new ScenarioEngine({

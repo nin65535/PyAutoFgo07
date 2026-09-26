@@ -111,7 +111,7 @@ export function parseScenarioCommand(
     }
     case "master_skill": {
       requireArgumentCount(args, [1, 2], location);
-      requireRange(args[0], "skillIndex", 0, 3, location);
+      requireRange(args[0], "skillIndex", 0, 2, location);
       if (args.length === 2) {
         requireRange(args[1], "targetIndex", 0, 2, location);
         return {

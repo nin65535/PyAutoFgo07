@@ -11,7 +11,7 @@ describe("parseScenarioCommand", () => {
   it.each([
     ["skill(0)", { type: "skill", skillIndex: 0 }],
     ["skill(8,5)", { type: "skill", skillIndex: 8, targetIndex: 5 }],
-    ["master_skill(3)", { type: "master_skill", skillIndex: 3 }],
+    ["master_skill(2)", { type: "master_skill", skillIndex: 2 }],
     [
       "master_skill(0,2)",
       { type: "master_skill", skillIndex: 0, targetIndex: 2 },

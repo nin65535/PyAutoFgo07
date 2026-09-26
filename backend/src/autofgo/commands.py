@@ -29,7 +29,7 @@ class SkillCommand(CommandModel):
 
 class MasterSkillCommand(CommandModel):
     type: Literal["master_skill"]
-    skill_index: int = Field(alias="skillIndex", ge=0, le=3)
+    skill_index: int = Field(alias="skillIndex", ge=0, le=2)
     target_index: int | None = Field(default=None, alias="targetIndex", ge=0, le=2)
 
 
@@ -72,27 +72,35 @@ class CommandRequest(CommandModel):
 
 
 def _skill_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
-    control.checkpoint()
     if not isinstance(command, SkillCommand):
         raise TypeError("skill handler received an incompatible command")
+    from autofgo.game_automation import get_game_automation
+
+    get_game_automation().skill(command.skill_index, command.target_index, control)
 
 
 def _master_skill_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
-    control.checkpoint()
     if not isinstance(command, MasterSkillCommand):
         raise TypeError("master_skill handler received an incompatible command")
+    from autofgo.game_automation import get_game_automation
+
+    get_game_automation().master_skill(command.skill_index, command.target_index, control)
 
 
 def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
-    control.checkpoint()
     if not isinstance(command, AttackCommand):
         raise TypeError("attack handler received an incompatible command")
+    from autofgo.game_automation import get_game_automation
+
+    get_game_automation().attack(command.noble_phantasm_indexes, control)
 
 
 def _swap_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
-    control.checkpoint()
     if not isinstance(command, SwapCommand):
         raise TypeError("swap handler received an incompatible command")
+    from autofgo.game_automation import get_game_automation
+
+    get_game_automation().swap(command.front_index, command.back_index, control)
 
 
 # This table is deliberately source-defined. Request values are never used as Python names.

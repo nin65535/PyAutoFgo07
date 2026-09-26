@@ -20,7 +20,7 @@ def client() -> TestClient:
     "command",
     [
         {"type": "skill", "skillIndex": 8, "targetIndex": 5},
-        {"type": "master_skill", "skillIndex": 3, "targetIndex": 2},
+        {"type": "master_skill", "skillIndex": 2, "targetIndex": 2},
         {"type": "attack", "noblePhantasmIndexes": [2, 0, 1]},
         {"type": "swap", "frontIndex": 2, "backIndex": 5},
     ],
@@ -67,6 +67,7 @@ def test_same_id_with_different_command_is_rejected(client: TestClient) -> None:
         },
         {"commandId": COMMAND_ID, "command": {"type": "attack", "noblePhantasmIndexes": [0, 0]}},
         {"commandId": COMMAND_ID, "command": {"type": "swap", "frontIndex": 3, "backIndex": 2}},
+        {"commandId": COMMAND_ID, "command": {"type": "master_skill", "skillIndex": 3}},
         {"commandId": "not-a-uuid", "command": {"type": "skill", "skillIndex": 0}},
     ],
 )

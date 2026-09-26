@@ -77,7 +77,7 @@ master_skill(skillIndex,targetIndex)
 
 | 引数 | 必須 | 値域 |
 | --- | --- | --- |
-| `skillIndex` | 必須 | `0`以上`3`以下 |
+| `skillIndex` | 必須 | `0`以上`2`以下 |
 | `targetIndex` | 任意 | `0`以上`2`以下 |
 
 ### 3.3 `attack`
