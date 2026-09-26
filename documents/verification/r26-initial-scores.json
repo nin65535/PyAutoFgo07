@@ -1,0 +1,454 @@
+{
+  "method": "RGB MAE, quarter resolution, scale 1.3..1.9 step 0.1, 4px translation",
+  "referenceManifestSha256": "cb2091336c0cb19486e38e32d2374046521c1b89a266182a96ecc59b34ec209a",
+  "references": [
+    {
+      "id": "arash-default-01",
+      "sha256": "86a6604bc7692bb3d4bf06e351d88c53d50e25bc21491bece161783bb3038b2e"
+    },
+    {
+      "id": "daidalos-default-01",
+      "sha256": "1123346d64c6a55b0c66de32292c22f0527ecc0275f88f8358fdbbee799b7205"
+    },
+    {
+      "id": "baobhan-default-01",
+      "sha256": "bc7e3c5da892a3d3868920ae4498c322fae7e46228e32667a37747b716e459c8"
+    }
+  ],
+  "cases": [
+    {
+      "imagePath": "card-data/evaluation/images/battle0/img1.png",
+      "sha256": "57792561d646e368629b482dc332a6204dcb9e691158608640aaba742d738e9e",
+      "cards": [
+        {
+          "position": 0,
+          "candidates": [
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 27.2899,
+              "scale": 1.7,
+              "gameRect": [
+                100,
+                600,
+                188,
+                168
+              ]
+            },
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 63.0126,
+              "scale": 1.3,
+              "gameRect": [
+                240,
+                608,
+                136,
+                128
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 73.0179,
+              "scale": 1.3,
+              "gameRect": [
+                232,
+                688,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 35.7227
+        },
+        {
+          "position": 1,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 28.1157,
+              "scale": 1.6,
+              "gameRect": [
+                492,
+                624,
+                168,
+                160
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 72.0246,
+              "scale": 1.3,
+              "gameRect": [
+                504,
+                656,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 75.2419,
+              "scale": 1.3,
+              "gameRect": [
+                516,
+                652,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 43.9089
+        },
+        {
+          "position": 2,
+          "candidates": [
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 32.729,
+              "scale": 1.7,
+              "gameRect": [
+                864,
+                620,
+                188,
+                168
+              ]
+            },
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 67.553,
+              "scale": 1.3,
+              "gameRect": [
+                1008,
+                600,
+                136,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 79.3157,
+              "scale": 1.3,
+              "gameRect": [
+                876,
+                632,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 34.824
+        },
+        {
+          "position": 3,
+          "candidates": [
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 23.4622,
+              "scale": 1.7,
+              "gameRect": [
+                1252,
+                600,
+                188,
+                168
+              ]
+            },
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 64.1063,
+              "scale": 1.3,
+              "gameRect": [
+                1392,
+                600,
+                136,
+                128
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 74.7066,
+              "scale": 1.3,
+              "gameRect": [
+                1344,
+                600,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 40.6441
+        },
+        {
+          "position": 4,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 28.9202,
+              "scale": 1.6,
+              "gameRect": [
+                1652,
+                624,
+                168,
+                160
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 67.5764,
+              "scale": 1.3,
+              "gameRect": [
+                1740,
+                688,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 77.4777,
+              "scale": 1.3,
+              "gameRect": [
+                1676,
+                652,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 38.6562
+        }
+      ],
+      "elapsedSeconds": 10.904
+    },
+    {
+      "imagePath": "card-data/evaluation/images/battle0/img8.png",
+      "sha256": "15b761e5750895f7338396a3d5dc36261e7cdf91a04d10b73ffe60ef7a9fca23",
+      "cards": [
+        {
+          "position": 0,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 28.3093,
+              "scale": 1.6,
+              "gameRect": [
+                108,
+                620,
+                168,
+                160
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 71.974,
+              "scale": 1.3,
+              "gameRect": [
+                120,
+                648,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 75.2593,
+              "scale": 1.3,
+              "gameRect": [
+                132,
+                648,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 43.6647
+        },
+        {
+          "position": 1,
+          "candidates": [
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 57.4131,
+              "scale": 1.6,
+              "gameRect": [
+                488,
+                604,
+                176,
+                160
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 80.8821,
+              "scale": 1.5,
+              "gameRect": [
+                512,
+                632,
+                164,
+                152
+              ]
+            },
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 81.8686,
+              "scale": 1.3,
+              "gameRect": [
+                624,
+                684,
+                136,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 23.469
+        },
+        {
+          "position": 2,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 28.8924,
+              "scale": 1.7,
+              "gameRect": [
+                868,
+                612,
+                180,
+                168
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 67.6664,
+              "scale": 1.3,
+              "gameRect": [
+                964,
+                684,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 77.5133,
+              "scale": 1.3,
+              "gameRect": [
+                900,
+                648,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 38.774
+        },
+        {
+          "position": 3,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 28.6134,
+              "scale": 1.7,
+              "gameRect": [
+                1256,
+                612,
+                180,
+                168
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 67.7286,
+              "scale": 1.3,
+              "gameRect": [
+                1352,
+                680,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 77.4019,
+              "scale": 1.3,
+              "gameRect": [
+                1284,
+                644,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 39.1152
+        },
+        {
+          "position": 4,
+          "candidates": [
+            {
+              "referenceId": "arash-default-01",
+              "characterName": "アーラシュ",
+              "score": 61.4281,
+              "scale": 1.8,
+              "gameRect": [
+                1632,
+                600,
+                188,
+                180
+              ]
+            },
+            {
+              "referenceId": "baobhan-default-01",
+              "characterName": "バーヴァン・シー",
+              "score": 61.765,
+              "scale": 1.3,
+              "gameRect": [
+                1704,
+                608,
+                144,
+                128
+              ]
+            },
+            {
+              "referenceId": "daidalos-default-01",
+              "characterName": "ダイダロス",
+              "score": 73.309,
+              "scale": 1.3,
+              "gameRect": [
+                1648,
+                660,
+                144,
+                128
+              ]
+            }
+          ],
+          "differentCharacterMargin": 0.3369
+        }
+      ],
+      "elapsedSeconds": 15.802
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+{
+  "reviewer": "assistant visual comparison, not user-confirmed appearance labels",
+  "referenceManifest": "card-data/references/manifest.json",
+  "notes": "No appearanceId assigned. Battle0 costume change also documented in Drive README. Review is independent of match scores.",
+  "cases": [
+    {
+      "id": "battle0-img1",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle0-img2",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle0-img3",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle0-img4",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle0-img5",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle0-img6",
+      "cards": [
+        {
+          "position": 0,
+          "registered": false
+        },
+        {
+          "position": 1,
+          "registered": false
+        },
+        {
+          "position": 2,
+          "registered": false
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle0-img7",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": false
+        },
+        {
+          "position": 2,
+          "registered": false
+        },
+        {
+          "position": 3,
+          "registered": false
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle0-img8",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": false
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle1-181746",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle1-181853",
+      "cards": [
+        {
+          "position": 0,
+          "registered": false
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle1-181955",
+      "cards": [
+        {
+          "position": 0,
+          "registered": false
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": false
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle1-182125",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": false
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle1-182208",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle1-182252",
+      "cards": [
+        {
+          "position": 0,
+          "registered": false
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": false
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": false
+        }
+      ]
+    },
+    {
+      "id": "battle1-182416",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle1-182459",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    },
+    {
+      "id": "battle1-182541",
+      "cards": [
+        {
+          "position": 0,
+          "registered": true
+        },
+        {
+          "position": 1,
+          "registered": true
+        },
+        {
+          "position": 2,
+          "registered": true
+        },
+        {
+          "position": 3,
+          "registered": true
+        },
+        {
+          "position": 4,
+          "registered": true
+        }
+      ]
+    }
+  ]
+}

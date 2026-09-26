@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "battle0-img1",
+      "imagePath": "images/battle0/img1.png",
+      "sourceUrl": "https://drive.google.com/file/d/1B_sseJNt_jXHdrACjpl4RyK-0hPJa5W_/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-same-deal-1",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img2",
+      "imagePath": "images/battle0/img2.png",
+      "sourceUrl": "https://drive.google.com/file/d/1AcdFhXQcJx0xwKwaPmRx0FbwxmLI5oj0/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-same-deal-1",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img3",
+      "imagePath": "images/battle0/img3.png",
+      "sourceUrl": "https://drive.google.com/file/d/1feT6WFhW6z5JW1QSZGkz_ViNR0mZvAZ_/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-same-deal-1",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img4",
+      "imagePath": "images/battle0/img4.png",
+      "sourceUrl": "https://drive.google.com/file/d/1iDjZaO8xPwMTna9CCvzyi_On3g7lrdZz/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-same-deal-1",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img5",
+      "imagePath": "images/battle0/img5.png",
+      "sourceUrl": "https://drive.google.com/file/d/1fg5kQgi899S7mQykYOJnmAfOMqabd2AK/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-same-deal-1",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img6",
+      "imagePath": "images/battle0/img6.png",
+      "sourceUrl": "https://drive.google.com/file/d/1rEvD6kocRRIstmHTtK0K2sUNXlRnEW9K/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-img6",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 3,
+          "color": "Q",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img7",
+      "imagePath": "images/battle0/img7.png",
+      "sourceUrl": "https://drive.google.com/file/d/1M5kc_NZOK_wQlgnkHvph8ctf9vCX3JNI/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-img7",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "ダイダロス"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img8",
+      "imagePath": "images/battle0/img8.png",
+      "sourceUrl": "https://drive.google.com/file/d/1ZDWFysMgt0gFdpyLyGtSTho20a01VdiC/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle0-img8",
+      "review": "documented",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181746",
+      "imagePath": "images/battle1/181746.png",
+      "sourceUrl": "https://drive.google.com/file/d/1A_Q_TGaLjwOW_fMW5xPpuJIdyIVtZlze/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-181746",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "Q",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "アーラシュ"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181853",
+      "imagePath": "images/battle1/181853.png",
+      "sourceUrl": "https://drive.google.com/file/d/1uXB5yPM7y_VYkEXjZH5iuTlIxCViA4tp/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-181853",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181955",
+      "imagePath": "images/battle1/181955.png",
+      "sourceUrl": "https://drive.google.com/file/d/1I06lcnP6OVLrOOs7t14vzzkS-5HAxI2y/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-181955",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182125",
+      "imagePath": "images/battle1/182125.png",
+      "sourceUrl": "https://drive.google.com/file/d/1gCQc-odRTkNQnb4gEtyuzC67rRnPcXQW/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182125",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "ダイダロス"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182208",
+      "imagePath": "images/battle1/182208.png",
+      "sourceUrl": "https://drive.google.com/file/d/1TnIR4R_1chq3jMSki4up0NWhrz3PUkzx/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182208",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182252",
+      "imagePath": "images/battle1/182252.png",
+      "sourceUrl": "https://drive.google.com/file/d/1fsL71O0HfhI9PGpA49OZnMGf4qa9k3iJ/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182252",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182416",
+      "imagePath": "images/battle1/182416.png",
+      "sourceUrl": "https://drive.google.com/file/d/1cOiFbKB6_NsBBAaHd6H-p0yePZ1tOgEN/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182416",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182459",
+      "imagePath": "images/battle1/182459.png",
+      "sourceUrl": "https://drive.google.com/file/d/1E3U0h4XuPVSiSj4d02OJ7C4jhL_Pjdnd/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182459",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "バーヴァン・シー"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "ダイダロス"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182541",
+      "imagePath": "images/battle1/182541.png",
+      "sourceUrl": "https://drive.google.com/file/d/1bUfAd030LgwF4bB5iEV3COlAG6IrkxQo/view?usp=drivesdk",
+      "sourceSize": [
+        1962,
+        1114
+      ],
+      "captureGroup": "battle1-182541",
+      "review": "humanConfirmed",
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "ダイダロス"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "ダイダロス"
+        }
+      ]
+    }
+  ]
+}

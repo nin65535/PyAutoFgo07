@@ -9,6 +9,7 @@ description = "Local FastAPI backend for autoFgo"
 requires-python = ">=3.12,<3.14"
 dependencies = [
   "fastapi==0.141.1",
+  "numpy==2.5.3",
   "pillow==12.1.1",
   "pydantic-settings==2.15.0",
   "pyautogui==0.9.54",

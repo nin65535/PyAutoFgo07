@@ -1,0 +1,1117 @@
+{
+  "maxMae": 40.0,
+  "appearanceReview": "assistant visual comparison, not user-confirmed appearance labels",
+  "cases": [
+    {
+      "id": "battle0-img1",
+      "captureGroup": "battle0-same-deal-1",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 27.2899,
+          "margin": 35.7227,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.1157,
+          "margin": 43.9089,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 32.729,
+          "margin": 34.824,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 23.4622,
+          "margin": 40.6441,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.9202,
+          "margin": 38.6562,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img2",
+      "captureGroup": "battle0-same-deal-1",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 23.9671,
+          "margin": 39.4156,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.5018,
+          "margin": 43.3744,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 32.0738,
+          "margin": 35.4777,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 22.3995,
+          "margin": 41.8961,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.1187,
+          "margin": 40.4099,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img3",
+      "captureGroup": "battle0-same-deal-1",
+      "counts": {
+        "knownRejected": 2,
+        "cards": 5,
+        "knownCorrect": 3
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 42.1475,
+          "margin": 21.9064,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.75,
+          "margin": 44.2023,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 29.2175,
+          "margin": 40.5962,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 41.118,
+          "margin": 23.0159,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 29.2383,
+          "margin": 38.1899,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img4",
+      "captureGroup": "battle0-same-deal-1",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 28.0866,
+          "margin": 34.922,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.8611,
+          "margin": 44.1016,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 31.131,
+          "margin": 36.3264,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 25.4333,
+          "margin": 38.6408,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.9202,
+          "margin": 38.6562,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img5",
+      "captureGroup": "battle0-same-deal-1",
+      "counts": {
+        "knownRejected": 2,
+        "cards": 5,
+        "knownCorrect": 3
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 41.0655,
+          "margin": 22.6915,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.9492,
+          "margin": 44.0401,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 32.576,
+          "margin": 37.0649,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 43.2186,
+          "margin": 21.0786,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.106,
+          "margin": 40.381,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img6",
+      "captureGroup": "battle0-img6",
+      "counts": {
+        "unknownRejected": 4,
+        "cards": 5,
+        "knownCorrect": 1
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.5223,
+          "margin": 0.5258,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.4288,
+          "margin": 3.8227,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": false,
+          "candidate": "ダイダロス",
+          "score": 59.1174,
+          "margin": 29.0632,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 3,
+          "color": "Q",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 7.7538,
+          "margin": 58.017,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.4933,
+          "margin": 3.7956,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img7",
+      "captureGroup": "battle0-img7",
+      "counts": {
+        "knownCorrect": 1,
+        "cards": 5,
+        "unknownRejected": 4
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.3839,
+          "margin": 43.5877,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "アーラシュ",
+          "score": 61.7233,
+          "margin": 1.5701,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": false,
+          "candidate": "ダイダロス",
+          "score": 59.0189,
+          "margin": 29.0728,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": false,
+          "candidate": "ダイダロス",
+          "score": 60.2252,
+          "margin": 19.651,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": false,
+          "candidate": "ダイダロス",
+          "score": 60.3138,
+          "margin": 19.2927,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle0-img8",
+      "captureGroup": "battle0-img8",
+      "counts": {
+        "knownCorrect": 3,
+        "cards": 5,
+        "unknownRejected": 2
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.3093,
+          "margin": 43.6647,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス",
+          "registered": false,
+          "candidate": "ダイダロス",
+          "score": 57.4131,
+          "margin": 23.469,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.8924,
+          "margin": 38.774,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.6134,
+          "margin": 39.1152,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "アーラシュ",
+          "score": 61.4281,
+          "margin": 0.3369,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181746",
+      "captureGroup": "battle1-181746",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.9204,
+          "margin": 44.0654,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 24.6624,
+          "margin": 38.8474,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "Q",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 9.6661,
+          "margin": 55.9734,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 29.306,
+          "margin": 38.251,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.945,
+          "margin": 42.9546,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181853",
+      "captureGroup": "battle1-181853",
+      "counts": {
+        "unknownRejected": 2,
+        "cards": 5,
+        "knownCorrect": 1,
+        "knownRejected": 2
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "B",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "アーラシュ",
+          "score": 64.2069,
+          "margin": 0.8037,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 34.6307,
+          "margin": 28.0599,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 44.5057,
+          "margin": 19.733,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 43.8324,
+          "margin": 22.1082,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 57.8539,
+          "margin": 3.3774,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-181955",
+      "captureGroup": "battle1-181955",
+      "counts": {
+        "unknownRejected": 3,
+        "cards": 5,
+        "knownRejected": 1,
+        "knownCorrect": 1
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 57.6346,
+          "margin": 3.1439,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 46.9201,
+          "margin": 16.8094,
+          "outcome": "knownRejected"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.0492,
+          "margin": 39.6004,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.3428,
+          "margin": 3.0844,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.4556,
+          "margin": 3.5059,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182125",
+      "captureGroup": "battle1-182125",
+      "counts": {
+        "knownCorrect": 3,
+        "cards": 5,
+        "unknownRejected": 1,
+        "knownRejected": 1
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.5008,
+          "margin": 43.452,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.1371,
+          "margin": 43.8858,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 29.2959,
+          "margin": 38.2935,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 63.5425,
+          "margin": 3.6735,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 4,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 42.4695,
+          "margin": 24.6932,
+          "outcome": "knownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182208",
+      "captureGroup": "battle1-182208",
+      "counts": {
+        "knownCorrect": 4,
+        "cards": 5,
+        "unknownRejected": 1
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 36.3682,
+          "margin": 27.5426,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 22.3076,
+          "margin": 40.7463,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 36.3133,
+          "margin": 27.9624,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 29.1959,
+          "margin": 38.3866,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "アーラシュ",
+          "score": 62.0093,
+          "margin": 1.3663,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182252",
+      "captureGroup": "battle1-182252",
+      "counts": {
+        "unknownRejected": 3,
+        "cards": 5,
+        "knownCorrect": 2
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 62.1279,
+          "margin": 4.6028,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 1,
+          "color": "Q",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 9.031,
+          "margin": 56.3525,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "バーヴァン・シー",
+          "score": 61.9424,
+          "margin": 2.5282,
+          "outcome": "unknownRejected"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 35.8358,
+          "margin": 29.6771,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": false,
+          "candidate": "アーラシュ",
+          "score": 61.3644,
+          "margin": 0.4791,
+          "outcome": "unknownRejected"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182416",
+      "captureGroup": "battle1-182416",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 12.4907,
+          "margin": 48.4278,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 36.8386,
+          "margin": 27.2836,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 32.7953,
+          "margin": 36.8184,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 26.9401,
+          "margin": 41.1855,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 12.8698,
+          "margin": 50.6201,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182459",
+      "captureGroup": "battle1-182459",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "A",
+          "characterName": "バーヴァン・シー",
+          "registered": true,
+          "candidate": "バーヴァン・シー",
+          "score": 29.0657,
+          "margin": 37.3862,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 26.6648,
+          "margin": 37.3312,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.8649,
+          "margin": 42.9545,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.0063,
+          "margin": 39.7347,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "A",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 24.7987,
+          "margin": 42.9314,
+          "outcome": "knownCorrect"
+        }
+      ]
+    },
+    {
+      "id": "battle1-182541",
+      "captureGroup": "battle1-182541",
+      "counts": {
+        "knownCorrect": 5,
+        "cards": 5
+      },
+      "cards": [
+        {
+          "position": 0,
+          "color": "Q",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 10.2292,
+          "margin": 55.4509,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 1,
+          "color": "A",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 27.4147,
+          "margin": 44.4765,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 2,
+          "color": "B",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 29.6949,
+          "margin": 34.0707,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 3,
+          "color": "B",
+          "characterName": "アーラシュ",
+          "registered": true,
+          "candidate": "アーラシュ",
+          "score": 28.5869,
+          "margin": 39.0558,
+          "outcome": "knownCorrect"
+        },
+        {
+          "position": 4,
+          "color": "Q",
+          "characterName": "ダイダロス",
+          "registered": true,
+          "candidate": "ダイダロス",
+          "score": 25.2771,
+          "margin": 41.3087,
+          "outcome": "knownCorrect"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "knownCorrect": 57,
+    "cards": 85,
+    "knownRejected": 8,
+    "unknownRejected": 20
+  },
+  "additional15Images": {
+    "knownCorrect": 49,
+    "cards": 75,
+    "knownRejected": 8,
+    "unknownRejected": 18
+  },
+  "captureGroups": {
+    "battle0-same-deal-1": {
+      "knownCorrect": 21,
+      "cards": 25,
+      "knownRejected": 4
+    },
+    "battle0-img6": {
+      "unknownRejected": 4,
+      "cards": 5,
+      "knownCorrect": 1
+    },
+    "battle0-img7": {
+      "knownCorrect": 1,
+      "cards": 5,
+      "unknownRejected": 4
+    },
+    "battle0-img8": {
+      "knownCorrect": 3,
+      "cards": 5,
+      "unknownRejected": 2
+    },
+    "battle1-181746": {
+      "knownCorrect": 5,
+      "cards": 5
+    },
+    "battle1-181853": {
+      "unknownRejected": 2,
+      "cards": 5,
+      "knownCorrect": 1,
+      "knownRejected": 2
+    },
+    "battle1-181955": {
+      "unknownRejected": 3,
+      "cards": 5,
+      "knownRejected": 1,
+      "knownCorrect": 1
+    },
+    "battle1-182125": {
+      "knownCorrect": 3,
+      "cards": 5,
+      "unknownRejected": 1,
+      "knownRejected": 1
+    },
+    "battle1-182208": {
+      "knownCorrect": 4,
+      "cards": 5,
+      "unknownRejected": 1
+    },
+    "battle1-182252": {
+      "unknownRejected": 3,
+      "cards": 5,
+      "knownCorrect": 2
+    },
+    "battle1-182416": {
+      "knownCorrect": 5,
+      "cards": 5
+    },
+    "battle1-182459": {
+      "knownCorrect": 5,
+      "cards": 5
+    },
+    "battle1-182541": {
+      "knownCorrect": 5,
+      "cards": 5
+    }
+  }
+}
