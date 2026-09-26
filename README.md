@@ -4,31 +4,42 @@
 
 ## 必要な環境
 
-- Node.js 22
+- Node.js 22（セットアップ・更新時のビルドに使用）
 - Python 3.12
+- Google Chrome（通常のインストール先、または `.env` の `AUTOFGO_CHROME_EXECUTABLE`）
 
 ## セットアップ
 
 ```powershell
-npm install
-npm --prefix frontend install
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"
+npm ci
+npm --prefix frontend ci
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"
+npm --prefix frontend run build
 ```
 
 必要なら `.env.example` を `.env` にコピーして設定を上書きします。
 操作手順JSONは既定でプロジェクト直下の`scenarios`へ配置します。保存場所は
 `AUTOFGO_SCENARIO_DIRECTORY`で変更できます。
 
-## 開発コマンド
+## 通常の起動・停止
 
 Windowsでは、プロジェクト直下の `start-autofgo.cmd` をダブルクリックすると、
-フロントエンド、バックエンド、専用Chromeを順に起動できます。専用Chromeを閉じると
+`.venv`のPythonがビルド済み画面とAPIを単一ポートから配信し、専用Chromeを起動します。
+通常起動時にNode.jsやViteは動作しません。専用Chromeを閉じると
 正常終了して起動用ウィンドウも閉じます。起動失敗や異常終了時はエラーを表示し、
-キー入力までウィンドウを開いたままにします。フロントエンドの起動ログは
-`.autofgo/logs/frontend-launch.*.log` に保存します。初回は下記のセットアップが必要です。
+キー入力までウィンドウを開いたままにします。ログは
+`.autofgo/logs/autofgo.log` に保存します。初回は上記のセットアップが必要です。
 起動用ウィンドウは実行中に最小化され、異常終了した場合だけ元に戻ります。
+
+更新時は専用Chromeを閉じて終了を待ち、変更を取得した後に
+`npm ci`、`npm --prefix frontend ci`、`.\.venv\Scripts\python.exe -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"`、
+`npm --prefix frontend run build` を再実行してください。`scenarios` と `.env` は更新前に別途バックアップしてください。
+
+異常終了、ポート競合、プロファイル破損からの復旧方法は
+[運用・復旧手順](documents/operations.md)を参照してください。
+
+## 開発コマンド
 
 ```powershell
 npm run dev          # フロントエンドとバックエンドを同時起動

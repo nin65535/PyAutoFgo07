@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from autofgo.api_errors import request_validation_error_handler
 from autofgo.commands import (
@@ -36,6 +37,10 @@ app.add_exception_handler(CommandConflictError, command_conflict_handler)
 app.add_exception_handler(InvalidExecutionStateError, invalid_state_handler)
 app.add_exception_handler(ExecutionUnavailableError, unavailable_handler)
 app.add_exception_handler(RequestValidationError, request_validation_error_handler)
+
+static_directory = get_settings().static_directory
+if static_directory is not None:
+    app.mount("/", StaticFiles(directory=static_directory, html=True), name="frontend")
 
 
 @app.get("/api/health", tags=["system"])

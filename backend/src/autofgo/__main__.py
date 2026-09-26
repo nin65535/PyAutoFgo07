@@ -61,7 +61,7 @@ async def run() -> None:
             await asyncio.sleep(0.01)
         if server_task.done():
             await server_task
-            return
+            raise RuntimeError(f"Backend could not start on {settings.host}:{settings.port}")
         process = launcher.launch()
         space_pause.start()
         logger.info("Dedicated Chrome started", extra={"event_type": "browser.started"})

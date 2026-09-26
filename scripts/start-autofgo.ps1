@@ -1,9 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $python = Join-Path $projectRoot '.venv\Scripts\python.exe'
-$frontendPackage = Join-Path $projectRoot 'frontend\package.json'
-$viteProcess = $null
-$consoleWindow = [IntPtr]::Zero
+$frontendIndex = Join-Path $projectRoot 'frontend\dist\index.html'
 
 Add-Type -TypeDefinition @'
 using System;
@@ -18,51 +16,26 @@ public static class AutoFgoConsoleWindow {
 }
 '@
 
+$consoleWindow = [AutoFgoConsoleWindow]::GetConsoleWindow()
 try {
     Set-Location -LiteralPath $projectRoot
     if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
-        throw 'Python virtual environment is missing. Create .venv and install the backend first.'
+        throw 'Python virtual environment is missing. Follow the setup instructions in README.md.'
     }
-    if (-not (Test-Path -LiteralPath $frontendPackage -PathType Leaf)) {
-        throw 'Frontend package.json is missing.'
+    if (-not (Test-Path -LiteralPath $frontendIndex -PathType Leaf)) {
+        throw 'Built frontend is missing. Run npm --prefix frontend run build.'
     }
-    if (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'frontend\node_modules') -PathType Container)) {
-        throw 'Frontend dependencies are missing. Run npm --prefix frontend install first.'
-    }
-    $npm = (Get-Command npm.cmd -ErrorAction Stop).Source
-    $logDirectory = Join-Path $projectRoot '.autofgo\logs'
-    New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
-    $stdoutLog = Join-Path $logDirectory 'frontend-launch.out.log'
-    $stderrLog = Join-Path $logDirectory 'frontend-launch.err.log'
-    $consoleWindow = [AutoFgoConsoleWindow]::GetConsoleWindow()
+
+    $env:AUTOFGO_STATIC_DIRECTORY = Join-Path $projectRoot 'frontend\dist'
+    if (-not $env:AUTOFGO_PORT) { $env:AUTOFGO_PORT = '8000' }
+    $env:AUTOFGO_CHROME_APP_URL = "http://127.0.0.1:$env:AUTOFGO_PORT"
     if ($consoleWindow -ne [IntPtr]::Zero) {
         [AutoFgoConsoleWindow]::ShowWindow($consoleWindow, 6) | Out-Null
     }
-    $viteProcess = Start-Process -FilePath $npm -ArgumentList '--prefix', 'frontend', 'run', 'dev' -WorkingDirectory $projectRoot -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog -PassThru
 
-    $ready = $false
-    for ($attempt = 0; $attempt -lt 100; $attempt++) {
-        if ($viteProcess.HasExited) {
-            throw "Frontend exited during startup. See $stderrLog"
-        }
-        try {
-            $response = Invoke-WebRequest -Uri 'http://127.0.0.1:5173/' -UseBasicParsing -TimeoutSec 1
-            if ($response.StatusCode -eq 200) {
-                $ready = $true
-                break
-            }
-        } catch {
-            Start-Sleep -Milliseconds 200
-        }
-    }
-    if (-not $ready) {
-        throw "Frontend did not become ready. See $stderrLog"
-    }
-
-    Write-Host 'Starting autoFgo. Close the dedicated Chrome window to exit.'
     & $python -m autofgo
     if ($LASTEXITCODE -ne 0) {
-        throw "Backend exited with code $LASTEXITCODE."
+        throw "Backend exited with code $LASTEXITCODE. See .autofgo/logs/autofgo.log."
     }
     exit 0
 } catch {
@@ -72,12 +45,4 @@ try {
     }
     Write-Host "Startup or runtime error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
-} finally {
-    if ($null -ne $viteProcess -and -not $viteProcess.HasExited) {
-        try {
-            & taskkill.exe /PID $viteProcess.Id /T /F 2>$null | Out-Null
-        } catch {
-            Write-Warning "Could not stop frontend process $($viteProcess.Id): $($_.Exception.Message)"
-        }
-    }
 }

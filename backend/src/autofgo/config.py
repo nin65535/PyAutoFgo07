@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     chrome_executable: Path | None = None
     chrome_profile_directory: Path = Path(".autofgo/chrome-profile")
     chrome_app_url: str = "http://127.0.0.1:5173"
+    static_directory: Path | None = None
     chrome_window_left: int = 0
     chrome_window_top: int = 0
     chrome_window_width: int = 200
