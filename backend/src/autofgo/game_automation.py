@@ -10,6 +10,9 @@ from typing import Protocol
 
 from PIL import Image
 
+from autofgo.card_colors import detect_card_colors
+from autofgo.card_identity import CardIdentityRecognizer
+from autofgo.card_selection import RecognizedCard, select_cards
 from autofgo.execution import ExecutionControl
 from autofgo.screen_operations import Point, ScreenOperator, ScreenRegion, create_screen_operator
 
@@ -27,6 +30,10 @@ class UnexpectedGameWindowSizeError(GameAutomationError):
 
 
 class BattleScreenTimeoutError(GameAutomationError):
+    pass
+
+
+class CardRecognitionError(GameAutomationError):
     pass
 
 
@@ -125,6 +132,7 @@ class GameAutomation:
         battle_timeout_seconds: float = 50.0,
         sleep: Callable[[float], None] | None = None,
         attack_template: Image.Image | None = None,
+        card_recognizer: CardIdentityRecognizer | None = None,
     ) -> None:
         self.operator = operator
         self.window_locator = window_locator
@@ -133,6 +141,7 @@ class GameAutomation:
         self.battle_timeout_seconds = battle_timeout_seconds
         self._sleep = sleep
         self._attack_template = attack_template
+        self._card_recognizer = card_recognizer
 
     def skill(self, skill_index: int, target_index: int | None, control: ExecutionControl) -> None:
         window = self._wait_for_battle(control)
@@ -168,6 +177,51 @@ class GameAutomation:
             self._click(window, NP_CARDS[index], control)
         for index in range(3 - len(noble_phantasm_indexes)):
             self._click(window, ATTACK_CARDS[index], control)
+
+    def attack_with_slots(
+        self, slots: list[str], front_members: list[str], control: ExecutionControl
+    ) -> None:
+        window = self._wait_for_battle(control)
+        self._click(window, ATTACK, control)
+        self._wait(0.5, control)
+        control.checkpoint()
+        screenshot = self.operator.capture(window, cancel=control.cancel_event)
+        if screenshot.size != (window.width, window.height):
+            raise CardRecognitionError("captured window size differs from expected size")
+        viewport = ScreenRegion(0, 34, 1920, 1080)
+        try:
+            colors = detect_card_colors(screenshot, viewport)
+            recognizer = self._card_recognizer
+            if recognizer is None:
+                recognizer = CardIdentityRecognizer.from_manifest(
+                    Path("card-data/references/manifest.json")
+                )
+                self._card_recognizer = recognizer
+            identities = recognizer.recognize(screenshot, viewport)
+            if any(identity.status != "recognized" for identity in identities):
+                raise CardRecognitionError(
+                    "card identity is uncertain: "
+                    + ", ".join(
+                        f"{identity.position}:{identity.reason}"
+                        for identity in identities
+                        if identity.status != "recognized"
+                    )
+                )
+            cards = [
+                RecognizedCard(
+                    color.position, color.color, identities[color.position].character_name or ""
+                )
+                for color in colors
+            ]
+            choices = select_cards(slots, cards, front_members)
+        except ValueError as error:
+            raise CardRecognitionError(str(error)) from error
+        control.checkpoint()
+        for choice in choices:
+            element = (
+                NP_CARDS[choice.position] if choice.kind == "np" else ATTACK_CARDS[choice.position]
+            )
+            self._click(window, element, control)
 
     def swap(self, front_index: int, back_index: int, control: ExecutionControl) -> None:
         window = self._wait_for_battle(control)

@@ -14,6 +14,7 @@ export type AttackCommand = {
   type: "attack";
   noblePhantasmIndexes: number[];
   cardSlots?: [string, string, string];
+  frontMembers?: [string, string, string];
 };
 
 export type SwapCommand = {

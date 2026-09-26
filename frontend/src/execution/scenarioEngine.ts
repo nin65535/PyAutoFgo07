@@ -44,14 +44,27 @@ export class ScenarioEngine {
 
   start(scenario: ValidatedScenario, waveIndex: number | null = null): void {
     this.cancel();
+    const roster = [...scenario.members];
     this.entries = scenario.commands.flatMap((group, groupIndex) =>
-      waveIndex === null || groupIndex === waveIndex
-        ? group.map((command, commandIndex) => ({
-            command,
-            groupIndex,
-            commandIndex,
-          }))
-        : [],
+      group.flatMap((command, commandIndex) => {
+        const entry = {
+          command:
+            command.type === "attack" && command.cardSlots
+              ? {
+                  ...command,
+                  frontMembers: roster.slice(0, 3) as [string, string, string],
+                }
+              : command,
+          groupIndex,
+          commandIndex,
+        };
+        if (command.type === "swap")
+          [roster[command.frontIndex], roster[command.backIndex]] = [
+            roster[command.backIndex],
+            roster[command.frontIndex],
+          ];
+        return waveIndex === null || groupIndex === waveIndex ? [entry] : [];
+      }),
     );
     this.index = 0;
     this.active = true;

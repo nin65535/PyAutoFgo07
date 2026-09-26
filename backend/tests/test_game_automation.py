@@ -4,9 +4,13 @@ from threading import Event
 from typing import Any
 
 import pytest
+from PIL import Image
 
+from autofgo.card_colors import CardColor
+from autofgo.card_identity import CardIdentity
 from autofgo.game_automation import (
     BattleScreenTimeoutError,
+    CardRecognitionError,
     GameAutomation,
     UnexpectedGameWindowSizeError,
 )
@@ -55,6 +59,9 @@ class FakeOperator:
     def click(self, point: Point, *, cancel: Event) -> None:
         self.clicks.append(point)
 
+    def capture(self, region: ScreenRegion, *, cancel: Event) -> Image.Image:
+        return Image.new("RGB", (region.width, region.height))
+
 
 def automation(operator: FakeOperator, locator: FakeWindowLocator | None = None) -> GameAutomation:
     return GameAutomation(
@@ -87,6 +94,67 @@ def test_attack_selects_noble_phantasms_then_fills_three_cards() -> None:
         Point(300, 780),
         Point(680, 780),
     ]
+
+
+def test_card_slots_recognize_and_select_before_card_clicks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import autofgo.game_automation as module
+
+    names = ["A", "B", "C", "A", "B"]
+    monkeypatch.setattr(
+        module,
+        "detect_card_colors",
+        lambda _image, _viewport: tuple(
+            CardColor(index, ScreenRegion(0, 0, 1, 1), color, {})
+            for index, color in enumerate("BQAAB")
+        ),
+    )
+
+    class Recognizer:
+        def recognize(
+            self, _image: Image.Image, _viewport: ScreenRegion
+        ) -> tuple[CardIdentity, ...]:
+            return tuple(
+                CardIdentity(i, "recognized", "matched", name, 1, 20, ())
+                for i, name in enumerate(names)
+            )
+
+    operator = FakeOperator()
+    subject = automation(operator)
+    subject._card_recognizer = Recognizer()  # type: ignore[assignment]
+    subject.attack_with_slots(["N0", "B1", "B0"], ["A", "B", "C"], FakeControl())  # type: ignore[arg-type]
+    assert operator.clicks == [
+        Point(1890, 1090),
+        Point(720, 350),
+        Point(1820, 780),
+        Point(300, 780),
+    ]
+
+
+def test_uncertain_card_identity_stops_before_card_click(monkeypatch: pytest.MonkeyPatch) -> None:
+    import autofgo.game_automation as module
+
+    monkeypatch.setattr(
+        module,
+        "detect_card_colors",
+        lambda *_args: tuple(CardColor(i, ScreenRegion(0, 0, 1, 1), "B", {}) for i in range(5)),
+    )
+
+    class Recognizer:
+        def recognize(
+            self, _image: Image.Image, _viewport: ScreenRegion
+        ) -> tuple[CardIdentity, ...]:
+            return tuple(
+                CardIdentity(i, "unknown", "low_similarity", None, 80, 2, ()) for i in range(5)
+            )
+
+    operator = FakeOperator()
+    subject = automation(operator)
+    subject._card_recognizer = Recognizer()  # type: ignore[assignment]
+    with pytest.raises(CardRecognitionError, match="low_similarity"):
+        subject.attack_with_slots(["B0", "", ""], ["A", "B", "C"], FakeControl())  # type: ignore[arg-type]
+    assert operator.clicks == [Point(1890, 1090)]
 
 
 def test_swap_preserves_legacy_click_order() -> None:

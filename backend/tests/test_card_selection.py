@@ -54,7 +54,12 @@ def test_incomplete_recognition_is_rejected():
 
 def test_attack_command_validates_typed_card_slots():
     command = AttackCommand.model_validate(
-        {"type": "attack", "noblePhantasmIndexes": [], "cardSlots": ["N1", "B1", "B1"]}
+        {
+            "type": "attack",
+            "noblePhantasmIndexes": [],
+            "cardSlots": ["N1", "B1", "B1"],
+            "frontMembers": MEMBERS,
+        }
     )
     assert command.card_slots == ["N1", "B1", "B1"]
     with pytest.raises(ValidationError):

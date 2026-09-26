@@ -41,6 +41,9 @@ class AttackCommand(CommandModel):
     card_slots: list[str] | None = Field(
         default=None, alias="cardSlots", min_length=3, max_length=3
     )
+    front_members: list[str] | None = Field(
+        default=None, alias="frontMembers", min_length=3, max_length=3
+    )
 
     @model_validator(mode="after")
     def validate_indexes(self) -> AttackCommand:
@@ -50,6 +53,10 @@ class AttackCommand(CommandModel):
             validate_slots(self.card_slots)
             if self.noble_phantasm_indexes:
                 raise ValueError("cardSlots and noblePhantasmIndexes cannot be combined")
+            if self.front_members is None or any(not name.strip() for name in self.front_members):
+                raise ValueError("cardSlots requires three frontMembers")
+        elif self.front_members is not None:
+            raise ValueError("frontMembers requires cardSlots")
         if any(index < 0 or index > 2 for index in self.noble_phantasm_indexes):
             raise ValueError("宝具インデックスは0以上2以下で指定してください。")
         if len(set(self.noble_phantasm_indexes)) != len(self.noble_phantasm_indexes):
@@ -99,11 +106,13 @@ def _master_skill_handler(command: ScenarioCommand, control: ExecutionControl) -
 def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
     if not isinstance(command, AttackCommand):
         raise TypeError("attack handler received an incompatible command")
-    if command.card_slots is not None:
-        raise RuntimeError("cardSlots execution requires R28 integration")
     from autofgo.game_automation import get_game_automation
 
-    get_game_automation().attack(command.noble_phantasm_indexes, control)
+    if command.card_slots is not None:
+        assert command.front_members is not None
+        get_game_automation().attack_with_slots(command.card_slots, command.front_members, control)
+    else:
+        get_game_automation().attack(command.noble_phantasm_indexes, control)
 
 
 def _swap_handler(command: ScenarioCommand, control: ExecutionControl) -> None:

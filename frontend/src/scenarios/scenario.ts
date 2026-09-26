@@ -104,6 +104,13 @@ export function validateScenario(value: unknown): ScenarioValidation {
     parsedGroups.push(parsed);
   });
   if (errors.length > 0) return { valid: false, errors };
+  if (
+    value.members.length < 3 &&
+    parsedGroups.some((group) =>
+      group.some((command) => command.type === "attack" && command.cardSlots),
+    )
+  )
+    return invalid("カード優先順位を使う場合、membersに前衛3名が必要です");
   return {
     valid: true,
     scenario: {
