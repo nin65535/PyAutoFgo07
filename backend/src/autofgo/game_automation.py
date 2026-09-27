@@ -361,3 +361,9 @@ def get_game_automation() -> GameAutomation:
     if _game_automation is None:
         _game_automation = GameAutomation(create_screen_operator(), WindowsWindowLocator())
     return _game_automation
+
+
+def begin_card_reference_snapshot() -> None:
+    """Load all reviewed PNGs at playback start, before accepting commands."""
+    recognizer = CardIdentityRecognizer.from_manifest(Path("card-data/references/manifest.json"))
+    get_game_automation()._card_recognizer = recognizer

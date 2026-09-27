@@ -214,6 +214,16 @@ async def execution_status(registry: CommandRegistryDependency) -> dict[str, obj
 
 @router.post("/start")
 async def start_execution(registry: CommandRegistryDependency) -> dict[str, object]:
+    from autofgo.execution import ExecutionState
+    from autofgo.game_automation import begin_card_reference_snapshot
+
+    if registry.manager.state not in {
+        ExecutionState.IDLE,
+        ExecutionState.STOPPED,
+        ExecutionState.COMPLETED,
+    }:
+        registry.manager.start()
+    begin_card_reference_snapshot()
     registry.manager.start()
     return {"data": registry.manager.snapshot()}
 

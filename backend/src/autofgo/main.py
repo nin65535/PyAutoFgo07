@@ -3,6 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from autofgo import companion_warning
 from autofgo.api_errors import request_validation_error_handler
 from autofgo.commands import (
     CommandConflictError,
@@ -38,11 +39,18 @@ app.add_exception_handler(InvalidExecutionStateError, invalid_state_handler)
 app.add_exception_handler(ExecutionUnavailableError, unavailable_handler)
 app.add_exception_handler(RequestValidationError, request_validation_error_handler)
 
-static_directory = get_settings().static_directory
-if static_directory is not None:
-    app.mount("/", StaticFiles(directory=static_directory, html=True), name="frontend")
-
 
 @app.get("/api/health", tags=["system"])
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/api/startup-warning", tags=["system"])
+async def startup_warning() -> dict[str, bool]:
+    return {"companionWasRunning": companion_warning.companion_was_running_at_start}
+
+
+# The catch-all frontend mount must come after every API route.
+static_directory = get_settings().static_directory
+if static_directory is not None:
+    app.mount("/", StaticFiles(directory=static_directory, html=True), name="frontend")

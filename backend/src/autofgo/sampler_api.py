@@ -20,8 +20,11 @@ MAX_IMAGE_PIXELS = 12_000_000
 
 
 class SamplerState:
-    def __init__(self, manifest: Path, scenarios: Path) -> None:
+    def __init__(
+        self, manifest: Path, scenarios: Path, *, companion_was_running: bool = False
+    ) -> None:
         self.manifest = manifest
+        self.companion_was_running = companion_was_running
         self.scenarios = scenarios
         self.security = SessionSecurity()
         self.image: Image.Image | None = None
@@ -61,6 +64,10 @@ class SamplerState:
 
 def create_sampler_app(state: SamplerState) -> FastAPI:
     app = FastAPI(title="autoFgo card sampler")
+
+    @app.get("/api/startup-warning")
+    def startup_warning():
+        return {"companionWasRunning": state.companion_was_running}
 
     @app.get("/")
     def landing():

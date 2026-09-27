@@ -426,3 +426,20 @@ dd {
     font-size: 0.55rem;
   }
 }
+.startup-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fff2c4;
+  border: 2px solid #bd8500;
+  color: #3c2900;
+}
+.startup-warning button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2rem;
+}

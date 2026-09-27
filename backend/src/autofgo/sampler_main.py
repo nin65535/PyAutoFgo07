@@ -7,6 +7,7 @@ from pathlib import Path
 import uvicorn
 
 from autofgo.browser import ChromeLauncher
+from autofgo.companion_warning import warn_if_companion_running
 from autofgo.config import Settings
 from autofgo.sampler_api import SamplerState, create_sampler_app
 
@@ -28,6 +29,7 @@ class SamplerChromeLauncher(ChromeLauncher):
 
 
 async def run() -> None:
+    companion_was_running = warn_if_companion_running("Player", Settings().port)
     settings = Settings(
         port=8010,
         chrome_profile_directory=Path(".autofgo/sampler-chrome-profile"),
@@ -35,7 +37,11 @@ async def run() -> None:
         chrome_window_width=1600,
         chrome_window_height=900,
     )
-    state = SamplerState(Path("card-data/references/manifest.json"), settings.scenario_directory)
+    state = SamplerState(
+        Path("card-data/references/manifest.json"),
+        settings.scenario_directory,
+        companion_was_running=companion_was_running,
+    )
     server = uvicorn.Server(
         uvicorn.Config(
             create_sampler_app(state),

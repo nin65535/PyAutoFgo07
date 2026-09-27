@@ -6,7 +6,22 @@ const headers = {
   Authorization: `Bearer ${fragment.get('autofgoToken') || ''}`,
 };
 let catalog, layout, card = 0, size, candidate = 0, sourceUrl, candidateUrls = [], loadVersion = 0;
+// API index 0 is the standard crop; display indices follow the crop's direction.
+const candidateGrid = [
+  [1, '左上'], [2, '上'], [3, '右上'],
+  [4, '左'], [0, '標準'], [5, '右'],
+  [6, '左下'], [7, '下'], [8, '右下'],
+];
 const show = (message, kind = '') => { $('status').textContent = message; $('status').className = kind; };
+async function showStartupWarning() {
+  try {
+    const result = await (await api('/api/startup-warning')).json();
+    if (result.companionWasRunning) {
+      $('startupWarning').hidden = false;
+      setTimeout(() => { $('startupWarning').hidden = true; }, 10000);
+    }
+  } catch { /* The sampler remains usable if the warning status is unavailable. */ }
+}
 async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: { ...headers, ...options.headers } });
   if (!response.ok) {
@@ -103,17 +118,18 @@ async function renderCandidates() {
     }));
     if (version !== loadVersion) { results.forEach((item) => URL.revokeObjectURL(item.url)); return; }
     candidateUrls = results.map((item) => item.url);
-    results.forEach((item, index) => {
+    candidateGrid.forEach(([index, direction]) => {
+      const item = results[index];
       const button = document.createElement('button'); const image = document.createElement('img');
-      image.src = item.url; image.alt = `候補 ${index + 1}`;
-      button.append(image, `${index + 1} · ${item.crop}`);
+      image.src = item.url; image.alt = `${direction}にずらした候補`;
+      button.append(image, `${direction} · ${item.crop}`);
       button.onclick = () => { candidate = index; selectCandidate(results); };
       $('candidates').append(button);
     }); selectCandidate(results); show('候補を比較してください');
   } catch (error) { show(`候補を生成できません: ${error.message}`, 'error'); }
 }
 function selectCandidate(results) {
-  [...$('candidates').children].forEach((button, index) => button.classList.toggle('active', index === candidate));
+  [...$('candidates').children].forEach((button, position) => button.classList.toggle('active', candidateGrid[position][0] === candidate));
   const chosen = results[candidate]; $('selected').replaceChildren();
   const image = document.createElement('img'); image.src = chosen.url; image.alt = '選択した切り出し';
   const details = document.createElement('p'); details.textContent = `候補 ${candidate + 1} / 元画像上の矩形: ${chosen.crop}`;
@@ -167,4 +183,6 @@ $('save').onclick = async () => {
   } catch (error) { show(`保存できません: ${error.message}`, 'error'); updateSummary(); }
 };
 refreshCatalog().then(() => show('画像を読み込んでください')).catch((error) => show(`一覧を取得できません: ${error.message}`, 'error'));
+showStartupWarning();
+$('dismissStartupWarning').onclick = () => { $('startupWarning').hidden = true; };
 live();

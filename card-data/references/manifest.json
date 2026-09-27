@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "nextCharacterId": 5,
-  "nextReferenceId": 10,
+  "nextCharacterId": 8,
+  "nextReferenceId": 18,
   "characters": [
     {
       "id": 1,
@@ -55,6 +55,49 @@
         "3": 2,
         "4": 2,
         "5": 2
+      }
+    },
+    {
+      "id": 5,
+      "name": "キャストリア",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    },
+    {
+      "id": 6,
+      "name": "LA",
+      "nextAppearanceId": 4,
+      "appearances": [
+        1,
+        2,
+        3
+      ],
+      "nextSampleNumbers": {
+        "1": 2,
+        "2": 2,
+        "3": 2
+      }
+    },
+    {
+      "id": 7,
+      "name": "ダ・ヴィンチ",
+      "nextAppearanceId": 5,
+      "appearances": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "nextSampleNumbers": {
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2
       }
     }
   ],
@@ -301,6 +344,214 @@
       "reviewed": true,
       "characterId": 4,
       "sampleNumber": 1
+    },
+    {
+      "id": 10,
+      "characterId": 5,
+      "appearanceId": 1,
+      "sampleNumber": 1,
+      "imagePath": "images/キャストリア-1-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "faf91d2b-9a21-457f-a148-665ac014c215",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          829,
+          419,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 11,
+      "characterId": 6,
+      "appearanceId": 1,
+      "sampleNumber": 1,
+      "imagePath": "images/LA-1-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "9180f9e4-523f-42ac-9153-e0c6fc7de708",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          834,
+          623,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 12,
+      "characterId": 6,
+      "appearanceId": 2,
+      "sampleNumber": 1,
+      "imagePath": "images/LA-2-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "5a774aa0-3ae8-48c4-9f45-d542843b92e6",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          834,
+          623,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 13,
+      "characterId": 6,
+      "appearanceId": 3,
+      "sampleNumber": 1,
+      "imagePath": "images/LA-3-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "fc8a2bfa-5c72-4258-91a6-cd8766e654e5",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          834,
+          623,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 14,
+      "characterId": 7,
+      "appearanceId": 1,
+      "sampleNumber": 1,
+      "imagePath": "images/ダ・ヴィンチ-1-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "c4000cb8-24ef-4e09-b064-8c359b49f7fc",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          829,
+          521,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 15,
+      "characterId": 7,
+      "appearanceId": 2,
+      "sampleNumber": 1,
+      "imagePath": "images/ダ・ヴィンチ-2-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "7f2f7a9b-228c-451d-a5f4-35e98bc7757b",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          829,
+          521,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 16,
+      "characterId": 7,
+      "appearanceId": 3,
+      "sampleNumber": 1,
+      "imagePath": "images/ダ・ヴィンチ-3-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "0802beac-9b31-46e9-a14d-ad00ac422f5a",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          829,
+          521,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
+    },
+    {
+      "id": 17,
+      "characterId": 7,
+      "appearanceId": 4,
+      "sampleNumber": 1,
+      "imagePath": "images/ダ・ヴィンチ-4-01.png",
+      "imageSize": [
+        105,
+        100
+      ],
+      "source": {
+        "kind": "statusScreenshot",
+        "sourceId": "e33ab475-0683-4868-af77-ea38083f4598",
+        "sourceSize": [
+          1962,
+          1114
+        ],
+        "crop": [
+          829,
+          521,
+          105,
+          100
+        ]
+      },
+      "reviewed": true
     }
   ]
 }

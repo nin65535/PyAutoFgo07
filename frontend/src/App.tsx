@@ -33,6 +33,7 @@ import {
   type ScenarioSummary,
   type ScenarioValidation,
 } from "./scenarios/scenario";
+import { authenticatedFetch } from "./api/session";
 
 type SseConnection = Pick<SseClient, "connect" | "close">;
 export type AppProps = {
@@ -112,6 +113,25 @@ export function App({
   const [scenarioError, setScenarioError] = useState<string>();
   const [controlPending, setControlPending] = useState(false);
   const [controlError, setControlError] = useState<string>();
+  const [startupWarning, setStartupWarning] = useState(false);
+  useEffect(() => {
+    if (!startupWarning) return;
+    const timer = window.setTimeout(() => setStartupWarning(false), 10000);
+    return () => window.clearTimeout(timer);
+  }, [startupWarning]);
+  useEffect(() => {
+    let active = true;
+    Promise.resolve()
+      .then(() => authenticatedFetch("/api/startup-warning"))
+      .then((response) => response.json())
+      .then((result: { companionWasRunning?: boolean }) => {
+        if (active) setStartupWarning(result.companionWasRunning === true);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
   const [progress, setProgress] = useState<ScenarioProgress>();
   useLayoutEffect(() => {
     if (
@@ -443,6 +463,21 @@ export function App({
         <p className="connection-alert" role="alert">
           バックエンドとの接続が切れました。この画面からは操作できません。
         </p>
+      )}
+
+      {startupWarning && (
+        <div className="startup-warning" role="alert">
+          <span>
+            カード参照サンプラーも起動中です。参照の変更は次のAll/Wave開始時に反映されます。
+          </span>
+          <button
+            type="button"
+            aria-label="同時起動の警告を閉じる"
+            onClick={() => setStartupWarning(false)}
+          >
+            ×
+          </button>
+        </div>
       )}
 
       {selected && (

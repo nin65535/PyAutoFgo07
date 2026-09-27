@@ -7,6 +7,7 @@ import uvicorn
 
 from autofgo.browser import BrowserLaunchError, ChromeLauncher
 from autofgo.commands import get_command_registry
+from autofgo.companion_warning import warn_if_companion_running
 from autofgo.config import get_settings
 from autofgo.events import event_broker
 from autofgo.logging_config import configure_logging
@@ -17,6 +18,7 @@ from autofgo.space_pause import GlobalSpacePause
 
 async def run() -> None:
     settings = get_settings()
+    warn_if_companion_running("Card sampler", 8010)
     log_path = configure_logging(
         settings.log_directory,
         level=settings.log_level,
