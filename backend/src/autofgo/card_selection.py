@@ -76,6 +76,12 @@ def select_cards(
                 chosen[index] = CardChoice("card", match.position, preference)
                 used.add(match.position)
                 break
+    if any(slot and not slot.startswith("N") for slot in slots):
+        unexpected = sorted({card.character_name for card in cards} - set(names))
+        if unexpected:
+            raise ValueError(
+                f"recognized cards do not match front members: {', '.join(unexpected)}"
+            )
     for index, choice in enumerate(chosen):
         if choice is None:
             match = next(card for card in cards_by_position if card.position not in used)

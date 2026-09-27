@@ -187,6 +187,41 @@ def test_uncertain_card_identity_stops_before_card_click(
     assert operator.clicks == [Point(1890, 1090)]
 
 
+def test_front_member_mismatch_stops_before_card_click(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import autofgo.game_automation as module
+
+    monkeypatch.setattr(
+        module,
+        "detect_card_colors",
+        lambda *_args: tuple(CardColor(i, ScreenRegion(0, 0, 1, 1), "B", {}) for i in range(5)),
+    )
+
+    class Recognizer:
+        def recognize(
+            self, _image: Image.Image, _viewport: ScreenRegion
+        ) -> tuple[CardIdentity, ...]:
+            return tuple(CardIdentity(i, "recognized", "matched", "X", 1, 20, ()) for i in range(5))
+
+    operator = FakeOperator()
+    subject = automation(operator)
+    subject.failure_capture_dir = tmp_path / "card-failures"
+    subject._card_recognizer = Recognizer()  # type: ignore[assignment]
+    reports = []
+    with pytest.raises(CardRecognitionError, match="do not match front members"):
+        subject.attack_with_slots(
+            ["B1", "", ""],
+            ["A", "B", "C"],
+            FakeControl(),
+            report=lambda *args: reports.append(args),
+        )  # type: ignore[arg-type]
+    assert [event for event, _data in reports] == ["cards.failed"]
+    assert reports[0][1]["identities"][0]["characterName"] == "X"
+    assert reports[0][1]["frontMembers"] == ["A", "B", "C"]
+    assert operator.clicks == [Point(1890, 1090)]
+
+
 def test_swap_preserves_legacy_click_order() -> None:
     operator = FakeOperator()
 

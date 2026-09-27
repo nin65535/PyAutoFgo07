@@ -11,7 +11,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
 
-from autofgo.card_references import allocate, read_manifest, save_reference
+from autofgo.card_references import read_manifest, register_reference
 from autofgo.security import SessionSecurity
 from autofgo.status_card_candidates import SIZE_PRESETS, detect_layout, generate_candidates
 
@@ -223,8 +223,6 @@ def create_sampler_app(state: SamplerState) -> FastAPI:
             try:
                 if state.image is None or source_id != state.source_id:
                     raise ValueError("source image is unavailable")
-                data = read_manifest(state.manifest, missing_ok=True)
-                rid, cid, aid, sample, image_path = allocate(data, name, appearance)
                 source = {
                     "kind": "statusScreenshot",
                     "sourceId": source_id,
@@ -236,17 +234,9 @@ def create_sampler_app(state: SamplerState) -> FastAPI:
                     if not isinstance(source_url, str) or len(source_url) > 2048:
                         raise ValueError("invalid sourceUrl")
                     source["sourceUrl"] = source_url
-                entry = {
-                    "id": rid,
-                    "characterId": cid,
-                    "appearanceId": aid,
-                    "sampleNumber": sample,
-                    "imagePath": image_path,
-                    "imageSize": list(item.image.size),
-                    "source": source,
-                    "reviewed": True,
-                }
-                target = save_reference(state.manifest, data, entry, item.image)
+                entry, target = register_reference(
+                    state.manifest, name, appearance, item.image, source
+                )
             except (OSError, ValueError) as exc:
                 raise HTTPException(422, str(exc)) from exc
             state.clear()

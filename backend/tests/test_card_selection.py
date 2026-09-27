@@ -63,6 +63,12 @@ def test_incomplete_recognition_is_rejected():
         select_cards(["B1", "", ""], CARDS[:4], MEMBERS)
 
 
+def test_recognized_cards_outside_front_members_are_rejected():
+    cards = [RecognizedCard(index, "B", "X") for index in range(5)]
+    with pytest.raises(ValueError, match="do not match front members: X"):
+        select_cards(["B1", "", ""], cards, MEMBERS)
+
+
 def test_attack_command_validates_typed_card_slots():
     command = AttackCardsCommand.model_validate(
         {

@@ -1,9 +1,34 @@
 import json
+import multiprocessing
+import os
+from pathlib import Path
 
+import pytest
 from PIL import Image
 
-from autofgo.card_references import allocate, read_manifest
+from autofgo.card_references import (
+    _save_reference,
+    allocate,
+    read_manifest,
+    reference_write_lock,
+    register_reference,
+)
 from autofgo.card_sampler import main
+
+
+def _source(name: str) -> dict:
+    return {
+        "kind": "statusScreenshot",
+        "sourceId": name,
+        "sourceSize": [2, 2],
+        "crop": [0, 0, 2, 2],
+    }
+
+
+def _register_in_process(path: Path, ready, done) -> None:
+    ready.set()
+    register_reference(path, "Alice", None, Image.new("RGB", (2, 2)), _source("Alice"))
+    done.set()
 
 
 def test_preview_and_register(tmp_path):
@@ -79,3 +104,73 @@ def test_allocated_numbers_survive_deleted_entries(tmp_path):
     assert allocate(data, "アーラシュ", 1)[:4] == (2, 1, 1, 2)
     assert allocate(data, "アーラシュ", None)[:4] == (3, 1, 2, 1)
     assert allocate(data, "ダイダロス", None)[:4] == (4, 2, 1, 1)
+
+
+def test_process_writer_waits_for_manifest_lock_and_keeps_both_references(tmp_path):
+    path = tmp_path / "references" / "manifest.json"
+    context = multiprocessing.get_context("spawn")
+    ready, done = context.Event(), context.Event()
+    process = context.Process(target=_register_in_process, args=(path, ready, done))
+    try:
+        with reference_write_lock(path):
+            process.start()
+            assert ready.wait(10)
+            assert not done.wait(0.3)
+            assert not path.exists()
+    finally:
+        if process.pid is not None:
+            process.join(10)
+            if process.is_alive():
+                process.terminate()
+                process.join()
+    assert process.exitcode == 0
+    register_reference(path, "Bob", None, Image.new("RGB", (2, 2)), _source("Bob"))
+    data = read_manifest(path)
+    assert [entry["id"] for entry in data["references"]] == [1, 2]
+    assert [character["name"] for character in data["characters"]] == ["Alice", "Bob"]
+    assert sorted(p.name for p in (path.parent / "images").iterdir()) == [
+        "Alice-1-01.png",
+        "Bob-1-01.png",
+    ]
+
+
+def test_failed_exclusive_creation_does_not_delete_other_writers_image(tmp_path, monkeypatch):
+    path = tmp_path / "references" / "manifest.json"
+    data = read_manifest(path, missing_ok=True)
+    rid, cid, aid, sample, image_path = allocate(data, "Alice", None)
+    entry = {
+        "id": rid,
+        "characterId": cid,
+        "appearanceId": aid,
+        "sampleNumber": sample,
+        "imagePath": image_path,
+        "imageSize": [2, 2],
+        "source": _source("Alice"),
+        "reviewed": True,
+    }
+    target = path.parent / image_path
+    original_open = Path.open
+
+    def competing_open(self, mode="r", *args, **kwargs):
+        if self == target and mode == "xb":
+            target.write_bytes(b"other writer")
+        return original_open(self, mode, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", competing_open)
+    with pytest.raises(FileExistsError):
+        _save_reference(path, data, entry, Image.new("RGB", (2, 2)))
+    assert target.read_bytes() == b"other writer"
+    assert not path.exists()
+
+
+def test_own_image_is_removed_when_manifest_replace_fails(tmp_path, monkeypatch):
+    path = tmp_path / "references" / "manifest.json"
+
+    def fail_replace(_source_path, _target_path):
+        raise OSError("replacement failed")
+
+    monkeypatch.setattr(os, "replace", fail_replace)
+    with pytest.raises(OSError, match="replacement failed"):
+        register_reference(path, "Alice", None, Image.new("RGB", (2, 2)), _source("Alice"))
+    assert not (path.parent / "images" / "Alice-1-01.png").exists()
+    assert not path.exists()

@@ -16,6 +16,8 @@
 
 サンプラーで承認済み参照を追加したら、`card-data/references/manifest.json` と対応する `card-data/references/images/` のPNGを一組として確認し、Gitへコミットして共有する。評価ラベルを追加・修正した場合は `card-data/evaluation/manifest.json` も確認してコミットする。配布先は通常のソース更新でこれらを受け取る。元のステータス画面・戦闘画面画像、プレビュー画像、`card-data/evaluation/images/` の検証用画像はGitへ追加しない。参照の登録・判定確認は[衣装データ追加手順](card-appearance-registration.md)に従う。
 
+参照登録時には `card-data/references/.manifest.lock` を使う。これはローカルの排他制御用ファイルでGitへ追加しない。サンプラーやCLIが登録中は削除しない。アプリ終了後にファイルが残るのは正常で、OSのロックはプロセス終了時に解放される。
+
 ## 攻撃ボタン画像の再採取
 
 ゲーム更新後に攻撃ボタンの画像照合が失敗する場合、LDPlayerを戦闘画面にして攻撃ボタンを表示し、他のウィンドウを重ねずに`collect-attack-sample.cmd`を実行する。案内に従ってキーを押すと、現在のLDPlayerウィンドウ内から20×20ピクセルを採取する。ウィンドウが見つからない場合や想定サイズと異なる場合は採取しない。

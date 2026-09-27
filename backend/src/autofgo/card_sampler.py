@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PIL import Image, ImageOps
 
-from autofgo.card_references import allocate, read_manifest, save_reference
+from autofgo.card_references import register_reference
 
 
 def rectangle(value: str) -> tuple[int, int, int, int]:
@@ -38,10 +38,6 @@ def sample(args: argparse.Namespace) -> Path:
     manifest_path = args.manifest
     if not args.confirmed:
         raise ValueError("inspect a preview first, then pass --confirmed to register")
-    data = read_manifest(manifest_path, missing_ok=True)
-    rid, cid, aid, sample_number, image_path = allocate(
-        data, args.character_name, args.appearance_id
-    )
     source = {
         "kind": "statusScreenshot",
         "sourceId": args.source_id,
@@ -50,17 +46,10 @@ def sample(args: argparse.Namespace) -> Path:
     }
     if args.source_url:
         source["sourceUrl"] = args.source_url
-    entry = {
-        "id": rid,
-        "characterId": cid,
-        "appearanceId": aid,
-        "sampleNumber": sample_number,
-        "imagePath": image_path,
-        "imageSize": list(cropped.size),
-        "source": source,
-        "reviewed": True,
-    }
-    return save_reference(manifest_path, data, entry, cropped)
+    _, target = register_reference(
+        manifest_path, args.character_name, args.appearance_id, cropped, source
+    )
+    return target
 
 
 def main(argv: list[str] | None = None) -> int:

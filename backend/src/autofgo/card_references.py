@@ -4,9 +4,13 @@ import json
 import os
 import re
 import tempfile
+import threading
+from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
 
 from PIL import Image
+
+_write_lock = threading.Lock()
 
 
 def _positive(value: object, label: str) -> int:
@@ -195,8 +199,62 @@ def allocate(data: dict, name: str, appearance_id: int | None) -> tuple[int, int
     )
 
 
-def save_reference(path: Path, data: dict, entry: dict, image: Image.Image) -> Path:
-    """Publish image then manifest; roll back the image if manifest replacement fails."""
+@contextmanager
+def reference_write_lock(path: Path):
+    """Serialize reference updates across threads and sampler/CLI processes."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = path.parent / ".manifest.lock"
+    with _write_lock, lock_path.open("a+b") as stream:
+        stream.seek(0, os.SEEK_END)
+        if stream.tell() == 0:
+            stream.write(b"\0")
+            stream.flush()
+        stream.seek(0)
+        if os.name == "nt":
+            import msvcrt
+
+            msvcrt.locking(stream.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(stream.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            stream.seek(0)
+            if os.name == "nt":
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+
+
+def register_reference(
+    path: Path,
+    name: str,
+    appearance_id: int | None,
+    image: Image.Image,
+    source: dict,
+) -> tuple[dict, Path]:
+    """Allocate and save one reference against the latest manifest."""
+    with reference_write_lock(path):
+        data = read_manifest(path, missing_ok=True)
+        rid, cid, aid, sample, image_path = allocate(data, name, appearance_id)
+        entry = {
+            "id": rid,
+            "characterId": cid,
+            "appearanceId": aid,
+            "sampleNumber": sample,
+            "imagePath": image_path,
+            "imageSize": list(image.size),
+            "source": source,
+            "reviewed": True,
+        }
+        target = _save_reference(path, data, entry, image)
+        return entry, target
+
+
+def _save_reference(path: Path, data: dict, entry: dict, image: Image.Image) -> Path:
+    """Publish within the write lock; roll back owned image on failure."""
     if image.size != tuple(entry["imageSize"]):
         raise ValueError("PNG dimensions differ from manifest")
     data["references"].append(entry)
@@ -214,12 +272,15 @@ def save_reference(path: Path, data: dict, entry: dict, image: Image.Image) -> P
             stream.flush()
             os.fsync(stream.fileno())
         # Exclusive creation avoids replacing an existing image.
+        created = False
         try:
             with target.open("xb") as stream:
+                created = True
                 image.save(stream, format="PNG")
             os.replace(temp_name, path)
         except Exception:
-            target.unlink(missing_ok=True)
+            if created:
+                target.unlink(missing_ok=True)
             raise
     finally:
         if os.path.exists(temp_name):
