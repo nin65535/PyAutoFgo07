@@ -611,7 +611,7 @@ export function App({
           {progress && (
             <p className="execution-progress" role="status" aria-live="polite">
               {progress.error
-                ? `停止: ${progress.error}`
+                ? `エラー: ${progress.error}`
                 : progress.completedCount === progress.totalCount
                   ? `${runningTarget}: ${progress.totalCount}件の命令を完了しました`
                   : `${runningTarget}: ${progress.completedCount}/${progress.totalCount}件完了・wave ${progress.groupIndex + 1} 命令${progress.commandIndex + 1}（${progress.waiting ? "完了通知待ち" : "処理中"}）`}

@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import re
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+LOCAL_CHROME_AUTHORITY = re.compile(
+    r"(?:localhost|127\.0\.0\.1|\[::1\])(?::[0-9]{1,5})?\Z", re.IGNORECASE
+)
 
 
 class Settings(BaseSettings):
@@ -48,7 +54,21 @@ class Settings(BaseSettings):
             raise ValueError("Chrome window width and height must be positive")
         if self.log_max_bytes <= 0 or self.log_backup_count < 0:
             raise ValueError("log rotation settings must be non-negative")
-        if not self.chrome_app_url.startswith(("http://127.0.0.1", "http://localhost")):
+        if self.chrome_app_url != self.chrome_app_url.strip() or any(
+            ord(character) < 32 or character == "\\" for character in self.chrome_app_url
+        ):
+            raise ValueError("Chrome app URL must use HTTP on localhost")
+        try:
+            parsed_url = urlsplit(self.chrome_app_url)
+            port = parsed_url.port
+        except ValueError as error:
+            raise ValueError("Chrome app URL must use HTTP on localhost") from error
+        if (
+            parsed_url.scheme != "http"
+            or not LOCAL_CHROME_AUTHORITY.fullmatch(parsed_url.netloc)
+            or parsed_url.hostname not in {"127.0.0.1", "localhost", "::1"}
+            or port == 0
+        ):
             raise ValueError("Chrome app URL must use HTTP on localhost")
         return self
 

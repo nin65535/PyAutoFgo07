@@ -248,29 +248,55 @@ describe("ScenarioEngine", () => {
     });
   });
 
-  it("reports submission failures without dispatching the next command", async () => {
+  it("requests stop when submission was accepted but its HTTP response was lost", async () => {
+    let accepted = false;
     const submit = vi.fn(async () => {
-      throw new Error("送信エラー");
+      accepted = true;
+      throw new Error("HTTP応答が失われました");
+    });
+    const stop = vi.fn(async () => {
+      expect(accepted).toBe(true);
     });
     const progress: ScenarioProgress[] = [];
     const engine = new ScenarioEngine({
       submit,
       complete: async () => undefined,
-      stop: async () => undefined,
+      stop,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "id",
     });
 
     engine.start(scenario);
 
-    await vi.waitFor(() =>
-      expect(progress.at(-1)).toMatchObject({
-        completedCount: 0,
-        waiting: false,
-        error: "送信エラー",
-      }),
-    );
+    await vi.waitFor(() => expect(stop).toHaveBeenCalledOnce());
+    expect(progress.at(-1)).toMatchObject({
+      completedCount: 0,
+      waiting: false,
+      error: expect.stringContaining("停止を要求しました"),
+    });
     expect(submit).toHaveBeenCalledOnce();
+    engine.handleEvent(terminalEvent("command.completed", "id"));
+    expect(submit).toHaveBeenCalledOnce();
+  });
+
+  it("shows an unresolved stop state when submission and stop requests fail", async () => {
+    const progress: ScenarioProgress[] = [];
+    const stop = vi.fn(async () => {
+      throw new Error("停止APIに接続できません");
+    });
+    const engine = new ScenarioEngine({
+      submit: async () => {
+        throw new Error("HTTP応答が失われました");
+      },
+      complete: async () => undefined,
+      stop,
+      onProgress: (value) => progress.push(value),
+    });
+
+    engine.start(scenario);
+
+    await vi.waitFor(() => expect(stop).toHaveBeenCalledOnce());
+    expect(progress.at(-1)?.error).toContain("停止状態を確認できませんでした");
   });
 
   it("completes an empty scenario without submitting a command", async () => {

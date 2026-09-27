@@ -149,8 +149,23 @@ export class ScenarioEngine {
       await this.options.submit(commandId, entry.command);
     } catch (error) {
       if (this.active && this.currentId === commandId)
-        this.fail(
-          error instanceof Error ? error.message : "指令を送信できませんでした",
+        await this.stopAfterSubmissionError(error);
+    }
+  }
+
+  private async stopAfterSubmissionError(error: unknown): Promise<void> {
+    const generation = this.generation;
+    const reason = error instanceof Error ? error.message : String(error);
+    this.fail(
+      `指令の送信結果を確認できませんでした: ${reason}。通常停止を要求しました`,
+    );
+    try {
+      await this.options.stop();
+    } catch (stopError) {
+      if (generation === this.generation)
+        this.emit(
+          false,
+          `指令送信エラーの後、停止状態を確認できませんでした: ${stopError instanceof Error ? stopError.message : String(stopError)}`,
         );
     }
   }

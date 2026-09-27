@@ -230,6 +230,52 @@ describe("App", () => {
     ).toBeDisabled();
   });
 
+  it("requests backend stop and shows an error when a command response is lost", async () => {
+    const scenarioApi: ScenarioApi = {
+      list: async () => [
+        {
+          id: "alpha",
+          displayName: "Alpha",
+          modifiedAt: "2026-09-22T00:00:00.000Z",
+        },
+      ],
+      get: async () => ({
+        id: "alpha",
+        displayName: "Alpha",
+        modifiedAt: "2026-09-22T00:00:00.000Z",
+        content: { schemaVersion: 1, members: ["A"], commands: [["skill(0)"]] },
+      }),
+    };
+    const act = vi.fn(
+      async (
+        action: "start" | "pause" | "resume" | "stop" | "emergency-stop",
+      ) => snapshot(action === "start" ? "running" : "stopped"),
+    );
+    render(
+      <App
+        createSseClient={clientFactory("active")}
+        scenarioApi={scenarioApi}
+        executionApi={{
+          ...executionApiWith(act),
+          submit: async () => {
+            throw new Error("HTTP応答が失われました");
+          },
+        }}
+      />,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: /Alpha/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "All(0/1)" }));
+
+    await waitFor(() => expect(act).toHaveBeenCalledWith("stop"));
+    expect(
+      await screen.findByRole("img", { name: "実行状態：停止済み" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/エラー: 指令の送信結果を確認できませんでした/),
+    ).toHaveTextContent("通常停止を要求しました");
+  });
+
   it("closes Control and clears the selected Scenario while idle", async () => {
     const scenarioApi: ScenarioApi = {
       list: async () => [

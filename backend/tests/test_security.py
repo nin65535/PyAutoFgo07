@@ -73,3 +73,34 @@ def test_session_token_is_invalid_after_invalidation() -> None:
 def test_settings_reject_non_loopback_host() -> None:
     with pytest.raises(ValueError, match="loopback"):
         Settings(host="0.0.0.0")
+
+
+@pytest.mark.parametrize(
+    "app_url",
+    [
+        "http://localhost.attacker.invalid:5173",
+        "http://127.0.0.1.attacker.invalid:5173",
+        "http://localhost@attacker.invalid:5173",
+        "http://attacker.invalid@localhost:5173",
+        "http://localhost:65536",
+        "http://localhost:0",
+        "https://localhost:5173",
+        "http://localhost\\@attacker.invalid:5173",
+        "http://localhost\n:5173",
+    ],
+)
+def test_settings_reject_nonlocal_chrome_app_url(app_url: str) -> None:
+    with pytest.raises(ValueError, match="Chrome app URL"):
+        Settings(chrome_app_url=app_url)
+
+
+@pytest.mark.parametrize(
+    "app_url",
+    [
+        "http://127.0.0.1:5173/app",
+        "http://localhost:5173/app",
+        "http://[::1]:5173/app",
+    ],
+)
+def test_settings_accept_loopback_chrome_app_url(app_url: str) -> None:
+    assert Settings(chrome_app_url=app_url).chrome_app_url == app_url
