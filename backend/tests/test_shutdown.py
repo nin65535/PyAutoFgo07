@@ -1,7 +1,20 @@
+import sys
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 from autofgo.execution import ExecutionManager, ExecutionState
-from autofgo.shutdown import EmergencyShutdown
+from autofgo.shutdown import EmergencyShutdown, release_inputs
+
+
+def test_release_inputs_does_not_send_right_button_up(monkeypatch) -> None:
+    mouse_up = Mock()
+    key_up = Mock()
+    monkeypatch.setitem(sys.modules, "pyautogui", SimpleNamespace(mouseUp=mouse_up, keyUp=key_up))
+
+    release_inputs()
+
+    mouse_up.assert_called_once_with(button="left")
+    assert key_up.call_count == 4
 
 
 def test_shutdown_cancels_work_releases_inputs_and_requests_server_exit() -> None:

@@ -11,8 +11,9 @@ def release_inputs() -> None:
     """Best-effort release of inputs that may remain held after an interrupted action."""
     import pyautogui
 
-    for button in ("left", "middle", "right"):
-        pyautogui.mouseUp(button=button)
+    # Screen operations only press the left button. Releasing an unheld right
+    # button can open the Windows desktop context menu after Chrome closes.
+    pyautogui.mouseUp(button="left")
     for key in ("shift", "ctrl", "alt", "win"):
         pyautogui.keyUp(key)
 
