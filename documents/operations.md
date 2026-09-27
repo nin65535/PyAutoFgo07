@@ -2,14 +2,18 @@
 
 ## 配布と初回セットアップ
 
-リポジトリのソース、`package-lock.json`、`frontend/package-lock.json`、`backend/constraints.txt`を配布する。運用データの`scenarios`はGit管理外なので別途配布・配置する。Node.js 22、Python 3.12、Chromeを導入し、READMEのセットアップを実行する。依存関係を固定したまま再現するため、npmは`ci`を使う。`.venv`、`node_modules`、`frontend/dist`は配布先で生成する。専用Chromeのプロファイルとログは`.autofgo`に生成される。
+リポジトリのソース、`package-lock.json`、`frontend/package-lock.json`、`backend/constraints.txt`を配布する。`card-data/references` の承認済み参照（manifestと切り出しPNG）と `card-data/evaluation/manifest.json` は、運用中に増える共有マスターデータとしてGitで管理し、ソースと一緒に配布する。運用データの`scenarios`はGit管理外なので別途配布・配置する。検証用の元画像 `card-data/evaluation/images/` もGit管理外で、検証する環境に別途配置する。Node.js 22、Python 3.12、Chromeを導入し、READMEのセットアップを実行する。依存関係を固定したまま再現するため、npmは`ci`を使う。`.venv`、`node_modules`、`frontend/dist`は配布先で生成する。専用Chromeのプロファイルとログは`.autofgo`に生成される。
 
 ## 起動・停止・更新・ログ
 
 - `start-autofgo.cmd`をダブルクリックする。ビルド済み画面がなければ起動は失敗するので、READMEのビルドを実行する。
 - 停止は専用Chromeのウィンドウを閉じる。実行中なら先に画面の停止・緊急停止を使う。Pythonと配信サーバーも終了する。
-- 更新はChromeを閉じてプロセスの終了を確認し、変更を取得してからREADMEの更新コマンドを実行する。`.env`、`scenarios`、`.autofgo`は更新前にバックアップする。
+- 更新はChromeを閉じてプロセスの終了を確認し、変更を取得してからREADMEの更新コマンドを実行する。`.env`、`scenarios`、`.autofgo`と、ローカルに配置した `card-data/evaluation/images/` は更新前にバックアップする。ローカルで追加・変更した `card-data` の管理対象ファイルは、取得前に内容を確認してコミットするか退避し、共有マスターの更新と衝突させない。
 - ログは`.autofgo/logs/autofgo.log`を確認する。最大2 MB、既定で5世代を保存する。起動前の失敗は復元されたコマンド画面に表示される。
+
+## カードデータの更新
+
+サンプラーで承認済み参照を追加したら、`card-data/references/manifest.json` と対応する `card-data/references/images/` のPNGを一組として確認し、Gitへコミットして共有する。評価ラベルを追加・修正した場合は `card-data/evaluation/manifest.json` も確認してコミットする。配布先は通常のソース更新でこれらを受け取る。元のステータス画面・戦闘画面画像、プレビュー画像、`card-data/evaluation/images/` の検証用画像はGitへ追加しない。参照の登録・判定確認は[衣装データ追加手順](card-appearance-registration.md)に従う。
 
 ## 攻撃ボタン画像の再採取
 

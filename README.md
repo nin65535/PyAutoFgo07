@@ -25,6 +25,11 @@ npm --prefix frontend run build
 必要なJSONは各環境で配置・バックアップしてください。選択したJSONの形式と命令は、
 実行開始前に画面で検証します。
 
+`card-data/references/` の承認済みカード参照と `card-data/evaluation/manifest.json` は、
+運用中に増える共有マスターデータとしてGitで管理します。参照を登録した環境では
+manifestと対応するPNGを確認してコミットし、通常の更新で他の環境へ配布します。
+検証用の元画像 `card-data/evaluation/images/` はGit管理外です。
+
 ## 通常の起動・停止
 
 Windowsでは、プロジェクト直下の `start-autofgo.cmd` をダブルクリックすると、
@@ -37,7 +42,7 @@ Windowsでは、プロジェクト直下の `start-autofgo.cmd` をダブルク�
 
 更新時は専用Chromeを閉じて終了を待ち、変更を取得した後に
 `npm ci`、`npm --prefix frontend ci`、`.\.venv\Scripts\python.exe -m pip install -c .\backend\constraints.txt -e ".\backend[dev]"`、
-`npm --prefix frontend run build` を再実行してください。`scenarios` と `.env` は更新前に別途バックアップしてください。
+`npm --prefix frontend run build` を再実行してください。`scenarios`、`.env`、ローカルに配置した検証用画像は更新前に別途バックアップしてください。未コミットの `card-data` の変更がある場合は、内容を確認してコミットするか退避してから変更を取得してください。
 
 異常終了、ポート競合、プロファイル破損からの復旧方法は
 [運用・復旧手順](documents/operations.md)を参照してください。
