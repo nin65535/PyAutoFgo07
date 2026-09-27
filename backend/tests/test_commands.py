@@ -1,8 +1,11 @@
+from unittest.mock import Mock
+
 import pytest
 from fastapi.testclient import TestClient
 
 from autofgo.commands import COMMAND_HANDLERS, CommandRegistry, get_command_registry
 from autofgo.main import app
+from autofgo.shutdown import EmergencyShutdown
 from tests.helpers import authentication_headers
 
 COMMAND_ID = "0195d84e-7c82-7a31-a261-a1db5a3f7190"
@@ -139,3 +142,25 @@ def test_complete_control_moves_empty_running_execution_to_completed(client: Tes
 
     assert response.status_code == 200
     assert response.json()["data"]["state"] == "completed"
+
+
+def test_emergency_stop_api_runs_shared_shutdown_before_reply() -> None:
+    registry = CommandRegistry()
+    release_inputs = Mock()
+    request_exit = Mock()
+    registry.emergency_shutdown = EmergencyShutdown(
+        registry.manager, request_exit, input_releaser=release_inputs
+    )
+    app.dependency_overrides[get_command_registry] = lambda: registry
+    try:
+        with TestClient(app, headers=authentication_headers()) as client:
+            response = client.post("/api/commands/emergency-stop")
+            repeated = client.post("/api/commands/emergency-stop")
+        assert response.status_code == 200
+        assert response.json()["data"]["state"] == "emergency_stopping"
+        assert response.json()["data"]["acceptingCommands"] is False
+        assert repeated.status_code == 200
+        release_inputs.assert_called_once_with()
+        request_exit.assert_called_once_with()
+    finally:
+        app.dependency_overrides.clear()

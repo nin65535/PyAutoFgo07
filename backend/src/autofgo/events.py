@@ -95,7 +95,9 @@ class EventBroker:
         subscriber = (loop, queue)
         with self._lock:
             self._subscribers.add(subscriber)
-        self._observe_connection("connected")
+            first_connection = len(self._subscribers) == 1
+        if first_connection:
+            self._observe_connection("connected")
         try:
             while not await request.is_disconnected():
                 try:
@@ -114,7 +116,9 @@ class EventBroker:
         finally:
             with self._lock:
                 self._subscribers.discard(subscriber)
-            self._observe_connection("disconnected")
+                last_connection = not self._subscribers
+            if last_connection:
+                self._observe_connection("disconnected")
 
 
 event_broker = EventBroker()

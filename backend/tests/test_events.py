@@ -62,6 +62,33 @@ def test_connection_observer_sees_establishment_and_disconnect() -> None:
     asyncio.run(exercise())
 
 
+def test_connection_observer_waits_for_last_subscriber_to_disconnect() -> None:
+    async def exercise() -> None:
+        states: list[str] = []
+        broker = EventBroker(heartbeat_seconds=1, connection_observer=states.append)
+        first = broker.stream(ConnectedRequest())  # type: ignore[arg-type]
+        second = broker.stream(ConnectedRequest())  # type: ignore[arg-type]
+        first_pending = asyncio.create_task(anext(first))
+        second_pending = asyncio.create_task(anext(second))
+        await asyncio.sleep(0)
+        broker.publish("ready", {})
+        await asyncio.gather(first_pending, second_pending)
+        assert states == ["connected"]
+
+        await first.aclose()
+        assert states == ["connected"]
+        next_event = asyncio.create_task(anext(second))
+        await asyncio.sleep(0)
+        broker.publish("still_connected", {})
+        fields, _ = parse_sse(await next_event)
+        assert fields["event"] == "still_connected"
+
+        await second.aclose()
+        assert states == ["connected", "disconnected"]
+
+    asyncio.run(exercise())
+
+
 def test_execution_manager_emits_ordered_command_events() -> None:
     events: list[tuple[str, dict[str, Any], str | None]] = []
     manager = ExecutionManager(

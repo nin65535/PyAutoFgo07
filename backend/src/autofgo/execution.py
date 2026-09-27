@@ -286,14 +286,20 @@ class ExecutionManager:
                 item.state = CommandState.CANCELLED
                 item.cancel_reason = item.cancel_reason or "normal_stop"
             except Exception as error:  # worker boundary: retain a safe summary only
-                item.state = CommandState.FAILED
-                item.error = type(error).__name__
                 with self._condition:
-                    previous = self._state
-                    self._state = ExecutionState.ERROR
-                    self._accepting = False
-                    self._emit_state(previous, self._state, "execution_failed")
-                    self._cancel_pending("execution_failed")
+                    if self._cancel_event.is_set():
+                        # A stop that won the state lock takes precedence over a
+                        # screen-operation cancellation or a concurrent failure.
+                        item.state = CommandState.CANCELLED
+                        item.cancel_reason = item.cancel_reason or "normal_stop"
+                    else:
+                        item.state = CommandState.FAILED
+                        item.error = type(error).__name__
+                        previous = self._state
+                        self._state = ExecutionState.ERROR
+                        self._accepting = False
+                        self._emit_state(previous, self._state, "execution_failed")
+                        self._cancel_pending("execution_failed")
             else:
                 item.state = CommandState.COMPLETED
             finally:

@@ -41,7 +41,8 @@ async def run() -> None:
     )
     server_task = asyncio.create_task(server.serve())
     launcher = ChromeLauncher(settings)
-    space_pause = GlobalSpacePause(get_command_registry().manager)
+    registry = get_command_registry()
+    space_pause = GlobalSpacePause(registry.manager)
     connection_lost = asyncio.Event()
     was_connected = False
 
@@ -53,9 +54,10 @@ async def run() -> None:
             connection_lost.set()
 
     shutdown = EmergencyShutdown(
-        get_command_registry().manager,
+        registry.manager,
         lambda: setattr(server, "should_exit", True),
     )
+    registry.emergency_shutdown = shutdown
     event_broker.set_connection_observer(observe_connection)
 
     try:
@@ -79,8 +81,9 @@ async def run() -> None:
         elif disconnect_task in done:
             shutdown.trigger("sse_disconnected")
             launcher.terminate()
-        elif server_task in done and not shutdown.triggered:
-            shutdown.trigger("backend_server_stopped")
+        elif server_task in done:
+            if not shutdown.triggered:
+                shutdown.trigger("backend_server_stopped")
             launcher.terminate()
         await server_task
         for task in (process_task, disconnect_task):
@@ -95,6 +98,7 @@ async def run() -> None:
         space_pause.close()
         session_security.invalidate()
         event_broker.set_connection_observer(None)
+        registry.emergency_shutdown = None
         launcher.close()
 
 

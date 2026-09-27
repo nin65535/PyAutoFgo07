@@ -14,7 +14,7 @@ from autofgo.execution import (
     InvalidExecutionStateError,
     QueuedCommand,
 )
-from autofgo.screen_operations import Point, ScreenOperator, ScreenRegion
+from autofgo.screen_operations import OperationCancelledError, Point, ScreenOperator, ScreenRegion
 
 
 def wait_until(predicate: Callable[[], bool], timeout: float = 1.0) -> None:
@@ -98,6 +98,92 @@ def test_normal_stop_cancels_current_and_pending_commands() -> None:
     assert pending.state == CommandState.CANCELLED
     assert pending.cancel_reason == "normal_stop"
     manager.close()
+
+
+@pytest.mark.parametrize("emergency", [False, True])
+def test_screen_operation_cancel_keeps_stop_state(emergency: bool) -> None:
+    manager = ExecutionManager()
+    capture_started = Event()
+    release_capture = Event()
+
+    class Backend:
+        def screenshot(self, region: tuple[int, int, int, int]) -> object:
+            capture_started.set()
+            assert release_capture.wait(1)
+            return object()
+
+    def handler(_value: object, control: ExecutionControl) -> None:
+        operator = ScreenOperator(Backend(), ScreenRegion(0, 0, 100, 100))
+        operator.capture(ScreenRegion(0, 0, 10, 10), cancel=control.cancel_event)
+
+    current = QueuedCommand("capture", None, handler)
+    pending = QueuedCommand("pending", None, lambda value, control: None)
+    manager.enqueue(current)
+    manager.enqueue(pending)
+    try:
+        assert capture_started.wait(1)
+        if emergency:
+            manager.emergency_stop("test_emergency")
+        else:
+            manager.stop()
+        release_capture.set()
+        wait_until(lambda: current.finished_at is not None)
+        if not emergency:
+            wait_until(lambda: manager.state == ExecutionState.STOPPED)
+
+        assert current.state == CommandState.CANCELLED
+        assert current.error is None
+        assert current.cancel_reason == ("test_emergency" if emergency else "normal_stop")
+        assert pending.state == CommandState.CANCELLED
+        assert manager.state == (
+            ExecutionState.EMERGENCY_STOPPING if emergency else ExecutionState.STOPPED
+        )
+        if not emergency:
+            manager.start()
+            assert manager.state == ExecutionState.RUNNING
+    finally:
+        release_capture.set()
+        manager.close()
+
+
+def test_screen_operation_cancel_without_stop_is_a_failure() -> None:
+    manager = ExecutionManager()
+
+    def handler(_value: object, _control: ExecutionControl) -> None:
+        raise OperationCancelledError("unexpected cancellation")
+
+    item = QueuedCommand("capture", None, handler)
+    manager.enqueue(item)
+    wait_until(lambda: item.finished_at is not None)
+    assert item.state == CommandState.FAILED
+    assert item.error == "OperationCancelledError"
+    assert manager.state == ExecutionState.ERROR
+    manager.close()
+
+
+def test_failure_after_emergency_stop_does_not_override_stop_state() -> None:
+    manager = ExecutionManager()
+    entered = Event()
+    release_failure = Event()
+
+    def handler(_value: object, _control: ExecutionControl) -> None:
+        entered.set()
+        assert release_failure.wait(1)
+        raise RuntimeError("failure concurrent with stop")
+
+    item = QueuedCommand("current", None, handler)
+    manager.enqueue(item)
+    try:
+        assert entered.wait(1)
+        manager.emergency_stop("test_emergency")
+        release_failure.set()
+        wait_until(lambda: item.finished_at is not None)
+        assert item.state == CommandState.CANCELLED
+        assert item.cancel_reason == "test_emergency"
+        assert manager.state == ExecutionState.EMERGENCY_STOPPING
+    finally:
+        release_failure.set()
+        manager.close()
 
 
 def test_stop_between_input_check_and_click_does_not_click() -> None:

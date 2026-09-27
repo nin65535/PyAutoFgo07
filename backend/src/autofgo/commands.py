@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
@@ -15,6 +15,9 @@ from autofgo.execution import (
     InvalidExecutionStateError,
     QueuedCommand,
 )
+
+if TYPE_CHECKING:
+    from autofgo.shutdown import EmergencyShutdown
 
 
 class CommandModel(BaseModel):
@@ -148,6 +151,7 @@ class CommandRegistry:
 
     def __init__(self, manager: ExecutionManager | None = None) -> None:
         self.manager = manager or ExecutionManager(start_worker=False)
+        self.emergency_shutdown: EmergencyShutdown | None = None
         self._requests: dict[str, CommandRequest] = {}
 
     def accept(self, command_request: CommandRequest) -> tuple[QueuedCommand, bool]:
@@ -248,7 +252,10 @@ async def stop_execution(registry: CommandRegistryDependency) -> dict[str, objec
 
 @router.post("/emergency-stop")
 async def emergency_stop_execution(registry: CommandRegistryDependency) -> dict[str, object]:
-    registry.manager.emergency_stop()
+    if registry.emergency_shutdown is None:
+        registry.manager.emergency_stop()
+    else:
+        registry.emergency_shutdown.trigger("emergency_stop")
     return {"data": registry.manager.snapshot()}
 
 
