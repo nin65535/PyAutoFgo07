@@ -30,7 +30,3 @@
 5. ポート8000が使用中なら、PowerShellで`Get-NetTCPConnection -LocalPort 8000 -State Listen | Select-Object OwningProcess`を実行し、`Get-CimInstance Win32_Process -Filter "ProcessId = <PID>"`で所有者を確認する。このアプリの残留プロセスなら終了する。他のアプリなら、起動前のPowerShellで`$env:AUTOFGO_PORT = '8001'`を設定し、`./start-autofgo.cmd`を実行する。設定したポートは専用ChromeのURLにも反映される。
 
 ロックファイルやプロファイルを操作する前に、対応するプロセスが停止していることを確認する。
-
-## 保留事項
-
-- 2026-09-27 ユーザー報告: UI用の専用Chromeを閉じた後、デスクトップの右クリックメニューが表示される。終了時に未使用の右ボタンへ `mouseUp` を送っていたため、左ボタンだけを解放するよう修正した。修正後はメニューが出なくなったことをユーザーが実機で確認済み。
