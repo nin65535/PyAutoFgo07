@@ -18,8 +18,8 @@ from autofgo.card_identity import (
 FIXTURES = Path(__file__).parent / "fixtures" / "card_identity"
 
 
-def candidate(name, score, reference_id="ref"):
-    return IdentityCandidate(reference_id, name, "default", score, 1.3, (0, 0, 40, 40))
+def candidate(name, score, reference_id=1):
+    return IdentityCandidate(reference_id, name, 1, score, 1.3, (0, 0, 40, 40))
 
 
 @pytest.mark.parametrize(
@@ -63,7 +63,7 @@ def test_fixed_85_card_decision_regression():
                 IdentityCandidate(
                     c["referenceId"],
                     c["characterName"],
-                    "default",
+                    1,
                     c["score"],
                     c["scale"],
                     tuple(c["gameRect"]),
@@ -105,8 +105,8 @@ def test_rejects_invalid_reference(tmp_path, key, value):
 
 def test_matcher_rejects_identical_images_with_different_names():
     refs = tuple(
-        CardReference(name, name, "default", Image.new("RGB", (16, 16)), (16, 16))
-        for name in ("a", "b")
+        CardReference(index, name, 1, Image.new("RGB", (16, 16)), (16, 16))
+        for index, name in enumerate(("a", "b"), 1)
     )
     results = CardIdentityRecognizer(refs).recognize(Image.new("RGB", (1920, 1080)))
     assert len(results) == 5
@@ -117,8 +117,8 @@ def test_matcher_rejects_identical_images_with_different_names():
 
 def test_signed_difference_and_frame_offset():
     refs = tuple(
-        CardReference(name, name, "default", Image.new("RGB", (16, 16), color), (16, 16))
-        for name, color in (("black", "black"), ("white", "white"))
+        CardReference(index, name, 1, Image.new("RGB", (16, 16), color), (16, 16))
+        for index, (name, color) in enumerate((("black", "black"), ("white", "white")), 1)
     )
     recognizer = CardIdentityRecognizer(refs)
     screenshot = Image.new("RGB", (1962, 1114), "white")
@@ -171,11 +171,11 @@ def test_duplicate_ids_and_png_dimensions(tmp_path):
     data["references"].pop()
     data["references"][0]["imagePath"] = data["references"][1]["imagePath"]
     path.write_text(json.dumps(data), encoding="utf-8")
-    with pytest.raises(ValueError, match="dimensions"):
+    with pytest.raises(ValueError, match="imagePath"):
         load_references(path)
 
 
-@pytest.mark.parametrize("version", [True, "1", 2, None])
+@pytest.mark.parametrize("version", [True, "2", 1, 3, None])
 def test_rejects_unknown_or_coerced_schema_version(tmp_path, version):
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps({"schemaVersion": version, "references": []}), encoding="utf-8")

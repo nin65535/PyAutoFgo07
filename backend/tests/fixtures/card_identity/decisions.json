@@ -7,7 +7,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 27.2899,
             "scale": 1.7,
@@ -19,7 +19,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.0126,
             "scale": 1.3,
@@ -31,7 +31,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.3273,
             "scale": 1.3,
@@ -49,7 +49,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.1157,
             "scale": 1.6,
@@ -61,7 +61,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.4306,
             "scale": 1.3,
@@ -73,7 +73,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2419,
             "scale": 1.3,
@@ -91,7 +91,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 32.729,
             "scale": 1.7,
@@ -103,7 +103,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.966,
             "scale": 1.3,
@@ -115,7 +115,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 79.3157,
             "scale": 1.3,
@@ -133,7 +133,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 23.4622,
             "scale": 1.7,
@@ -145,7 +145,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.0751,
             "scale": 1.3,
@@ -157,7 +157,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.9601,
             "scale": 1.3,
@@ -175,7 +175,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.9202,
             "scale": 1.6,
@@ -187,7 +187,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.3197,
             "scale": 1.3,
@@ -199,7 +199,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4777,
             "scale": 1.3,
@@ -222,7 +222,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 23.9671,
             "scale": 1.7,
@@ -234,7 +234,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.3827,
             "scale": 1.3,
@@ -246,7 +246,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 64.68,
             "scale": 1.3,
@@ -264,7 +264,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.5018,
             "scale": 1.6,
@@ -276,7 +276,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.485,
             "scale": 1.3,
@@ -288,7 +288,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2517,
             "scale": 1.3,
@@ -306,7 +306,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 32.0738,
             "scale": 1.7,
@@ -318,7 +318,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.8064,
             "scale": 1.3,
@@ -330,7 +330,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 79.274,
             "scale": 1.3,
@@ -348,7 +348,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 22.3995,
             "scale": 1.7,
@@ -360,7 +360,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.1685,
             "scale": 1.3,
@@ -372,7 +372,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.0666,
             "scale": 1.3,
@@ -390,7 +390,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.1187,
             "scale": 1.7,
@@ -402,7 +402,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.3715,
             "scale": 1.3,
@@ -414,7 +414,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.5431,
             "scale": 1.3,
@@ -437,7 +437,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 27.2678,
             "scale": 1.7,
@@ -449,7 +449,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.0539,
             "scale": 1.3,
@@ -461,7 +461,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.3562,
             "scale": 1.3,
@@ -479,7 +479,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.75,
             "scale": 1.6,
@@ -491,7 +491,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.9523,
             "scale": 1.3,
@@ -503,7 +503,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.235,
             "scale": 1.3,
@@ -521,7 +521,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 29.2175,
             "scale": 1.7,
@@ -533,7 +533,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.0809,
             "scale": 1.3,
@@ -545,7 +545,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 79.1953,
             "scale": 1.3,
@@ -563,7 +563,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 23.6025,
             "scale": 1.7,
@@ -575,7 +575,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.0947,
             "scale": 1.3,
@@ -587,7 +587,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.9187,
             "scale": 1.3,
@@ -605,7 +605,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 29.2383,
             "scale": 1.7,
@@ -617,7 +617,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.3811,
             "scale": 1.3,
@@ -629,7 +629,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4852,
             "scale": 1.3,
@@ -652,7 +652,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 28.0866,
             "scale": 1.7,
@@ -664,7 +664,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.0086,
             "scale": 1.3,
@@ -676,7 +676,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.4389,
             "scale": 1.3,
@@ -694,7 +694,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.8611,
             "scale": 1.6,
@@ -706,7 +706,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.3874,
             "scale": 1.3,
@@ -718,7 +718,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2405,
             "scale": 1.3,
@@ -736,7 +736,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 31.131,
             "scale": 1.7,
@@ -748,7 +748,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.6253,
             "scale": 1.3,
@@ -760,7 +760,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 79.2477,
             "scale": 1.3,
@@ -778,7 +778,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 25.4333,
             "scale": 1.7,
@@ -790,7 +790,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.9234,
             "scale": 1.3,
@@ -802,7 +802,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.5631,
             "scale": 1.3,
@@ -820,7 +820,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.9202,
             "scale": 1.6,
@@ -832,7 +832,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.3197,
             "scale": 1.3,
@@ -844,7 +844,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4777,
             "scale": 1.3,
@@ -867,7 +867,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 28.6589,
             "scale": 1.6,
@@ -879,7 +879,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.757,
             "scale": 1.3,
@@ -891,7 +891,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.6262,
             "scale": 1.3,
@@ -909,7 +909,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.9492,
             "scale": 1.6,
@@ -921,7 +921,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.9893,
             "scale": 1.3,
@@ -933,7 +933,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.25,
             "scale": 1.3,
@@ -951,7 +951,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 32.576,
             "scale": 1.7,
@@ -963,7 +963,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.08,
             "scale": 1.3,
@@ -975,7 +975,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 79.294,
             "scale": 1.3,
@@ -993,7 +993,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 23.9477,
             "scale": 1.7,
@@ -1005,7 +1005,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.0974,
             "scale": 1.3,
@@ -1017,7 +1017,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.645,
             "scale": 1.3,
@@ -1035,7 +1035,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.106,
             "scale": 1.7,
@@ -1047,7 +1047,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.8021,
             "scale": 1.3,
@@ -1059,7 +1059,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.5321,
             "scale": 1.3,
@@ -1082,7 +1082,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.5223,
             "scale": 1.3,
@@ -1094,7 +1094,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.0481,
             "scale": 1.3,
@@ -1106,7 +1106,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.5069,
             "scale": 1.3,
@@ -1124,7 +1124,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.4288,
             "scale": 1.3,
@@ -1136,7 +1136,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 67.2515,
             "scale": 1.3,
@@ -1148,7 +1148,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 72.5874,
             "scale": 1.3,
@@ -1166,7 +1166,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 59.1174,
             "scale": 1.6,
@@ -1178,7 +1178,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 77.4126,
             "scale": 1.3,
@@ -1190,7 +1190,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 82.9571,
             "scale": 1.3,
@@ -1208,7 +1208,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 7.7538,
             "scale": 1.7,
@@ -1220,7 +1220,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.2998,
             "scale": 1.3,
@@ -1232,7 +1232,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 74.0052,
             "scale": 1.3,
@@ -1250,7 +1250,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.4933,
             "scale": 1.3,
@@ -1262,7 +1262,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 67.2889,
             "scale": 1.3,
@@ -1274,7 +1274,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 72.4421,
             "scale": 1.3,
@@ -1297,7 +1297,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.3839,
             "scale": 1.6,
@@ -1309,7 +1309,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 70.41,
             "scale": 1.3,
@@ -1321,7 +1321,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.25,
             "scale": 1.3,
@@ -1339,7 +1339,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 61.7233,
             "scale": 1.4,
@@ -1351,7 +1351,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.0709,
             "scale": 1.4,
@@ -1363,7 +1363,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 73.6227,
             "scale": 1.3,
@@ -1381,7 +1381,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 59.0189,
             "scale": 1.6,
@@ -1393,7 +1393,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 76.309,
             "scale": 1.3,
@@ -1405,7 +1405,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 82.8971,
             "scale": 1.3,
@@ -1423,7 +1423,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 60.2252,
             "scale": 1.6,
@@ -1435,7 +1435,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 76.5067,
             "scale": 1.3,
@@ -1447,7 +1447,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 82.7739,
             "scale": 1.3,
@@ -1465,7 +1465,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 60.3138,
             "scale": 1.6,
@@ -1477,7 +1477,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 78.2682,
             "scale": 1.3,
@@ -1489,7 +1489,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 79.6722,
             "scale": 1.3,
@@ -1512,7 +1512,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.3093,
             "scale": 1.6,
@@ -1524,7 +1524,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 71.974,
             "scale": 1.3,
@@ -1536,7 +1536,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2593,
             "scale": 1.3,
@@ -1554,7 +1554,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 57.4131,
             "scale": 1.6,
@@ -1566,7 +1566,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 72.1884,
             "scale": 1.3,
@@ -1578,7 +1578,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 75.9314,
             "scale": 1.3,
@@ -1596,7 +1596,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.8924,
             "scale": 1.7,
@@ -1608,7 +1608,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.6664,
             "scale": 1.3,
@@ -1620,7 +1620,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.5133,
             "scale": 1.3,
@@ -1638,7 +1638,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.6134,
             "scale": 1.7,
@@ -1650,7 +1650,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.7286,
             "scale": 1.3,
@@ -1662,7 +1662,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4019,
             "scale": 1.3,
@@ -1680,7 +1680,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 60.6517,
             "scale": 1.9,
@@ -1692,7 +1692,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 61.765,
             "scale": 1.3,
@@ -1704,7 +1704,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 73.309,
             "scale": 1.3,
@@ -1727,7 +1727,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.9204,
             "scale": 1.6,
@@ -1739,7 +1739,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.2254,
             "scale": 1.3,
@@ -1751,7 +1751,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2451,
             "scale": 1.3,
@@ -1769,7 +1769,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 24.6624,
             "scale": 1.7,
@@ -1781,7 +1781,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.3716,
             "scale": 1.3,
@@ -1793,7 +1793,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.2222,
             "scale": 1.3,
@@ -1811,7 +1811,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 9.6661,
             "scale": 1.7,
@@ -1823,7 +1823,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.6395,
             "scale": 1.7,
@@ -1835,7 +1835,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 74.0156,
             "scale": 1.3,
@@ -1853,7 +1853,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 29.306,
             "scale": 1.6,
@@ -1865,7 +1865,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.557,
             "scale": 1.3,
@@ -1877,7 +1877,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4734,
             "scale": 1.3,
@@ -1895,7 +1895,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.945,
             "scale": 1.6,
@@ -1907,7 +1907,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.7928,
             "scale": 1.3,
@@ -1919,7 +1919,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.307,
             "scale": 1.3,
@@ -1942,7 +1942,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 62.7785,
             "scale": 1.3,
@@ -1954,7 +1954,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.0106,
             "scale": 1.7,
@@ -1966,7 +1966,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 81.5333,
             "scale": 1.3,
@@ -1984,7 +1984,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 20.8803,
             "scale": 1.7,
@@ -1996,7 +1996,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 62.6906,
             "scale": 1.3,
@@ -2008,7 +2008,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.263,
             "scale": 1.3,
@@ -2026,7 +2026,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 27.7724,
             "scale": 1.7,
@@ -2038,7 +2038,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.9737,
             "scale": 1.3,
@@ -2050,7 +2050,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.8148,
             "scale": 1.3,
@@ -2068,7 +2068,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 27.1471,
             "scale": 1.7,
@@ -2080,7 +2080,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.9406,
             "scale": 1.3,
@@ -2092,7 +2092,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 69.8258,
             "scale": 1.3,
@@ -2110,7 +2110,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 56.299,
             "scale": 1.3,
@@ -2122,7 +2122,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 57.8539,
             "scale": 1.7,
@@ -2134,7 +2134,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 76.7549,
             "scale": 1.3,
@@ -2157,7 +2157,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 57.6346,
             "scale": 1.7,
@@ -2169,7 +2169,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 57.8027,
             "scale": 1.3,
@@ -2181,7 +2181,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4057,
             "scale": 1.3,
@@ -2199,7 +2199,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 30.6214,
             "scale": 1.7,
@@ -2211,7 +2211,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.4072,
             "scale": 1.3,
@@ -2223,7 +2223,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.509,
             "scale": 1.3,
@@ -2241,7 +2241,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.0492,
             "scale": 1.7,
@@ -2253,7 +2253,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.6496,
             "scale": 1.3,
@@ -2265,7 +2265,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.5333,
             "scale": 1.3,
@@ -2283,7 +2283,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.1501,
             "scale": 1.3,
@@ -2295,7 +2295,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.3428,
             "scale": 1.7,
@@ -2307,7 +2307,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 81.2616,
             "scale": 1.3,
@@ -2325,7 +2325,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 62.8407,
             "scale": 1.3,
@@ -2337,7 +2337,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.4556,
             "scale": 1.7,
@@ -2349,7 +2349,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 81.3819,
             "scale": 1.3,
@@ -2372,7 +2372,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.5008,
             "scale": 1.6,
@@ -2384,7 +2384,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.0414,
             "scale": 1.3,
@@ -2396,7 +2396,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2491,
             "scale": 1.3,
@@ -2414,7 +2414,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.1371,
             "scale": 1.6,
@@ -2426,7 +2426,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 72.0229,
             "scale": 1.3,
@@ -2438,7 +2438,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.2465,
             "scale": 1.3,
@@ -2456,7 +2456,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 29.2959,
             "scale": 1.7,
@@ -2468,7 +2468,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.985,
             "scale": 1.3,
@@ -2480,7 +2480,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4983,
             "scale": 1.3,
@@ -2498,7 +2498,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.5425,
             "scale": 1.3,
@@ -2510,7 +2510,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 67.216,
             "scale": 1.3,
@@ -2522,7 +2522,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 71.9997,
             "scale": 1.3,
@@ -2540,7 +2540,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 26.9044,
             "scale": 1.6,
@@ -2552,7 +2552,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 66.833,
             "scale": 1.3,
@@ -2564,7 +2564,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 69.0894,
             "scale": 1.3,
@@ -2587,7 +2587,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 26.6214,
             "scale": 1.7,
@@ -2599,7 +2599,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.9108,
             "scale": 1.3,
@@ -2611,7 +2611,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.8021,
             "scale": 1.3,
@@ -2629,7 +2629,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 18.7592,
             "scale": 1.7,
@@ -2641,7 +2641,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.0539,
             "scale": 1.3,
@@ -2653,7 +2653,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.3507,
             "scale": 1.3,
@@ -2671,7 +2671,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 25.2153,
             "scale": 1.7,
@@ -2683,7 +2683,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.8116,
             "scale": 1.3,
@@ -2695,7 +2695,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.7488,
             "scale": 1.3,
@@ -2713,7 +2713,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 29.1959,
             "scale": 1.7,
@@ -2725,7 +2725,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.5825,
             "scale": 1.3,
@@ -2737,7 +2737,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.511,
             "scale": 1.3,
@@ -2755,7 +2755,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 62.0093,
             "scale": 1.4,
@@ -2767,7 +2767,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 63.1817,
             "scale": 1.4,
@@ -2779,7 +2779,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 73.2908,
             "scale": 1.3,
@@ -2802,7 +2802,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 61.8637,
             "scale": 1.4,
@@ -2814,7 +2814,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 66.7307,
             "scale": 1.3,
@@ -2826,7 +2826,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 72.0208,
             "scale": 1.3,
@@ -2844,7 +2844,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 9.031,
             "scale": 1.7,
@@ -2856,7 +2856,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.3835,
             "scale": 1.7,
@@ -2868,7 +2868,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 74.0677,
             "scale": 1.3,
@@ -2886,7 +2886,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 61.6657,
             "scale": 1.4,
@@ -2898,7 +2898,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.4706,
             "scale": 1.3,
@@ -2910,7 +2910,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.651,
             "scale": 1.3,
@@ -2928,7 +2928,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 28.9789,
             "scale": 1.7,
@@ -2940,7 +2940,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.5129,
             "scale": 1.3,
@@ -2952,7 +2952,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 69.7144,
             "scale": 1.3,
@@ -2970,7 +2970,7 @@
         "expectedName": null,
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 60.8871,
             "scale": 1.9,
@@ -2982,7 +2982,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 61.8435,
             "scale": 1.3,
@@ -2994,7 +2994,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 73.2885,
             "scale": 1.3,
@@ -3017,7 +3017,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 12.4907,
             "scale": 1.7,
@@ -3029,7 +3029,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 60.9185,
             "scale": 1.3,
@@ -3041,7 +3041,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.8866,
             "scale": 1.3,
@@ -3059,7 +3059,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 23.462,
             "scale": 1.7,
@@ -3071,7 +3071,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.7227,
             "scale": 1.3,
@@ -3083,7 +3083,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 68.8058,
             "scale": 1.3,
@@ -3101,7 +3101,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 32.7953,
             "scale": 1.7,
@@ -3113,7 +3113,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 64.3594,
             "scale": 1.3,
@@ -3125,7 +3125,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 80.1687,
             "scale": 1.3,
@@ -3143,7 +3143,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 26.9401,
             "scale": 1.7,
@@ -3155,7 +3155,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 66.0683,
             "scale": 1.3,
@@ -3167,7 +3167,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 78.1719,
             "scale": 1.3,
@@ -3185,7 +3185,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 12.8698,
             "scale": 1.7,
@@ -3197,7 +3197,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 62.9017,
             "scale": 1.3,
@@ -3209,7 +3209,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 78.1024,
             "scale": 1.3,
@@ -3232,7 +3232,7 @@
         "expectedName": "バーヴァン・シー",
         "candidates": [
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 29.0657,
             "scale": 1.7,
@@ -3244,7 +3244,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.007,
             "scale": 1.3,
@@ -3256,7 +3256,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 78.5124,
             "scale": 1.3,
@@ -3274,7 +3274,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 26.6648,
             "scale": 1.7,
@@ -3286,7 +3286,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.5959,
             "scale": 1.3,
@@ -3298,7 +3298,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.9528,
             "scale": 1.3,
@@ -3316,7 +3316,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.8649,
             "scale": 1.7,
@@ -3328,7 +3328,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 70.428,
             "scale": 1.3,
@@ -3340,7 +3340,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.3426,
             "scale": 1.3,
@@ -3358,7 +3358,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.0063,
             "scale": 1.7,
@@ -3370,7 +3370,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.0932,
             "scale": 1.3,
@@ -3382,7 +3382,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4288,
             "scale": 1.3,
@@ -3400,7 +3400,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 24.7987,
             "scale": 1.7,
@@ -3412,7 +3412,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 65.7855,
             "scale": 1.3,
@@ -3424,7 +3424,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 66.4404,
             "scale": 1.3,
@@ -3447,7 +3447,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 10.2292,
             "scale": 1.6,
@@ -3459,7 +3459,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 65.6801,
             "scale": 1.6,
@@ -3471,7 +3471,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 74.0142,
             "scale": 1.3,
@@ -3489,7 +3489,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 27.4147,
             "scale": 1.6,
@@ -3501,7 +3501,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 70.2853,
             "scale": 1.3,
@@ -3513,7 +3513,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 75.3368,
             "scale": 1.3,
@@ -3531,7 +3531,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 27.5946,
             "scale": 1.7,
@@ -3543,7 +3543,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 63.2702,
             "scale": 1.3,
@@ -3555,7 +3555,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.2361,
             "scale": 1.3,
@@ -3573,7 +3573,7 @@
         "expectedName": "アーラシュ",
         "candidates": [
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 28.5869,
             "scale": 1.7,
@@ -3585,7 +3585,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.6427,
             "scale": 1.3,
@@ -3597,7 +3597,7 @@
             ]
           },
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 77.4878,
             "scale": 1.3,
@@ -3615,7 +3615,7 @@
         "expectedName": "ダイダロス",
         "candidates": [
           {
-            "referenceId": "daidalos-default-01",
+            "referenceId": 2,
             "characterName": "ダイダロス",
             "score": 21.8757,
             "scale": 1.7,
@@ -3627,7 +3627,7 @@
             ]
           },
           {
-            "referenceId": "arash-default-01",
+            "referenceId": 1,
             "characterName": "アーラシュ",
             "score": 66.4001,
             "scale": 1.3,
@@ -3639,7 +3639,7 @@
             ]
           },
           {
-            "referenceId": "baobhan-default-01",
+            "referenceId": 3,
             "characterName": "バーヴァン・シー",
             "score": 67.5457,
             "scale": 1.3,

@@ -1,11 +1,47 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "nextCharacterId": 4,
+  "nextReferenceId": 4,
+  "characters": [
+    {
+      "id": 1,
+      "name": "アーラシュ",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    },
+    {
+      "id": 2,
+      "name": "ダイダロス",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    },
+    {
+      "id": 3,
+      "name": "バーヴァン・シー",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    }
+  ],
   "references": [
     {
-      "id": "arash-default-01",
-      "characterName": "アーラシュ",
-      "appearanceId": "default",
-      "imagePath": "images/arash-default-01.png",
+      "id": 1,
+      "appearanceId": 1,
+      "imagePath": "images/アーラシュ-1-01.png",
       "imageSize": [
         105,
         100
@@ -25,13 +61,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1zewaSWSzczDRAd6I-ZUPwcGE_vZp_wD0/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 1,
+      "sampleNumber": 1
     },
     {
-      "id": "daidalos-default-01",
-      "characterName": "ダイダロス",
-      "appearanceId": "default",
-      "imagePath": "images/daidalos-default-01.png",
+      "id": 2,
+      "appearanceId": 1,
+      "imagePath": "images/ダイダロス-1-01.png",
       "imageSize": [
         110,
         100
@@ -51,13 +88,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/15X00UQHJAtMKDQqi7VYYuGxnHf1X8jfc/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 2,
+      "sampleNumber": 1
     },
     {
-      "id": "baobhan-default-01",
-      "characterName": "バーヴァン・シー",
-      "appearanceId": "default",
-      "imagePath": "images/baobhan-default-01.png",
+      "id": 3,
+      "appearanceId": 1,
+      "imagePath": "images/バーヴァン・シー-1-01.png",
       "imageSize": [
         110,
         100
@@ -77,7 +115,9 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1Bb8rwTbYRSAwzcujFOYDLn69GMJXfKn-/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 3,
+      "sampleNumber": 1
     }
   ]
 }

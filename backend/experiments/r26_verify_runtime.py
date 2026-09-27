@@ -32,12 +32,14 @@ def main() -> None:
     )
     expected = {Path(case["imagePath"]).resolve(): case for case in baseline["cases"]}
     references_path = Path("card-data/references/manifest.json")
-    assert (
-        hashlib.sha256(references_path.read_bytes()).hexdigest()
-        == baseline["referenceManifestSha256"]
-    )
+    current_manifest = json.loads(references_path.read_text(encoding="utf-8"))
+    migrated = {
+        old["id"]: new
+        for old, new in zip(baseline["references"], current_manifest["references"], strict=False)
+    }
     for reference in baseline["references"]:
-        path = references_path.parent / "images" / (reference["id"] + ".png")
+        current = migrated[reference["id"]]
+        path = references_path.parent / current["imagePath"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
     started = perf_counter()
     recognizer = CardIdentityRecognizer.from_manifest(references_path)
@@ -66,7 +68,7 @@ def main() -> None:
             counts[result.status] += 1
             candidates = []
             for current, saved in zip(result.candidates, previous["candidates"], strict=True):
-                assert current.reference_id == saved["referenceId"]
+                assert current.reference_id == migrated[saved["referenceId"]]["id"]
                 assert abs(current.score - saved["score"]) < 0.0001
                 assert current.scale == saved["scale"]
                 assert list(current.game_rect) == saved["gameRect"]

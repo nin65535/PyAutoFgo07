@@ -1,11 +1,68 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "nextCharacterId": 5,
+  "nextReferenceId": 10,
+  "characters": [
+    {
+      "id": 1,
+      "name": "アーラシュ",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    },
+    {
+      "id": 2,
+      "name": "ダイダロス",
+      "nextAppearanceId": 3,
+      "appearances": [
+        1,
+        2
+      ],
+      "nextSampleNumbers": {
+        "1": 2,
+        "2": 2
+      }
+    },
+    {
+      "id": 3,
+      "name": "バーヴァン・シー",
+      "nextAppearanceId": 2,
+      "appearances": [
+        1
+      ],
+      "nextSampleNumbers": {
+        "1": 2
+      }
+    },
+    {
+      "id": 4,
+      "name": "オベロン",
+      "nextAppearanceId": 6,
+      "appearances": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "nextSampleNumbers": {
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2
+      }
+    }
+  ],
   "references": [
     {
-      "id": "arash-default-01",
-      "characterName": "アーラシュ",
-      "appearanceId": "default",
-      "imagePath": "images/arash-default-01.png",
+      "id": 1,
+      "appearanceId": 1,
+      "imagePath": "images/アーラシュ-1-01.png",
       "imageSize": [
         105,
         100
@@ -25,13 +82,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1zewaSWSzczDRAd6I-ZUPwcGE_vZp_wD0/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 1,
+      "sampleNumber": 1
     },
     {
-      "id": "daidalos-default-01",
-      "characterName": "ダイダロス",
-      "appearanceId": "default",
-      "imagePath": "images/daidalos-default-01.png",
+      "id": 2,
+      "appearanceId": 1,
+      "imagePath": "images/ダイダロス-1-01.png",
       "imageSize": [
         110,
         100
@@ -51,13 +109,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/15X00UQHJAtMKDQqi7VYYuGxnHf1X8jfc/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 2,
+      "sampleNumber": 1
     },
     {
-      "id": "baobhan-default-01",
-      "characterName": "バーヴァン・シー",
-      "appearanceId": "default",
-      "imagePath": "images/baobhan-default-01.png",
+      "id": 3,
+      "appearanceId": 1,
+      "imagePath": "images/バーヴァン・シー-1-01.png",
       "imageSize": [
         110,
         100
@@ -77,13 +136,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1Bb8rwTbYRSAwzcujFOYDLn69GMJXfKn-/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 3,
+      "sampleNumber": 1
     },
     {
-      "id": "daidalos-stage2-01",
-      "characterName": "ダイダロス",
-      "appearanceId": "stage2",
-      "imagePath": "images/daidalos-stage2-01.png",
+      "id": 4,
+      "appearanceId": 2,
+      "imagePath": "images/ダイダロス-2-01.png",
       "imageSize": [
         110,
         100
@@ -103,13 +163,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/146z1pjKeELZF8nzgOA-bCR_XMNQBVnma/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 2,
+      "sampleNumber": 1
     },
     {
-      "id": "oberon-stage1-01",
-      "characterName": "オベロン",
-      "appearanceId": "stage1",
-      "imagePath": "images/oberon-stage1-01.png",
+      "id": 5,
+      "appearanceId": 1,
+      "imagePath": "images/オベロン-1-01.png",
       "imageSize": [
         110,
         100
@@ -129,13 +190,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1t0ur4w9M2ezIrWnDr3INqqGA06GXtDVm/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 4,
+      "sampleNumber": 1
     },
     {
-      "id": "oberon-stage2-01",
-      "characterName": "オベロン",
-      "appearanceId": "stage2",
-      "imagePath": "images/oberon-stage2-01.png",
+      "id": 6,
+      "appearanceId": 2,
+      "imagePath": "images/オベロン-2-01.png",
       "imageSize": [
         110,
         100
@@ -155,13 +217,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1CsbxUnsuELpJv2839fZipwQX_uA-khMS/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 4,
+      "sampleNumber": 1
     },
     {
-      "id": "oberon-stage3-01",
-      "characterName": "オベロン",
-      "appearanceId": "stage3",
-      "imagePath": "images/oberon-stage3-01.png",
+      "id": 7,
+      "appearanceId": 3,
+      "imagePath": "images/オベロン-3-01.png",
       "imageSize": [
         110,
         100
@@ -181,13 +244,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1iG5JFKFHDnNhQThGMGvmMbAaN0j-C954/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 4,
+      "sampleNumber": 1
     },
     {
-      "id": "oberon-summer-01",
-      "characterName": "オベロン",
-      "appearanceId": "summer",
-      "imagePath": "images/oberon-summer-01.png",
+      "id": 8,
+      "appearanceId": 4,
+      "imagePath": "images/オベロン-4-01.png",
       "imageSize": [
         110,
         100
@@ -207,13 +271,14 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1tlz64RDEBWsA37QebKORdxbrNVRTVlPI/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 4,
+      "sampleNumber": 1
     },
     {
-      "id": "oberon-unhappy-summer-01",
-      "characterName": "オベロン",
-      "appearanceId": "unhappy-summer",
-      "imagePath": "images/oberon-unhappy-summer-01.png",
+      "id": 9,
+      "appearanceId": 5,
+      "imagePath": "images/オベロン-5-01.png",
       "imageSize": [
         110,
         100
@@ -233,7 +298,9 @@
         ],
         "sourceUrl": "https://drive.google.com/file/d/1RGhBnt0wTLrKdgVp8me1cuJ5snAwwGbn/view"
       },
-      "reviewed": true
+      "reviewed": true,
+      "characterId": 4,
+      "sampleNumber": 1
     }
   ]
 }

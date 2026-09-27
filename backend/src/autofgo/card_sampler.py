@@ -1,12 +1,12 @@
 """Independent status screenshot sampler for card reference images."""
 
 import argparse
-import json
-import re
 import sys
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 from PIL import Image, ImageOps
+
+from autofgo.card_references import allocate, read_manifest, save_reference
 
 
 def rectangle(value: str) -> tuple[int, int, int, int]:
@@ -19,29 +19,6 @@ def rectangle(value: str) -> tuple[int, int, int, int]:
             "crop must be nonnegative left/top and positive width/height"
         )
     return parts
-
-
-def _safe_image_path(value: str) -> None:
-    path = PurePosixPath(value)
-    if (
-        path.is_absolute()
-        or "\\" in value
-        or ".." in path.parts
-        or path.parts[:1] != ("images",)
-        or path.suffix.lower() != ".png"
-    ):
-        raise ValueError("imagePath must be a PNG below images/ without parent traversal")
-
-
-def _manifest(path: Path) -> dict:
-    if not path.exists():
-        return {"schemaVersion": 1, "references": []}
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if data.get("schemaVersion") != 1 or not isinstance(data.get("references"), list):
-        raise ValueError("unsupported reference manifest")
-    for entry in data["references"]:
-        _safe_image_path(entry["imagePath"])
-    return data
 
 
 def sample(args: argparse.Namespace) -> Path:
@@ -59,18 +36,12 @@ def sample(args: argparse.Namespace) -> Path:
         return args.output
 
     manifest_path = args.manifest
-    data = _manifest(manifest_path)
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", args.id):
-        raise ValueError("id must contain lowercase ASCII letters, digits, or hyphens")
-    if any(entry["id"] == args.id for entry in data["references"]):
-        raise ValueError(f"reference id already exists: {args.id}")
-    image_path = f"images/{args.id}.png"
-    _safe_image_path(image_path)
-    target = manifest_path.parent / image_path
-    if target.exists():
-        raise ValueError(f"reference image already exists: {target}")
     if not args.confirmed:
         raise ValueError("inspect a preview first, then pass --confirmed to register")
+    data = read_manifest(manifest_path, missing_ok=True)
+    rid, cid, aid, sample_number, image_path = allocate(
+        data, args.character_name, args.appearance_id
+    )
     source = {
         "kind": "statusScreenshot",
         "sourceId": args.source_id,
@@ -80,34 +51,16 @@ def sample(args: argparse.Namespace) -> Path:
     if args.source_url:
         source["sourceUrl"] = args.source_url
     entry = {
-        "id": args.id,
-        "characterName": args.character_name,
-        "appearanceId": args.appearance_id,
+        "id": rid,
+        "characterId": cid,
+        "appearanceId": aid,
+        "sampleNumber": sample_number,
         "imagePath": image_path,
         "imageSize": list(cropped.size),
         "source": source,
         "reviewed": True,
     }
-    data["references"].append(entry)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_bytes(_png_bytes(cropped))
-    try:
-        manifest_path.parent.mkdir(parents=True, exist_ok=True)
-        manifest_path.write_text(
-            json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-        )
-    except OSError:
-        target.unlink()
-        raise
-    return target
-
-
-def _png_bytes(image: Image.Image) -> bytes:
-    from io import BytesIO
-
-    buffer = BytesIO()
-    image.save(buffer, format="PNG")
-    return buffer.getvalue()
+    return save_reference(manifest_path, data, entry, cropped)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -123,16 +76,15 @@ def main(argv: list[str] | None = None) -> int:
             part.add_argument(
                 "--manifest", type=Path, default=Path("card-data/references/manifest.json")
             )
-            part.add_argument("--id", required=True)
             part.add_argument("--character-name", required=True)
-            part.add_argument("--appearance-id", required=True)
+            part.add_argument("--appearance-id", type=int)
             part.add_argument("--source-id", required=True)
             part.add_argument("--source-url")
             part.add_argument("--confirmed", action="store_true")
     args = parser.parse_args(argv)
     try:
         print(sample(args))
-    except (ValueError, OSError, json.JSONDecodeError) as exc:
+    except (ValueError, OSError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     return 0

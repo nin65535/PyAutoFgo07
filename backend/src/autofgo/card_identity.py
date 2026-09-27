@@ -1,16 +1,16 @@
 """Local card-name recognition with explicit unknown and ambiguous outcomes."""
 
-import json
 import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Literal
 
 import numpy as np
 from PIL import Image, ImageOps
 
 from autofgo.card_colors import SLOT_LEFTS, _game_viewport
+from autofgo.card_references import read_manifest
 from autofgo.screen_operations import ScreenRegion
 
 
@@ -31,9 +31,9 @@ DEFAULT_POLICY = IdentityPolicy()
 
 @dataclass(frozen=True, slots=True)
 class IdentityCandidate:
-    reference_id: str
+    reference_id: int
     character_name: str
-    appearance_id: str
+    appearance_id: int
     score: float
     scale: float
     game_rect: tuple[int, int, int, int]
@@ -82,87 +82,28 @@ def decide_identity(
 
 @dataclass(frozen=True, slots=True)
 class CardReference:
-    id: str
+    id: int
     character_name: str
-    appearance_id: str
+    appearance_id: int
     image: Image.Image
     crop_size: tuple[int, int]
 
 
-def _text(data: dict, key: str) -> str:
-    value = data.get(key)
-    if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"{key} must be a nonempty string")
-    return value
-
-
-def _integers(value: object, length: int, key: str) -> tuple[int, ...]:
-    if (
-        not isinstance(value, list)
-        or len(value) != length
-        or any(type(v) is not int for v in value)
-    ):
-        raise ValueError(f"{key} must contain {length} integers")
-    return tuple(value)
-
-
 def load_references(manifest: Path) -> tuple[CardReference, ...]:
     """Validate metadata first; only reviewed local PNGs become candidates."""
-    data = json.loads(manifest.read_text(encoding="utf-8"))
-    if (
-        not isinstance(data, dict)
-        or type(data.get("schemaVersion")) is not int
-        or data["schemaVersion"] != 1
-        or not isinstance(data.get("references"), list)
-    ):
-        raise ValueError("unsupported reference manifest")
-    root = manifest.parent.resolve()
+    data = read_manifest(manifest)
+    root = manifest.parent
+    names = {character["id"]: character["name"] for character in data["characters"]}
     references = []
-    ids = set()
     for entry in data["references"]:
-        if not isinstance(entry, dict):
-            raise ValueError("reference must be an object")
-        reference_id = _text(entry, "id")
-        if reference_id in ids:
-            raise ValueError("duplicate reference id")
-        ids.add(reference_id)
-        name, appearance = _text(entry, "characterName"), _text(entry, "appearanceId")
-        if type(entry.get("reviewed")) is not bool:
-            raise ValueError("reviewed must be a boolean")
-        relative = _text(entry, "imagePath")
-        parts = PurePosixPath(relative)
-        if (
-            parts.is_absolute()
-            or ".." in parts.parts
-            or "\\" in relative
-            or ":" in relative
-            or parts.suffix.lower() != ".png"
-        ):
-            raise ValueError("imagePath must be a relative PNG without traversal")
-        path = (root / relative).resolve()
-        if not path.is_relative_to(root):
-            raise ValueError("imagePath escapes reference directory")
-        width, height = _integers(entry.get("imageSize"), 2, "imageSize")
-        source = entry.get("source")
-        if not isinstance(source, dict) or source.get("kind") != "statusScreenshot":
-            raise ValueError("source must be a status screenshot")
-        _text(source, "sourceId")
-        sw, sh = _integers(source.get("sourceSize"), 2, "sourceSize")
-        x, y, cw, ch = _integers(source.get("crop"), 4, "crop")
-        if min(width, height, sw, sh, cw, ch) <= 0 or min(x, y) < 0 or x + cw > sw or y + ch > sh:
-            raise ValueError("invalid reference dimensions or crop")
-        transform = entry.get("transform")
-        if transform is None:
-            if (width, height) != (cw, ch):
-                raise ValueError("imageSize differs from crop without resize metadata")
-        elif (
-            not isinstance(transform, dict)
-            or transform.get("resample") != "LANCZOS"
-            or _integers(transform.get("resize"), 2, "resize") != (width, height)
-        ):
-            raise ValueError("unsupported reference transform")
         if not entry["reviewed"]:
             continue
+        reference_id = entry["id"]
+        name, appearance = names[entry["characterId"]], entry["appearanceId"]
+        width, height = entry["imageSize"]
+        cw, ch = entry["source"]["crop"][2:]
+        sw, sh = entry["source"]["sourceSize"]
+        path = root / entry["imagePath"]
         # Scale assumptions have only been evaluated on these status layouts.
         if (sw, sh) not in {(1962, 1114), (1920, 1080)}:
             raise ValueError("unsupported reference source layout")

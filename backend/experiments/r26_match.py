@@ -41,6 +41,7 @@ def main() -> None:
     parser.add_argument("--search-top", type=int, default=600)
     args = parser.parse_args()
     manifest = json.loads(args.references.read_text(encoding="utf-8"))
+    names = {character["id"]: character["name"] for character in manifest["characters"]}
     references = []
     for entry in manifest["references"]:
         if entry["reviewed"] is True:
@@ -75,7 +76,7 @@ def main() -> None:
                 [
                     {
                         "referenceId": entry["id"],
-                        "characterName": entry["characterName"],
+                        "characterName": names[entry["characterId"]],
                         **match(image, ref, position, args.search_top),
                     }
                     for entry, ref, _ in references
