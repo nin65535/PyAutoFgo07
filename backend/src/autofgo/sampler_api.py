@@ -3,6 +3,7 @@
 import asyncio
 import io
 import json
+from importlib.resources import files
 from pathlib import Path
 from uuid import uuid4
 
@@ -63,20 +64,13 @@ def create_sampler_app(state: SamplerState) -> FastAPI:
 
     @app.get("/")
     def landing():
-        return Response(
-            """<!doctype html><html lang='ja'><meta charset='utf-8'>
-<title>カード参照サンプラー</title><body><h1>カード参照サンプラー</h1>
-<p>専用画面はR34で実装します。接続中です。</p><script>
-const p=new URLSearchParams(location.hash.slice(1));
-history.replaceState(null,'',location.pathname);
-const h={'X-AutoFgo-Session-Id':p.get('autofgoSession'),
-'Authorization':'Bearer '+p.get('autofgoToken')};
-async function live(){while(true){try{const r=await fetch('/api/events',{headers:h});
-if(!r.ok)break; const rd=r.body.getReader();while(!(await rd.read()).done){}
-}catch(e){} await new Promise(r=>setTimeout(r,1000));}}live();
-</script></body></html>""",
-            media_type="text/html",
-        )
+        page = files("autofgo").joinpath("sampler_ui.html").read_text(encoding="utf-8")
+        return Response(page, media_type="text/html")
+
+    @app.get("/sampler-ui.js")
+    def script():
+        code = files("autofgo").joinpath("sampler_ui.js").read_text(encoding="utf-8")
+        return Response(code, media_type="text/javascript")
 
     @app.middleware("http")
     async def protect(request: Request, call_next):
