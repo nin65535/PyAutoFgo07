@@ -37,13 +37,12 @@ describe("ScenarioEngine", () => {
     engine.start({
       schemaVersion: 1,
       members: ["A", "B", "C", "D"],
-      commandSources: [["swap(0,3)", "attack('B0')"]],
+      commandSources: [["swap(0,3)", "attack_cards('B0')"]],
       commands: [
         [
           { type: "swap", frontIndex: 0, backIndex: 3 },
           {
-            type: "attack",
-            noblePhantasmIndexes: [],
+            type: "attack_cards",
             cardSlots: ["B0", "", ""],
           },
         ],

@@ -38,29 +38,28 @@ class AttackCommand(CommandModel):
     noble_phantasm_indexes: list[int] = Field(
         alias="noblePhantasmIndexes", min_length=0, max_length=3
     )
-    card_slots: list[str] | None = Field(
-        default=None, alias="cardSlots", min_length=3, max_length=3
-    )
-    front_members: list[str] | None = Field(
-        default=None, alias="frontMembers", min_length=3, max_length=3
-    )
 
     @model_validator(mode="after")
     def validate_indexes(self) -> AttackCommand:
-        if self.card_slots is not None:
-            from autofgo.card_selection import validate_slots
-
-            validate_slots(self.card_slots)
-            if self.noble_phantasm_indexes:
-                raise ValueError("cardSlots and noblePhantasmIndexes cannot be combined")
-            if self.front_members is None or any(not name.strip() for name in self.front_members):
-                raise ValueError("cardSlots requires three frontMembers")
-        elif self.front_members is not None:
-            raise ValueError("frontMembers requires cardSlots")
         if any(index < 0 or index > 2 for index in self.noble_phantasm_indexes):
             raise ValueError("宝具インデックスは0以上2以下で指定してください。")
         if len(set(self.noble_phantasm_indexes)) != len(self.noble_phantasm_indexes):
             raise ValueError("宝具インデックスを重複して指定できません。")
+        return self
+
+
+class AttackCardsCommand(CommandModel):
+    type: Literal["attack_cards"]
+    card_slots: list[str] = Field(alias="cardSlots", min_length=3, max_length=3)
+    front_members: list[str] = Field(alias="frontMembers", min_length=3, max_length=3)
+
+    @model_validator(mode="after")
+    def validate_cards(self) -> AttackCardsCommand:
+        from autofgo.card_selection import validate_slots
+
+        validate_slots(self.card_slots)
+        if any(not name.strip() for name in self.front_members):
+            raise ValueError("cardSlots requires three frontMembers")
         return self
 
 
@@ -71,7 +70,7 @@ class SwapCommand(CommandModel):
 
 
 ScenarioCommand = Annotated[
-    SkillCommand | MasterSkillCommand | AttackCommand | SwapCommand,
+    SkillCommand | MasterSkillCommand | AttackCommand | AttackCardsCommand | SwapCommand,
     Field(discriminator="type"),
 ]
 CommandId = Annotated[
@@ -108,13 +107,17 @@ def _attack_handler(command: ScenarioCommand, control: ExecutionControl) -> None
         raise TypeError("attack handler received an incompatible command")
     from autofgo.game_automation import get_game_automation
 
-    if command.card_slots is not None:
-        assert command.front_members is not None
-        get_game_automation().attack_with_slots(
-            command.card_slots, command.front_members, control, report=control.emit
-        )
-    else:
-        get_game_automation().attack(command.noble_phantasm_indexes, control)
+    get_game_automation().attack(command.noble_phantasm_indexes, control)
+
+
+def _attack_cards_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
+    if not isinstance(command, AttackCardsCommand):
+        raise TypeError("attack_cards handler received an incompatible command")
+    from autofgo.game_automation import get_game_automation
+
+    get_game_automation().attack_with_slots(
+        command.card_slots, command.front_members, control, report=control.emit
+    )
 
 
 def _swap_handler(command: ScenarioCommand, control: ExecutionControl) -> None:
@@ -130,6 +133,7 @@ COMMAND_HANDLERS = {
     "skill": _skill_handler,
     "master_skill": _master_skill_handler,
     "attack": _attack_handler,
+    "attack_cards": _attack_cards_handler,
     "swap": _swap_handler,
 }
 

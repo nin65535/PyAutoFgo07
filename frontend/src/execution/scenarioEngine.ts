@@ -49,7 +49,7 @@ export class ScenarioEngine {
       group.flatMap((command, commandIndex) => {
         const entry = {
           command:
-            command.type === "attack" && command.cardSlots
+            command.type === "attack_cards"
               ? {
                   ...command,
                   frontMembers: roster.slice(0, 3) as [string, string, string],

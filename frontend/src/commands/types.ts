@@ -13,7 +13,11 @@ export type MasterSkillCommand = {
 export type AttackCommand = {
   type: "attack";
   noblePhantasmIndexes: number[];
-  cardSlots?: [string, string, string];
+};
+
+export type AttackCardsCommand = {
+  type: "attack_cards";
+  cardSlots: [string, string, string];
   frontMembers?: [string, string, string];
 };
 
@@ -24,4 +28,8 @@ export type SwapCommand = {
 };
 
 export type ScenarioCommand =
-  SkillCommand | MasterSkillCommand | AttackCommand | SwapCommand;
+  | SkillCommand
+  | MasterSkillCommand
+  | AttackCommand
+  | AttackCardsCommand
+  | SwapCommand;

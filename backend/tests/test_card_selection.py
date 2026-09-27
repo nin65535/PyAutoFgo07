@@ -2,7 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from autofgo.card_selection import RecognizedCard, select_cards, validate_slots
-from autofgo.commands import AttackCommand
+from autofgo.commands import AttackCardsCommand, AttackCommand
 
 CARDS = [
     RecognizedCard(0, "B", "A"),
@@ -53,20 +53,21 @@ def test_incomplete_recognition_is_rejected():
 
 
 def test_attack_command_validates_typed_card_slots():
-    command = AttackCommand.model_validate(
+    command = AttackCardsCommand.model_validate(
         {
-            "type": "attack",
-            "noblePhantasmIndexes": [],
+            "type": "attack_cards",
             "cardSlots": ["N1", "B1", "B1"],
             "frontMembers": MEMBERS,
         }
     )
     assert command.card_slots == ["N1", "B1", "B1"]
     with pytest.raises(ValidationError):
-        AttackCommand.model_validate(
-            {"type": "attack", "noblePhantasmIndexes": [], "cardSlots": ["N1", "N1", ""]}
+        AttackCardsCommand.model_validate(
+            {"type": "attack_cards", "cardSlots": ["N1", "N1", ""], "frontMembers": MEMBERS}
         )
     with pytest.raises(ValidationError):
         AttackCommand.model_validate(
             {"type": "attack", "noblePhantasmIndexes": [0], "cardSlots": ["", "", ""]}
         )
+    with pytest.raises(ValidationError):
+        AttackCardsCommand.model_validate({"type": "attack_cards", "cardSlots": ["", "", ""]})

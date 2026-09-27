@@ -30,7 +30,13 @@ export class CommandParseError extends Error {
 
 const COMMAND_PATTERN = /^([a-z_]+)\(([^()]*)\)$/;
 const INTEGER_PATTERN = /^(0|[1-9][0-9]*)$/;
-const KNOWN_COMMANDS = new Set(["skill", "master_skill", "attack", "swap"]);
+const KNOWN_COMMANDS = new Set([
+  "skill",
+  "master_skill",
+  "attack",
+  "attack_cards",
+  "swap",
+]);
 
 function fail(
   code: CommandParseErrorCode,
@@ -98,9 +104,7 @@ export function parseScenarioCommand(
     fail("UNKNOWN_COMMAND", location, `未対応の命令です: ${name}`);
   }
   const args =
-    name === "attack" && rawArguments.startsWith("'")
-      ? []
-      : parseArguments(rawArguments, location);
+    name === "attack_cards" ? [] : parseArguments(rawArguments, location);
 
   switch (name) {
     case "skill": {
@@ -126,6 +130,20 @@ export function parseScenarioCommand(
       return { type: "master_skill", skillIndex: args[0] };
     }
     case "attack": {
+      requireArgumentCount(args, [0, 1, 2, 3], location);
+      args.forEach((value) =>
+        requireRange(value, "noblePhantasmIndex", 0, 2, location),
+      );
+      if (new Set(args).size !== args.length) {
+        fail(
+          "DUPLICATE_ARGUMENT",
+          location,
+          "宝具インデックスは重複指定できません",
+        );
+      }
+      return { type: "attack", noblePhantasmIndexes: args };
+    }
+    case "attack_cards": {
       if (rawArguments.startsWith("'")) {
         const tokens = rawArguments.split(",");
         if (tokens.length < 1 || tokens.length > 3) {
@@ -147,23 +165,15 @@ export function parseScenarioCommand(
           );
         }
         return {
-          type: "attack",
-          noblePhantasmIndexes: [],
+          type: "attack_cards",
           cardSlots: slots as [string, string, string],
         };
       }
-      requireArgumentCount(args, [0, 1, 2, 3], location);
-      args.forEach((value) =>
-        requireRange(value, "noblePhantasmIndex", 0, 2, location),
+      return fail(
+        "INVALID_FORMAT",
+        location,
+        "attack_cardsは文字列引数で指定してください",
       );
-      if (new Set(args).size !== args.length) {
-        fail(
-          "DUPLICATE_ARGUMENT",
-          location,
-          "宝具インデックスは重複指定できません",
-        );
-      }
-      return { type: "attack", noblePhantasmIndexes: args };
     }
     case "swap": {
       requireArgumentCount(args, [2], location);

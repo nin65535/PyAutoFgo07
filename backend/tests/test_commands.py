@@ -22,6 +22,7 @@ def client() -> TestClient:
         {"type": "skill", "skillIndex": 8, "targetIndex": 5},
         {"type": "master_skill", "skillIndex": 2, "targetIndex": 2},
         {"type": "attack", "noblePhantasmIndexes": [2, 0, 1]},
+        {"type": "attack_cards", "cardSlots": ["N0", "B1", ""], "frontMembers": ["A", "B", "C"]},
         {"type": "swap", "frontIndex": 2, "backIndex": 5},
     ],
 )
@@ -66,6 +67,19 @@ def test_same_id_with_different_command_is_rejected(client: TestClient) -> None:
             "command": {"type": "skill", "skillIndex": 0, "function": "danger"},
         },
         {"commandId": COMMAND_ID, "command": {"type": "attack", "noblePhantasmIndexes": [0, 0]}},
+        {
+            "commandId": COMMAND_ID,
+            "command": {"type": "attack", "noblePhantasmIndexes": [], "cardSlots": ["", "", ""]},
+        },
+        {
+            "commandId": COMMAND_ID,
+            "command": {
+                "type": "attack_cards",
+                "cardSlots": ["", "", ""],
+                "frontMembers": ["A", "B", "C"],
+                "noblePhantasmIndexes": [],
+            },
+        },
         {"commandId": COMMAND_ID, "command": {"type": "swap", "frontIndex": 3, "backIndex": 2}},
         {"commandId": COMMAND_ID, "command": {"type": "master_skill", "skillIndex": 3}},
         {"commandId": "not-a-uuid", "command": {"type": "skill", "skillIndex": 0}},
@@ -88,7 +102,7 @@ def test_rejects_malformed_json_with_common_error(client: TestClient) -> None:
 
 
 def test_dispatch_table_contains_only_supported_commands() -> None:
-    assert set(COMMAND_HANDLERS) == {"skill", "master_skill", "attack", "swap"}
+    assert set(COMMAND_HANDLERS) == {"skill", "master_skill", "attack", "attack_cards", "swap"}
 
 
 def test_status_reports_queue_state(client: TestClient) -> None:

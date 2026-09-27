@@ -19,17 +19,13 @@ describe("parseScenarioCommand", () => {
     ["attack()", { type: "attack", noblePhantasmIndexes: [] }],
     ["attack(2,0,1)", { type: "attack", noblePhantasmIndexes: [2, 0, 1] }],
     [
-      "attack('N1','B1','B1')",
+      "attack_cards('N1','B1','B1')",
       {
-        type: "attack",
-        noblePhantasmIndexes: [],
+        type: "attack_cards",
         cardSlots: ["N1", "B1", "B1"],
       },
     ],
-    [
-      "attack('A0')",
-      { type: "attack", noblePhantasmIndexes: [], cardSlots: ["A0", "", ""] },
-    ],
+    ["attack_cards('A0')", { type: "attack_cards", cardSlots: ["A0", "", ""] }],
     ["swap(2,3)", { type: "swap", frontIndex: 2, backIndex: 3 }],
   ])("parses %s", (source, expected) => {
     expect(parseScenarioCommand(source, location)).toEqual(expected);
@@ -51,9 +47,11 @@ describe("parseScenarioCommand", () => {
     ["master_skill(0,3)", "OUT_OF_RANGE"],
     ["attack(0,1,2,0)", "INVALID_ARGUMENT_COUNT"],
     ["attack(0,0)", "DUPLICATE_ARGUMENT"],
-    ["attack('N0','N0')", "DUPLICATE_ARGUMENT"],
-    ["attack('N0B1')", "INVALID_FORMAT"],
-    ["attack('B3')", "INVALID_FORMAT"],
+    ["attack_cards('N0','N0')", "DUPLICATE_ARGUMENT"],
+    ["attack_cards('N0B1')", "INVALID_FORMAT"],
+    ["attack_cards('B3')", "INVALID_FORMAT"],
+    ["attack_cards(0)", "INVALID_FORMAT"],
+    ["attack('N0','B1','')", "INVALID_FORMAT"],
     ["attack(0,'B1')", "INVALID_FORMAT"],
     ["swap(3,4)", "OUT_OF_RANGE"],
     ["swap(0,2)", "OUT_OF_RANGE"],
