@@ -79,6 +79,11 @@ def create_sampler_app(state: SamplerState) -> FastAPI:
         code = files("autofgo").joinpath("sampler_ui.js").read_text(encoding="utf-8")
         return Response(code, media_type="text/javascript")
 
+    @app.get("/autofgo-icon.svg")
+    def icon():
+        svg = files("autofgo").joinpath("autofgo-icon.svg").read_text(encoding="utf-8")
+        return Response(svg, media_type="image/svg+xml")
+
     @app.middleware("http")
     async def protect(request: Request, call_next):
         if request.url.path.startswith("/api/"):

@@ -14,6 +14,20 @@ def _headers(state):
     }
 
 
+def test_sampler_icon_is_available_in_page_and_tab(tmp_path):
+    state = SamplerState(tmp_path / "manifest.json", tmp_path / "scenarios")
+    client = TestClient(create_sampler_app(state))
+    page = client.get("/")
+    icon = client.get("/autofgo-icon.svg")
+
+    assert page.status_code == 200
+    assert page.text.count('src="/autofgo-icon.svg"') == 1
+    assert 'rel="icon" type="image/svg+xml" href="/autofgo-icon.svg"' in page.text
+    assert icon.status_code == 200
+    assert icon.headers["content-type"].startswith("image/svg+xml")
+    assert "AutoFgo" in icon.text
+
+
 def test_sampler_auth_and_image_limits(tmp_path):
     state = SamplerState(tmp_path / "manifest.json", tmp_path / "scenarios")
     client = TestClient(create_sampler_app(state))
