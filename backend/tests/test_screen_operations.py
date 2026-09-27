@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from threading import Event
+from contextlib import suppress
+from threading import Event, Thread
 from typing import Any
 
 import pytest
 
 from autofgo.screen_operations import (
+    InputGate,
     InvalidKeyError,
     OperationCancelledError,
     OperationTimeoutError,
@@ -135,6 +137,70 @@ def test_key_input_is_restricted_to_allowlist(
 
     with pytest.raises(InvalidKeyError):
         operator.press_key("a")
+
+
+@pytest.mark.parametrize("input_kind", ["click", "key"])
+def test_cancellation_between_begin_and_input_skips_the_input(input_kind: str) -> None:
+    cancelled = Event()
+    gate = InputGate()
+    backend = FakeBackend()
+
+    def clock() -> float:
+        gate.cancel(cancelled)
+        return 0.0
+
+    operator = ScreenOperator(backend, ScreenRegion(0, 0, 100, 100), clock=clock, input_gate=gate)
+    with pytest.raises(OperationCancelledError):
+        if input_kind == "click":
+            operator.click(Point(10, 10), cancel=cancelled)
+        else:
+            operator.press_key("esc", cancel=cancelled)
+    assert backend.clicks == []
+    assert backend.keys == []
+
+
+def test_cancellation_waits_for_started_input_to_finish() -> None:
+    entered = Event()
+    release = Event()
+    cancelled = Event()
+    stop_entered = Event()
+    stop_returned = Event()
+    gate = InputGate()
+
+    class BlockingBackend(FakeBackend):
+        def click(self, x: int, y: int) -> None:
+            entered.set()
+            assert release.wait(2)
+            super().click(x, y)
+
+    backend = BlockingBackend()
+    operator = ScreenOperator(backend, ScreenRegion(0, 0, 100, 100), input_gate=gate)
+
+    def run_input() -> None:
+        with suppress(OperationCancelledError):
+            operator.click(Point(10, 10), cancel=cancelled)
+
+    def stop_input() -> None:
+        stop_entered.set()
+        gate.cancel(cancelled)
+        stop_returned.set()
+
+    input_thread = Thread(target=run_input)
+    stop_thread = Thread(target=stop_input)
+    input_thread.start()
+    try:
+        assert entered.wait(2)
+        stop_thread.start()
+        assert stop_entered.wait(2)
+        assert not stop_returned.wait(0.05)
+        release.set()
+        assert stop_returned.wait(2)
+    finally:
+        release.set()
+        input_thread.join(2)
+        if stop_thread.ident is not None:
+            stop_thread.join(2)
+    assert backend.clicks == [(10, 10)]
 
 
 def test_completed_primitive_reports_timeout(backend: FakeBackend) -> None:

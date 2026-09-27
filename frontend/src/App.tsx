@@ -168,11 +168,14 @@ export function App({
           const snapshot = await executionApi.complete();
           setExecution(snapshot.state);
         },
+        stop: async () => {
+          const snapshot = await executionApi.act("stop");
+          setExecution(snapshot.state);
+        },
         onProgress: (next) => {
           setProgress(next);
           if (next.error) {
             setControlError(next.error);
-            setExecution("error");
           }
         },
       }),

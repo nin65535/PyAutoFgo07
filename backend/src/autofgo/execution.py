@@ -8,6 +8,8 @@ from enum import StrEnum
 from threading import Condition, Event, Thread
 from typing import Any
 
+from autofgo.screen_operations import InputGate
+
 
 class ExecutionState(StrEnum):
     IDLE = "idle"
@@ -88,6 +90,7 @@ class ExecutionManager:
         self._accepting = True
         self._shutdown = False
         self._cancel_event = Event()
+        self.input_gate = InputGate()
         self._worker: Thread | None = None
         self._event_sink = event_sink
         self._pause_input_check: Callable[[], None] | None = None
@@ -170,9 +173,9 @@ class ExecutionManager:
                 return
             previous = self._state
             self._accepting = False
+            self.input_gate.cancel(self._cancel_event)
             self._state = ExecutionState.EMERGENCY_STOPPING
             self._emit_state(previous, self._state, reason)
-            self._cancel_event.set()
             self._cancel_pending(reason)
             if self._current is not None:
                 self._current.cancel_reason = reason
@@ -218,7 +221,7 @@ class ExecutionManager:
     def close(self) -> None:
         with self._condition:
             self._shutdown = True
-            self._cancel_event.set()
+            self.input_gate.cancel(self._cancel_event)
             self._condition.notify_all()
         if self._worker:
             self._worker.join(timeout=1)
@@ -235,11 +238,11 @@ class ExecutionManager:
                 raise InvalidExecutionStateError(self._state, allowed)
             previous = self._state
             self._accepting = False
+            self.input_gate.cancel(self._cancel_event)
             self._state = (
                 ExecutionState.EMERGENCY_STOPPING if emergency else ExecutionState.STOPPING
             )
             self._emit_state(previous, self._state, reason)
-            self._cancel_event.set()
             now = datetime.now(UTC)
             while self._pending:
                 item = self._commands[self._pending.popleft()]

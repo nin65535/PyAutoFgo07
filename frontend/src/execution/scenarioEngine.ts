@@ -14,6 +14,7 @@ export type ScenarioProgress = {
 export type ScenarioEngineOptions = {
   submit: (commandId: string, command: ScenarioCommand) => Promise<void>;
   complete: () => Promise<void>;
+  stop: () => Promise<void>;
   onProgress: (progress: ScenarioProgress) => void;
   commandTimeoutMs?: number;
   createCommandId?: () => string;
@@ -33,6 +34,7 @@ export class ScenarioEngine {
   private remainingMs: number;
   private timerStartedAt = 0;
   private active = false;
+  private generation = 0;
   private paused = false;
   private readonly terminalIds = new Set<string>();
   private readonly timeoutMs: number;
@@ -115,6 +117,7 @@ export class ScenarioEngine {
   }
 
   cancel(): void {
+    this.generation += 1;
     this.active = false;
     this.currentId = undefined;
     this.clearTimer();
@@ -156,7 +159,7 @@ export class ScenarioEngine {
     this.clearTimer();
     this.timerStartedAt = Date.now();
     this.timer = setTimeout(
-      () => this.fail("指令がタイムアウトしました"),
+      () => void this.timeout(),
       Math.max(0, this.remainingMs),
     );
   }
@@ -171,6 +174,23 @@ export class ScenarioEngine {
     this.active = false;
     this.clearTimer();
     this.emit(false, message);
+  }
+
+  private async timeout(): Promise<void> {
+    if (!this.active) return;
+    const generation = this.generation;
+    this.fail("指令がタイムアウトしました。停止を要求しています");
+    try {
+      await this.options.stop();
+      if (generation === this.generation)
+        this.emit(false, "指令がタイムアウトしたため停止を要求しました");
+    } catch (error) {
+      if (generation === this.generation)
+        this.emit(
+          false,
+          `指令がタイムアウトしました。停止要求に失敗しました: ${error instanceof Error ? error.message : String(error)}`,
+        );
+    }
   }
 
   private emit(waiting: boolean, error?: string): void {

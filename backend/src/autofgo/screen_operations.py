@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
-from threading import Event
+from threading import Event, RLock
 from typing import Any, Protocol
 
 
@@ -125,6 +126,23 @@ class PyAutoGuiBackend:
 ALLOWED_KEYS = frozenset({"esc", "enter", "space", "tab"})
 
 
+class InputGate:
+    """Serialize input dispatch with the cancellation decision."""
+
+    def __init__(self) -> None:
+        self._lock = RLock()
+
+    def run(self, cancel: Event | None, action: Callable[[], None]) -> None:
+        with self._lock:
+            if cancel is not None and cancel.is_set():
+                raise OperationCancelledError("screen operation was cancelled")
+            action()
+
+    def cancel(self, event: Event) -> None:
+        with self._lock:
+            event.set()
+
+
 class ScreenOperator:
     """Validated, cancellable screen primitives used by command execution."""
 
@@ -136,6 +154,7 @@ class ScreenOperator:
         default_timeout_seconds: float = 5.0,
         poll_interval_seconds: float = 0.1,
         clock: Any = time.monotonic,
+        input_gate: InputGate | None = None,
     ) -> None:
         if default_timeout_seconds <= 0:
             raise ValueError("default timeout must be positive")
@@ -146,6 +165,7 @@ class ScreenOperator:
         self.default_timeout_seconds = default_timeout_seconds
         self.poll_interval_seconds = poll_interval_seconds
         self._clock = clock
+        self._input_gate = input_gate or InputGate()
 
     def capture(self, region: ScreenRegion, *, cancel: Event | None = None) -> Any:
         self._validate_region(region)
@@ -203,14 +223,14 @@ class ScreenOperator:
         if not self.allowed_area.contains_point(point):
             raise OutsideAllowedAreaError("click point is outside the allowed screen area")
         started_at = self._begin(cancel)
-        self._backend.click(point.x, point.y)
+        self._input_gate.run(cancel, lambda: self._backend.click(point.x, point.y))
         self._finish(started_at, self.default_timeout_seconds, cancel)
 
     def press_key(self, key: str, *, cancel: Event | None = None) -> None:
         if key not in ALLOWED_KEYS:
             raise InvalidKeyError(f"key is not allowed: {key}")
         started_at = self._begin(cancel)
-        self._backend.press(key)
+        self._input_gate.run(cancel, lambda: self._backend.press(key))
         self._finish(started_at, self.default_timeout_seconds, cancel)
 
     def _validate_region(self, region: ScreenRegion) -> None:
@@ -246,6 +266,7 @@ class ScreenOperator:
 
 def create_screen_operator() -> ScreenOperator:
     """Build the production operator from application settings."""
+    from autofgo.commands import get_command_registry
     from autofgo.config import get_settings
 
     settings = get_settings()
@@ -265,4 +286,5 @@ def create_screen_operator() -> ScreenOperator:
         allowed_area,
         default_timeout_seconds=settings.operation_timeout_seconds,
         poll_interval_seconds=settings.image_poll_interval_seconds,
+        input_gate=get_command_registry().manager.input_gate,
     )

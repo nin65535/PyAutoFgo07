@@ -14,6 +14,7 @@ from autofgo.execution import (
     InvalidExecutionStateError,
     QueuedCommand,
 )
+from autofgo.screen_operations import Point, ScreenOperator, ScreenRegion
 
 
 def wait_until(predicate: Callable[[], bool], timeout: float = 1.0) -> None:
@@ -96,6 +97,31 @@ def test_normal_stop_cancels_current_and_pending_commands() -> None:
     assert current.cancel_reason == "normal_stop"
     assert pending.state == CommandState.CANCELLED
     assert pending.cancel_reason == "normal_stop"
+    manager.close()
+
+
+def test_stop_between_input_check_and_click_does_not_click() -> None:
+    manager = ExecutionManager()
+    clicks: list[tuple[int, int]] = []
+
+    class Backend:
+        def click(self, x: int, y: int) -> None:
+            clicks.append((x, y))
+
+    def handler(_value: object, control: ExecutionControl) -> None:
+        def clock() -> float:
+            manager.stop()
+            return 0.0
+
+        operator = ScreenOperator(
+            Backend(), ScreenRegion(0, 0, 100, 100), clock=clock, input_gate=manager.input_gate
+        )
+        operator.click(Point(10, 10), cancel=control.cancel_event)
+
+    item = QueuedCommand("click", None, handler)
+    manager.enqueue(item)
+    wait_until(lambda: item.finished_at is not None)
+    assert clicks == []
     manager.close()
 
 

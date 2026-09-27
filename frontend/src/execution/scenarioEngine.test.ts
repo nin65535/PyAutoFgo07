@@ -32,6 +32,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: () => undefined,
     });
     engine.start({
@@ -68,6 +69,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => `id-${++id}`,
     });
@@ -91,6 +93,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "wave-id",
     });
@@ -128,6 +131,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: () => undefined,
       createCommandId: () => "stable-id",
     });
@@ -141,9 +145,11 @@ describe("ScenarioEngine", () => {
   it("reports a timeout but does not count paused time", () => {
     vi.useFakeTimers();
     const progress: ScenarioProgress[] = [];
+    const stop = vi.fn(async () => undefined);
     const engine = new ScenarioEngine({
       submit: async () => undefined,
       complete: async () => undefined,
+      stop,
       onProgress: (value) => progress.push(value),
       commandTimeoutMs: 100,
       createCommandId: () => "id",
@@ -153,9 +159,11 @@ describe("ScenarioEngine", () => {
     engine.setPaused(true);
     vi.advanceTimersByTime(1_000);
     expect(progress.at(-1)?.error).toBeUndefined();
+    expect(stop).not.toHaveBeenCalled();
     engine.setPaused(false);
     vi.advanceTimersByTime(51);
     expect(progress.at(-1)?.error).toContain("タイムアウト");
+    expect(stop).toHaveBeenCalledOnce();
     vi.useRealTimers();
   });
 
@@ -165,6 +173,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit: async () => undefined,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "id",
     });
@@ -177,11 +186,40 @@ describe("ScenarioEngine", () => {
     vi.useRealTimers();
   });
 
+  it("reports a failed timeout stop request and never sends the next command", async () => {
+    vi.useFakeTimers();
+    const stop = vi.fn(async () => {
+      throw new Error("停止APIに接続できません");
+    });
+    const submit = vi.fn(async () => undefined);
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit,
+      complete: async () => undefined,
+      stop,
+      onProgress: (value) => progress.push(value),
+      commandTimeoutMs: 100,
+      createCommandId: () => "id",
+    });
+    try {
+      engine.start(scenario);
+      vi.advanceTimersByTime(101);
+      await Promise.resolve();
+      expect(stop).toHaveBeenCalledOnce();
+      expect(progress.at(-1)?.error).toContain("停止要求に失敗");
+      engine.handleEvent(terminalEvent("command.completed", "id"));
+      expect(submit).toHaveBeenCalledOnce();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("stops immediately when a command fails", () => {
     const progress: ScenarioProgress[] = [];
     const engine = new ScenarioEngine({
       submit: async () => undefined,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "id",
     });
@@ -195,6 +233,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit: async () => undefined,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "id",
     });
@@ -217,6 +256,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete: async () => undefined,
+      stop: async () => undefined,
       onProgress: (value) => progress.push(value),
       createCommandId: () => "id",
     });
@@ -239,6 +279,7 @@ describe("ScenarioEngine", () => {
     const engine = new ScenarioEngine({
       submit,
       complete,
+      stop: async () => undefined,
       onProgress: () => undefined,
     });
     const emptyScenario: ValidatedScenario = {
