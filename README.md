@@ -86,3 +86,4 @@ Chromeの場所、プロファイル保存先、表示URL、ウィンドウ位�
 ライブラリは2026-09-20時点の安定版へ固定しています。npm依存は各 `package.json` と `package-lock.json`、Python依存は `backend/pyproject.toml` と `backend/constraints.txt` で管理します。TypeScriptは、`typescript-eslint` が対応する最新安定版の6.0.3を使用します。
 
 設計資料は [documents/design/basic-design.md](documents/design/basic-design.md)、作業順は [documents/roadmap.md](documents/roadmap.md) を参照してください。
+コードレビューの対象、確認順序、報告形式は [documents/code-review-policy.md](documents/code-review-policy.md) を参照してください。
