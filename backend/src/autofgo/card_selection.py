@@ -28,6 +28,12 @@ def validate_slots(slots: list[str]) -> None:
         raise ValueError("noble phantasm indexes cannot be repeated")
 
 
+def character_name(member: str) -> str:
+    """Remove scenario notes from the name used for card identity."""
+    name = member.split("＋", 1)[0].strip()
+    return re.sub(r"\s+guest\Z", "", name, flags=re.IGNORECASE).strip()
+
+
 def select_cards(
     slots: list[str], cards: list[RecognizedCard], front_members: list[str]
 ) -> tuple[CardChoice, CardChoice, CardChoice]:
@@ -39,7 +45,8 @@ def select_cards(
         raise ValueError("exactly three front members are required")
     if any(card.color not in {"B", "A", "Q"} or not card.character_name for card in cards):
         raise ValueError("all card colors and names must be recognized")
-    if any(not name for name in front_members):
+    names = [character_name(member) for member in front_members]
+    if any(not name for name in names):
         raise ValueError("front member names are required")
     cards_by_position = sorted(cards, key=lambda card: card.position)
     chosen: list[CardChoice | None] = [None, None, None]
@@ -52,8 +59,8 @@ def select_cards(
         for offset in range(0, len(slot), 2):
             preference = slot[offset : offset + 2]
             color, member_index = preference[0], int(preference[1])
-            name = front_members[member_index]
-            if front_members.count(name) > 1:
+            name = names[member_index]
+            if names.count(name) > 1:
                 raise ValueError(f"duplicate front member cannot be identified: {name}")
             match = next(
                 (

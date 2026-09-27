@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from autofgo.card_selection import RecognizedCard, select_cards, validate_slots
+from autofgo.card_selection import RecognizedCard, character_name, select_cards, validate_slots
 from autofgo.commands import AttackCardsCommand, AttackCommand
 
 CARDS = [
@@ -45,6 +45,17 @@ def test_duplicate_front_member_is_ambiguous_only_when_requested():
     with pytest.raises(ValueError, match="duplicate"):
         select_cards(["B1", "", ""], CARDS, ["A", "B", "B"])
     assert select_cards(["", "", ""], CARDS, ["A", "B", "B"])
+
+
+def test_fullwidth_plus_suffix_is_a_note_for_card_matching():
+    assert character_name("B＋NP50%") == "B"
+    assert character_name("B guest") == "B"
+    assert character_name("B guest＋NP50%") == "B"
+    assert character_name("Guest") == "Guest"
+    assert select_cards(["B1", "", ""], CARDS, ["A", "B＋NP50%", "C"])[0].position == 2
+    assert select_cards(["B1", "", ""], CARDS, ["A", "B guest", "C"])[0].position == 2
+    with pytest.raises(ValueError, match="duplicate"):
+        select_cards(["B1", "", ""], CARDS, ["A", "B＋NP50%", "B"])
 
 
 def test_incomplete_recognition_is_rejected():
