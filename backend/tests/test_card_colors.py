@@ -24,3 +24,12 @@ def test_rejects_unknown_layout_and_ambiguous_color():
         detect_card_colors(Image.new("RGB", (100, 100)))
     with pytest.raises(ValueError, match="unclear"):
         detect_card_colors(Image.new("RGB", (1920, 1080)))
+
+
+def test_uses_foreground_word_effect_when_card_sides_are_obscured():
+    image = Image.new("RGB", (1920, 1080), "black")
+    draw = ImageDraw.Draw(image)
+    for left, color in zip(SLOT_LEFTS, ("red", "green", "blue", "green", "blue"), strict=True):
+        draw.rectangle((left + 20, 780, left + 209, 899), fill=color)
+    cards = detect_card_colors(image)
+    assert [card.color for card in cards] == ["B", "Q", "A", "Q", "A"]

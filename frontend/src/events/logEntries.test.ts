@@ -43,11 +43,19 @@ describe("log entries", () => {
     expect(
       entryFromSse({
         event: "cards.failed",
-        data: { ...data, data: { ...data.data, reason: "low_similarity" } },
+        data: {
+          ...data,
+          data: {
+            ...data.data,
+            reason: "low_similarity",
+            capturePath: "C:\\capture\\failure.png",
+          },
+        },
       }),
     ).toMatchObject({
       severity: "error",
       commandId: "cmd-2",
+      message: expect.stringContaining("C:\\capture\\failure.png"),
     });
     expect(
       entryFromSse({

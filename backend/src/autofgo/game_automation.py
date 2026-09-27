@@ -7,6 +7,7 @@ from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Protocol
+from uuid import uuid4
 
 from PIL import Image
 
@@ -133,6 +134,7 @@ class GameAutomation:
         sleep: Callable[[float], None] | None = None,
         attack_template: Image.Image | None = None,
         card_recognizer: CardIdentityRecognizer | None = None,
+        failure_capture_dir: Path = Path(".autofgo/card-failures"),
     ) -> None:
         self.operator = operator
         self.window_locator = window_locator
@@ -142,6 +144,7 @@ class GameAutomation:
         self._sleep = sleep
         self._attack_template = attack_template
         self._card_recognizer = card_recognizer
+        self.failure_capture_dir = failure_capture_dir
 
     def skill(self, skill_index: int, target_index: int | None, control: ExecutionControl) -> None:
         window = self._wait_for_battle(control)
@@ -187,6 +190,7 @@ class GameAutomation:
         report: Callable[[str, dict[str, Any]], None] | None = None,
     ) -> None:
         diagnostics: dict[str, Any] = {"slots": slots, "frontMembers": front_members}
+        screenshot: Image.Image | None = None
         window = self._wait_for_battle(control)
         self._click(window, ATTACK, control)
         self._wait(0.5, control)
@@ -244,6 +248,14 @@ class GameAutomation:
             ]
         except (ValueError, CardRecognitionError) as error:
             diagnostics["reason"] = str(error)
+            if screenshot is not None:
+                try:
+                    self.failure_capture_dir.mkdir(parents=True, exist_ok=True)
+                    capture_path = self.failure_capture_dir / f"{uuid4().hex}.png"
+                    screenshot.save(capture_path, format="PNG")
+                    diagnostics["capturePath"] = str(capture_path.resolve())
+                except OSError as save_error:
+                    diagnostics["captureSaveError"] = str(save_error)
             if report is not None:
                 report("cards.failed", diagnostics)
             raise CardRecognitionError(str(error)) from error

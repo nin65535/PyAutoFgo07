@@ -59,26 +59,48 @@ def detect_card_colors(
     cards = []
     for position, left in enumerate(SLOT_LEFTS):
         slot = _scale_region(ScreenRegion(left, SLOT_TOP, SLOT_WIDTH, SLOT_HEIGHT), game)
-        counts = {"B": 0, "A": 0, "Q": 0}
-        sampled = 0
         # The narrow side strips stay clear of portraits, lettering and effect icons.
-        for x0, x1 in ((left + 4, left + 32), (left + 190, left + 218)):
-            strip = _scale_region(ScreenRegion(x0, 650, x1 - x0, 110), game)
-            for y in range(strip.top, strip.bottom):
-                for x in range(strip.left, strip.right):
-                    hue, saturation, value = hsv.getpixel((x, y))
-                    sampled += 1
-                    if saturation < 100 or value < 65:
-                        continue
-                    if hue <= 18 or hue >= 245:
-                        counts["B"] += 1
-                    elif 135 <= hue <= 185:
-                        counts["A"] += 1
-                    elif 48 <= hue <= 110:
-                        counts["Q"] += 1
-        color = max(counts, key=counts.__getitem__)
-        total = sum(counts.values())
-        if counts[color] < sampled * 0.08 or counts[color] < total * 0.6:
+        side_regions = [
+            _scale_region(ScreenRegion(left + offset, 650, 28, 110), game) for offset in (4, 190)
+        ]
+        counts, sampled = _count_colors(hsv, side_regions)
+        color = _dominant_color(counts, sampled)
+        if color is None:
+            # Card portraits can cover the side strips. The color-specific word
+            # effect is drawn in front of the portrait near the card bottom.
+            effect = _scale_region(ScreenRegion(left + 20, 780, 190, 120), game)
+            effect_counts, effect_sampled = _count_colors(hsv, [effect])
+            color = _dominant_color(effect_counts, effect_sampled)
+            if color is not None:
+                counts = effect_counts
+        if color is None:
             raise ValueError(f"card {position} color is unclear: {counts}")
         cards.append(CardColor(position, slot, color, counts))
     return tuple(cards)
+
+
+def _count_colors(hsv: Image.Image, regions: list[ScreenRegion]) -> tuple[dict[str, int], int]:
+    counts = {"B": 0, "A": 0, "Q": 0}
+    sampled = 0
+    for region in regions:
+        for y in range(region.top, region.bottom):
+            for x in range(region.left, region.right):
+                hue, saturation, value = hsv.getpixel((x, y))
+                sampled += 1
+                if saturation < 100 or value < 65:
+                    continue
+                if hue <= 18 or hue >= 245:
+                    counts["B"] += 1
+                elif 135 <= hue <= 185:
+                    counts["A"] += 1
+                elif 48 <= hue <= 110:
+                    counts["Q"] += 1
+    return counts, sampled
+
+
+def _dominant_color(counts: dict[str, int], sampled: int) -> str | None:
+    color = max(counts, key=counts.__getitem__)
+    total = sum(counts.values())
+    if counts[color] < sampled * 0.08 or counts[color] < total * 0.6:
+        return None
+    return color

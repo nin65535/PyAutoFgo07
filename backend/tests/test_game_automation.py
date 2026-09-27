@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from threading import Event
 from typing import Any
 
@@ -146,7 +147,9 @@ def test_card_slots_recognize_and_select_before_card_clicks(
     ]
 
 
-def test_uncertain_card_identity_stops_before_card_click(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_uncertain_card_identity_stops_before_card_click(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     import autofgo.game_automation as module
 
     monkeypatch.setattr(
@@ -165,6 +168,7 @@ def test_uncertain_card_identity_stops_before_card_click(monkeypatch: pytest.Mon
 
     operator = FakeOperator()
     subject = automation(operator)
+    subject.failure_capture_dir = tmp_path / "card-failures"
     subject._card_recognizer = Recognizer()  # type: ignore[assignment]
     reports = []
     with pytest.raises(CardRecognitionError, match="low_similarity"):
@@ -176,6 +180,10 @@ def test_uncertain_card_identity_stops_before_card_click(monkeypatch: pytest.Mon
         )  # type: ignore[arg-type]
     assert reports[0][0] == "cards.failed"
     assert reports[0][1]["identities"][0]["reason"] == "low_similarity"
+    capture_path = Path(reports[0][1]["capturePath"])
+    assert capture_path.parent == subject.failure_capture_dir
+    with Image.open(capture_path) as saved:
+        assert saved.size == (1962, 1115)
     assert operator.clicks == [Point(1890, 1090)]
 
 

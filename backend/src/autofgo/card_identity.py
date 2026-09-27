@@ -2,6 +2,7 @@
 
 import json
 import math
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Literal
@@ -217,40 +218,45 @@ class CardIdentityRecognizer:
         game = _game_viewport(screenshot, viewport)
         image = screenshot.convert("RGB").crop((game.left, game.top, game.right, game.bottom))
         pixels = np.asarray(image.resize((480, 270), Image.Resampling.LANCZOS), dtype=np.int16)
-        results = []
-        for position, left in enumerate(SLOT_LEFTS):
-            x0, y0 = left // 4, 560 // 4
-            roi = pixels[y0 : 850 // 4, x0 : (left + 300) // 4]
-            candidates = []
-            for reference, templates in self._prepared:
-                best_score = float("inf")
-                best_scale = 0.0
-                best_rect = (0, 0, 0, 0)
-                for scale, width, height, template in templates:
-                    windows = np.lib.stride_tricks.sliding_window_view(
-                        roi, (height, width), axis=(0, 1)
-                    )
-                    # Bound temporary memory; int16 prevents uint8 subtraction wraparound.
-                    for row in range(0, windows.shape[0], 8):
-                        difference = np.subtract(windows[row : row + 8], template)
-                        np.abs(difference, out=difference)
-                        sums = difference.sum(axis=(2, 3, 4), dtype=np.int64)
-                        index = int(sums.argmin())
-                        dy, dx = divmod(index, sums.shape[1])
-                        score = int(sums[dy, dx]) / (width * height * 3)
-                        if score < best_score:
-                            best_score = score
-                            best_scale = scale
-                            best_rect = ((x0 + dx) * 4, (y0 + row + dy) * 4, width * 4, height * 4)
-                candidates.append(
-                    IdentityCandidate(
-                        reference.id,
-                        reference.character_name,
-                        reference.appearance_id,
-                        round(best_score, 4),
-                        best_scale,
-                        best_rect,
-                    )
+        with ThreadPoolExecutor(max_workers=len(SLOT_LEFTS)) as executor:
+            return tuple(
+                executor.map(
+                    lambda pair: self._recognize_position(pixels, *pair), enumerate(SLOT_LEFTS)
                 )
-            results.append(decide_identity(position, tuple(candidates), self.policy))
-        return tuple(results)
+            )
+
+    def _recognize_position(self, pixels: np.ndarray, position: int, left: int) -> CardIdentity:
+        x0, y0 = left // 4, 560 // 4
+        roi = pixels[y0 : 850 // 4, x0 : (left + 300) // 4]
+        candidates = []
+        for reference, templates in self._prepared:
+            best_score = float("inf")
+            best_scale = 0.0
+            best_rect = (0, 0, 0, 0)
+            for scale, width, height, template in templates:
+                windows = np.lib.stride_tricks.sliding_window_view(
+                    roi, (height, width), axis=(0, 1)
+                )
+                # Bound temporary memory; int16 prevents uint8 subtraction wraparound.
+                for row in range(0, windows.shape[0], 8):
+                    difference = np.subtract(windows[row : row + 8], template)
+                    np.abs(difference, out=difference)
+                    sums = difference.sum(axis=(2, 3, 4), dtype=np.int64)
+                    index = int(sums.argmin())
+                    dy, dx = divmod(index, sums.shape[1])
+                    score = int(sums[dy, dx]) / (width * height * 3)
+                    if score < best_score:
+                        best_score = score
+                        best_scale = scale
+                        best_rect = ((x0 + dx) * 4, (y0 + row + dy) * 4, width * 4, height * 4)
+            candidates.append(
+                IdentityCandidate(
+                    reference.id,
+                    reference.character_name,
+                    reference.appearance_id,
+                    round(best_score, 4),
+                    best_scale,
+                    best_rect,
+                )
+            )
+        return decide_identity(position, tuple(candidates), self.policy)

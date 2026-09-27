@@ -37,7 +37,7 @@ function cardMessage(eventType: string, data: unknown): string | undefined {
   });
   const prefix = hand.length ? `5枚の判定 ${hand.join(" / ")}。` : "";
   if (eventType === "cards.failed")
-    return `カード認識・選択に失敗しました。${prefix}理由: ${String(report.reason ?? "不明")}`;
+    return `カード認識・選択に失敗しました。${prefix}理由: ${String(report.reason ?? "不明")}${typeof report.capturePath === "string" ? `。撮影画像: ${report.capturePath}` : ""}${typeof report.captureSaveError === "string" ? `。撮影画像の保存失敗: ${report.captureSaveError}` : ""}`;
   const selected = choices.map((choice) => {
     const item = choice as Record<string, unknown>;
     return `${String(item.slot)}枠=${String(item.kind) === "np" ? "宝具" : "カード"}${Number(item.position) + 1}${typeof item.matchedPreference === "string" ? `(${item.matchedPreference})` : ""}`;
