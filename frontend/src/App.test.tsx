@@ -63,7 +63,9 @@ describe("App", () => {
     expect(
       screen.queryByRole("heading", { name: "Control" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Stages" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Scenarios" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("ログと詳細")).toBeInTheDocument();
   });
 
@@ -82,7 +84,7 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "緊急停止" })).toBeDisabled();
   });
 
-  it("shows selected Stage members on separate lines and a compact validation state", async () => {
+  it("shows selected Scenario members on separate lines and a compact validation state", async () => {
     const scenarioApi: ScenarioApi = {
       list: async () => [
         {
@@ -135,6 +137,7 @@ describe("App", () => {
   });
 
   it("shows a command location and reason when validation fails", async () => {
+    const act = vi.fn(idleExecutionApi.act);
     const scenarioApi: ScenarioApi = {
       list: async () => [
         {
@@ -154,7 +157,7 @@ describe("App", () => {
       <App
         createSseClient={clientFactory("active")}
         scenarioApi={scenarioApi}
-        executionApi={idleExecutionApi}
+        executionApi={executionApiWith(act)}
       />,
     );
     fireEvent.click(await screen.findByRole("button", { name: /Bad file/ }));
@@ -164,6 +167,10 @@ describe("App", () => {
     expect(
       screen.getByText("検証に失敗したため実行できません。"),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /^All\(/ }),
+    ).not.toBeInTheDocument();
+    expect(act).not.toHaveBeenCalled();
   });
 
   it("enables mouse controls only for transitions allowed by the current state", async () => {
@@ -223,7 +230,7 @@ describe("App", () => {
     ).toBeDisabled();
   });
 
-  it("closes Control and clears the selected Stage while idle", async () => {
+  it("closes Control and clears the selected Scenario while idle", async () => {
     const scenarioApi: ScenarioApi = {
       list: async () => [
         {
@@ -246,8 +253,8 @@ describe("App", () => {
         executionApi={idleExecutionApi}
       />,
     );
-    const stage = await screen.findByRole("button", { name: /Alpha/ });
-    fireEvent.click(stage);
+    const scenario = await screen.findByRole("button", { name: /Alpha/ });
+    fireEvent.click(scenario);
     expect(
       await screen.findByRole("heading", { name: "Control" }),
     ).toBeInTheDocument();

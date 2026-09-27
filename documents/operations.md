@@ -2,7 +2,7 @@
 
 ## 配布と初回セットアップ
 
-リポジトリのソース、`package-lock.json`、`frontend/package-lock.json`、`backend/constraints.txt`、`scenarios`を配布する。Node.js 22、Python 3.12、Chromeを導入し、READMEのセットアップを実行する。依存関係を固定したまま再現するため、npmは`ci`を使う。`.venv`、`node_modules`、`frontend/dist`は配布先で生成する。専用Chromeのプロファイルとログは`.autofgo`に生成される。
+リポジトリのソース、`package-lock.json`、`frontend/package-lock.json`、`backend/constraints.txt`を配布する。運用データの`scenarios`はGit管理外なので別途配布・配置する。Node.js 22、Python 3.12、Chromeを導入し、READMEのセットアップを実行する。依存関係を固定したまま再現するため、npmは`ci`を使う。`.venv`、`node_modules`、`frontend/dist`は配布先で生成する。専用Chromeのプロファイルとログは`.autofgo`に生成される。
 
 ## 起動・停止・更新・ログ
 

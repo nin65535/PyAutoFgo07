@@ -586,7 +586,7 @@ export function App({
         <div className="section-heading">
           <div className="section-title">
             <p className="section-number">01</p>
-            <h2 id="scenario-title">Stages</h2>
+            <h2 id="scenario-title">Scenarios</h2>
           </div>
           {!selected && <span className="coming-soon">未選択</span>}
         </div>

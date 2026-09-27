@@ -21,6 +21,9 @@ npm --prefix frontend run build
 必要なら `.env.example` を `.env` にコピーして設定を上書きします。
 操作手順JSONは既定でプロジェクト直下の`scenarios`へ配置します。保存場所は
 `AUTOFGO_SCENARIO_DIRECTORY`で変更できます。
+`scenarios`内のファイルは運用データとしてGit管理と自動テストの対象から外しています。
+必要なJSONは各環境で配置・バックアップしてください。選択したJSONの形式と命令は、
+実行開始前に画面で検証します。
 
 ## 通常の起動・停止
 
