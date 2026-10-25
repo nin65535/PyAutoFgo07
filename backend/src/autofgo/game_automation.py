@@ -130,7 +130,7 @@ class GameAutomation:
         *,
         window_title: str = "LDPlayer",
         reference_size_tolerance: int = 4,
-        battle_timeout_seconds: float = 50.0,
+        battle_timeout_seconds: float = 120.0,
         sleep: Callable[[float], None] | None = None,
         attack_template: Image.Image | None = None,
         card_recognizer: CardIdentityRecognizer | None = None,

@@ -167,7 +167,7 @@ describe("ScenarioEngine", () => {
     vi.useRealTimers();
   });
 
-  it("allows the backend's 50-second battle wait before the default timeout", () => {
+  it("allows the backend's 120-second battle wait before the default timeout", () => {
     vi.useFakeTimers();
     const progress: ScenarioProgress[] = [];
     const engine = new ScenarioEngine({
@@ -179,9 +179,9 @@ describe("ScenarioEngine", () => {
     });
 
     engine.start(scenario);
-    vi.advanceTimersByTime(50_000);
+    vi.advanceTimersByTime(120_000);
     expect(progress.at(-1)?.error).toBeUndefined();
-    vi.advanceTimersByTime(40_001);
+    vi.advanceTimersByTime(60_001);
     expect(progress.at(-1)?.error).toContain("タイムアウト");
     vi.useRealTimers();
   });

@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 from threading import Event
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 from PIL import Image
 
+import autofgo.game_automation as game_automation_module
 from autofgo.card_colors import CardColor
 from autofgo.card_identity import CardIdentity
 from autofgo.game_automation import (
@@ -255,6 +257,41 @@ def test_times_out_without_clicking_when_battle_screen_is_not_detected() -> None
         subject.attack([], FakeControl())  # type: ignore[arg-type]
 
     assert operator.clicks == []
+
+
+def test_waits_through_long_attack_animation_before_next_wave(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    elapsed = 0.0
+    monkeypatch.setattr(
+        game_automation_module,
+        "time",
+        SimpleNamespace(monotonic=lambda: elapsed),
+    )
+
+    class LongAnimationOperator(FakeOperator):
+        def locate(
+            self,
+            needle: Any,
+            region: ScreenRegion,
+            *,
+            timeout_seconds: float,
+            cancel: Event,
+        ) -> object | None:
+            nonlocal elapsed
+            assert self.clicks == []
+            self.searches.append(region)
+            elapsed += timeout_seconds
+            return object() if elapsed >= 65 else None
+
+    operator = LongAnimationOperator()
+    subject = automation(operator)
+
+    subject.master_skill(0, None, FakeControl())  # type: ignore[arg-type]
+
+    assert elapsed == 65
+    assert len(operator.searches) == 13
+    assert len(operator.clicks) == 3
 
 
 def test_battle_detection_allows_a_capture_longer_than_poll_interval() -> None:

@@ -40,7 +40,7 @@ export class ScenarioEngine {
   private readonly timeoutMs: number;
 
   constructor(private readonly options: ScenarioEngineOptions) {
-    this.timeoutMs = options.commandTimeoutMs ?? 90_000;
+    this.timeoutMs = options.commandTimeoutMs ?? 180_000;
     this.remainingMs = this.timeoutMs;
   }
 
