@@ -64,6 +64,11 @@ export function entryFromSse(event: SseEvent): LogEntry | undefined {
     eventType: event.event,
     message:
       cardMessage(event.event, envelope?.data) ??
+      (event.event === "command.failed" &&
+      typeof (envelope?.data as { message?: unknown } | undefined)?.message ===
+        "string"
+        ? (envelope?.data as { message: string }).message
+        : undefined) ??
       messages[event.event] ??
       "バックエンドから通知を受信しました。",
     commandId: typeof commandId === "string" ? commandId : undefined,

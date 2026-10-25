@@ -228,6 +228,28 @@ describe("ScenarioEngine", () => {
     expect(progress.at(-1)?.error).toContain("失敗");
   });
 
+  it("shows the backend failure reason in scenario progress", () => {
+    const progress: ScenarioProgress[] = [];
+    const engine = new ScenarioEngine({
+      submit: async () => undefined,
+      complete: async () => undefined,
+      stop: async () => undefined,
+      onProgress: (value) => progress.push(value),
+      createCommandId: () => "id",
+    });
+    engine.start(scenario);
+    engine.handleEvent({
+      event: "command.failed",
+      data: {
+        commandId: "id",
+        data: { message: "LDPlayerのウィンドウが見つかりません。" },
+      },
+    });
+    expect(progress.at(-1)?.error).toBe(
+      "LDPlayerのウィンドウが見つかりません。",
+    );
+  });
+
   it("stops immediately when a command is cancelled", () => {
     const progress: ScenarioProgress[] = [];
     const engine = new ScenarioEngine({

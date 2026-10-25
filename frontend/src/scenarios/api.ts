@@ -18,7 +18,7 @@ export function createScenarioApi(
 ): ScenarioApi {
   return {
     async list() {
-      const response = await fetcher("/api/scenarios");
+      const response = await fetcher("/api/scenarios", { cache: "no-store" });
       const body = await readResponse(response);
       return (body as { data: { scenarios: ScenarioSummary[] } }).data
         .scenarios;
@@ -26,6 +26,7 @@ export function createScenarioApi(
     async get(id) {
       const response = await fetcher(
         `/api/scenarios/${encodeURIComponent(id)}`,
+        { cache: "no-store" },
       );
       const body = await readResponse(response);
       return (body as { data: ScenarioDetail }).data;

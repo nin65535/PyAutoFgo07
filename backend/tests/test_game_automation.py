@@ -43,8 +43,14 @@ class FakeOperator:
     poll_interval_seconds = 0.1
     default_timeout_seconds = 5.0
 
-    def __init__(self, matches: list[object | None] | None = None) -> None:
+    def __init__(
+        self,
+        matches: list[object | None] | None = None,
+        captures: list[Image.Image] | None = None,
+    ) -> None:
         self.matches = matches or [object()]
+        self.captures = captures or []
+        self.capture_count = 0
         self.searches: list[ScreenRegion] = []
         self.clicks: list[Point] = []
 
@@ -63,7 +69,18 @@ class FakeOperator:
         self.clicks.append(point)
 
     def capture(self, region: ScreenRegion, *, cancel: Event) -> Image.Image:
+        self.capture_count += 1
+        if self.captures:
+            return self.captures.pop(0)
         return Image.new("RGB", (region.width, region.height))
+
+
+CARD_FIXTURES = Path(__file__).parent / "fixtures" / "card_selection"
+
+
+def card_image(name: str) -> Image.Image:
+    with Image.open(CARD_FIXTURES / name) as opened:
+        return opened.convert("RGB")
 
 
 def automation(operator: FakeOperator, locator: FakeWindowLocator | None = None) -> GameAutomation:
@@ -134,6 +151,7 @@ def test_card_slots_recognize_and_select_before_card_clicks(
         report=lambda *args: reports.append(args),
     )  # type: ignore[arg-type]
     assert reports[0][0] == "cards.selected"
+    assert operator.capture_count == 1
     assert len(reports[0][1]["identities"]) == 5
     assert reports[0][1]["choices"][1] == {
         "slot": 2,
@@ -146,6 +164,45 @@ def test_card_slots_recognize_and_select_before_card_clicks(
         Point(720, 350),
         Point(1820, 780),
         Point(300, 780),
+    ]
+
+
+def test_np_gauge_false_negative_does_not_block_recognized_cards() -> None:
+    names = ["LA", "ダ・ヴィンチ", "LA", "ダ・ヴィンチ", "キャストリア"]
+
+    class Recognizer:
+        def recognize(
+            self, _image: Image.Image, _viewport: ScreenRegion
+        ) -> tuple[CardIdentity, ...]:
+            return tuple(
+                CardIdentity(i, "recognized", "matched", name, 1, 20, ())
+                for i, name in enumerate(names)
+            )
+
+    operator = FakeOperator(captures=[card_image("np2-false-stop.png")])
+    subject = automation(operator)
+    subject._card_recognizer = Recognizer()  # type: ignore[assignment]
+    reports = []
+    subject.attack_with_slots(
+        ["N2", "A2B2Q2", "A2B2Q2"],
+        ["キャストリア", "LA", "ダ・ヴィンチ"],
+        FakeControl(),
+        report=lambda *args: reports.append(args),
+    )  # type: ignore[arg-type]
+
+    assert operator.capture_count == 1
+    assert [event for event, _data in reports] == ["cards.selected"]
+    assert "noblePhantasms" not in reports[0][1]
+    assert [(choice["kind"], choice["position"]) for choice in reports[0][1]["choices"]] == [
+        ("np", 2),
+        ("card", 1),
+        ("card", 3),
+    ]
+    assert operator.clicks == [
+        Point(1890, 1090),
+        Point(1420, 350),
+        Point(680, 780),
+        Point(1440, 780),
     ]
 
 

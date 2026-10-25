@@ -14,6 +14,7 @@ from autofgo.execution import (
     InvalidExecutionStateError,
     QueuedCommand,
 )
+from autofgo.game_automation import GameWindowNotFoundError
 from autofgo.screen_operations import OperationCancelledError, Point, ScreenOperator, ScreenRegion
 
 
@@ -280,6 +281,32 @@ def test_handler_failure_moves_execution_to_error_and_discards_following() -> No
     assert failed.error == "RuntimeError"
     assert following.state == CommandState.CANCELLED
     assert following.cancel_reason == "execution_failed"
+    manager.close()
+
+
+def test_missing_game_window_reports_actionable_error_and_logs_exception(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    events: list[tuple[str, dict[str, object], str | None]] = []
+    manager = ExecutionManager(
+        event_sink=lambda kind, data, command_id: events.append((kind, data, command_id))
+    )
+
+    def fail(_value: str, _control: ExecutionControl) -> None:
+        raise GameWindowNotFoundError('game window was not found: "LDPlayer"')
+
+    manager.enqueue(QueuedCommand("missing-window", "master_skill", fail))
+    wait_until(lambda: any(kind == "command.failed" for kind, _, _ in events))
+
+    failure = next(data for kind, data, _ in events if kind == "command.failed")
+    assert failure["code"] == "GAME_WINDOW_NOT_FOUND"
+    assert "LDPlayer" in failure["message"]
+    assert "Traceback" not in failure["message"]
+    assert any(
+        record.command_id == "missing-window" and record.exc_info is not None
+        for record in caplog.records
+        if hasattr(record, "command_id")
+    )
     manager.close()
 
 

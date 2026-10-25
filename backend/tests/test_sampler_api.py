@@ -66,11 +66,13 @@ def test_scenario_name_normalization(tmp_path):
     directory = tmp_path / "scenarios"
     directory.mkdir()
     (directory / "one.json").write_text(
-        '{"members":["キャストリア＋NP50","キャストリア guest","ダ・ヴィンチ（騎）"]}',
+        '{"members":["キャストリア＋NP50","キャストリア guest","キャストリア Guest",'
+        '"キャストリア  GUEST＋NP50","ダ・ヴィンチ（騎）"]}',
         encoding="utf-8",
     )
     state = SamplerState(tmp_path / "manifest.json", directory)
     assert [item["name"] for item in state.names()] == ["キャストリア", "ダ・ヴィンチ（騎）"]
+    assert state.names()[0]["displayName"] == "キャストリア＋NP50"
 
 
 def test_save_confirmed_candidate_and_discard_source(tmp_path):

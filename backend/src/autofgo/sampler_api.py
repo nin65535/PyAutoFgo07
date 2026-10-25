@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse, Response, StreamingResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from autofgo.card_references import read_manifest, register_reference
+from autofgo.card_selection import character_name
 from autofgo.security import SessionSecurity
 from autofgo.status_card_candidates import SIZE_PRESETS, detect_layout, generate_candidates
 
@@ -54,9 +55,7 @@ class SamplerState:
             for member in members:
                 if not isinstance(member, str):
                     raise ValueError(f"invalid scenario member: {path.name}")
-                name = member.split("＋", 1)[0].strip()
-                if name.endswith(" guest"):
-                    name = name[:-6].strip()
+                name = character_name(member)
                 if name:
                     names.setdefault(name, member)
         return [{"name": name, "displayName": display} for name, display in sorted(names.items())]

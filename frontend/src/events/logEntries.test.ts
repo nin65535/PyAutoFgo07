@@ -21,6 +21,21 @@ describe("log entries", () => {
     });
   });
 
+  it("shows the safe failure reason sent by the backend", () => {
+    const entry = entryFromSse({
+      event: "command.failed",
+      data: {
+        eventId: 4,
+        commandId: "cmd-2",
+        data: {
+          code: "GAME_WINDOW_NOT_FOUND",
+          message: "LDPlayerのウィンドウが見つかりません。",
+        },
+      },
+    });
+    expect(entry?.message).toBe("LDPlayerのウィンドウが見つかりません。");
+  });
+
   it("marks disconnection as an error", () => {
     expect(connectionEntry("inactive").severity).toBe("error");
   });

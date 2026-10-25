@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import JSONResponse
 
 from autofgo.config import Settings, get_settings
@@ -109,12 +109,14 @@ Repository = Annotated[ScenarioRepository, Depends(get_scenario_repository)]
 
 
 @router.get("")
-def list_scenarios(repository: Repository) -> dict[str, Any]:
+def list_scenarios(repository: Repository, response: Response) -> dict[str, Any]:
+    response.headers["Cache-Control"] = "no-store"
     return {"data": {"scenarios": repository.list()}}
 
 
 @router.get("/{scenario_id}")
-def get_scenario(scenario_id: str, repository: Repository) -> dict[str, Any]:
+def get_scenario(scenario_id: str, repository: Repository, response: Response) -> dict[str, Any]:
+    response.headers["Cache-Control"] = "no-store"
     metadata, content = repository.get(scenario_id)
     logger.info(
         "Scenario selected: %s",
@@ -128,6 +130,7 @@ async def scenario_error_handler(_request: Request, error: ScenarioError) -> JSO
     return JSONResponse(
         status_code=error.status_code,
         content={"error": {"code": error.code, "message": error.message}},
+        headers={"Cache-Control": "no-store"},
     )
 
 

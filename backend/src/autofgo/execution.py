@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -9,6 +10,40 @@ from threading import Condition, Event, Thread
 from typing import Any
 
 from autofgo.screen_operations import InputGate
+
+logger = logging.getLogger(__name__)
+
+
+def _failure_details(error: Exception) -> dict[str, str]:
+    # Import here because game_automation imports ExecutionControl.
+    from autofgo.game_automation import (
+        BattleScreenTimeoutError,
+        GameWindowNotFoundError,
+        UnexpectedGameWindowSizeError,
+    )
+    from autofgo.screen_operations import OutsideAllowedAreaError
+
+    if isinstance(error, GameWindowNotFoundError):
+        return {
+            "code": "GAME_WINDOW_NOT_FOUND",
+            "message": "LDPlayerの画面が見つかりません。ウィンドウを表示してください。",
+        }
+    if isinstance(error, UnexpectedGameWindowSizeError):
+        return {
+            "code": "GAME_WINDOW_SIZE_UNEXPECTED",
+            "message": "LDPlayerのウィンドウサイズが想定と異なります。解像度を確認してください。",
+        }
+    if isinstance(error, BattleScreenTimeoutError):
+        return {
+            "code": "BATTLE_SCREEN_TIMEOUT",
+            "message": "戦闘画面の攻撃ボタンを検出できませんでした。ゲーム画面を確認してください。",
+        }
+    if isinstance(error, OutsideAllowedAreaError):
+        return {
+            "code": "SCREEN_OUTSIDE_ALLOWED_AREA",
+            "message": "ゲーム画面が操作可能な範囲外です。LDPlayerの配置を確認してください。",
+        }
+    return {"code": "COMMAND_EXECUTION_FAILED", "message": "指令の実行に失敗しました。"}
 
 
 class ExecutionState(StrEnum):
@@ -75,6 +110,7 @@ class QueuedCommand:
     finished_at: datetime | None = None
     result: Any = None
     error: str | None = None
+    failure_details: dict[str, str] | None = None
     cancel_reason: str | None = None
 
 
@@ -295,11 +331,20 @@ class ExecutionManager:
                     else:
                         item.state = CommandState.FAILED
                         item.error = type(error).__name__
+                        item.failure_details = _failure_details(error)
                         previous = self._state
                         self._state = ExecutionState.ERROR
                         self._accepting = False
                         self._emit_state(previous, self._state, "execution_failed")
                         self._cancel_pending("execution_failed")
+                if item.state == CommandState.FAILED:
+                    logger.exception(
+                        "Command execution failed",
+                        extra={
+                            "event_type": "command.failure_detail",
+                            "command_id": item.command_id,
+                        },
+                    )
             else:
                 item.state = CommandState.COMPLETED
             finally:
@@ -321,7 +366,8 @@ class ExecutionManager:
                 elif item.state == CommandState.FAILED:
                     self._emit(
                         "command.failed",
-                        {
+                        item.failure_details
+                        or {
                             "code": "COMMAND_EXECUTION_FAILED",
                             "message": "指令の実行に失敗しました。",
                         },

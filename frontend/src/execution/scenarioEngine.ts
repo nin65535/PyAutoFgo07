@@ -100,7 +100,10 @@ export class ScenarioEngine {
     } else {
       this.fail(
         event.event === "command.failed"
-          ? "指令の実行に失敗しました"
+          ? typeof (event.data as { data?: { message?: unknown } }).data
+              ?.message === "string"
+            ? (event.data as { data: { message: string } }).data.message
+            : "指令の実行に失敗しました"
           : "指令はキャンセルされました",
       );
     }

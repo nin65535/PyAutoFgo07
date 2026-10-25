@@ -1,4 +1,5 @@
 import base64
+import json
 from pathlib import Path
 
 import pytest
@@ -49,6 +50,30 @@ def test_get_scenario_returns_metadata_and_unvalidated_json(scenario_directory: 
     assert response.json()["data"]["content"] == expected
 
 
+@pytest.mark.integration
+def test_scenario_api_reads_edited_file_on_next_request(tmp_path: Path) -> None:
+    directory = tmp_path / "scenarios"
+    directory.mkdir()
+    path = directory / "editable.json"
+    original = {"schemaVersion": 1, "members": ["Before"], "commands": [["attack()"]]}
+    edited = {"schemaVersion": 1, "members": ["After"], "commands": [["skill(1)"]]}
+    path.write_text(json.dumps(original), encoding="utf-8")
+    app.dependency_overrides[get_scenario_repository] = lambda: ScenarioRepository(directory)
+    try:
+        listed = client().get("/api/scenarios")
+        first = client().get(f"/api/scenarios/{_scenario_id(path.name)}")
+        path.write_text(json.dumps(edited), encoding="utf-8")
+        second = client().get(f"/api/scenarios/{_scenario_id(path.name)}")
+    finally:
+        app.dependency_overrides.clear()
+
+    assert listed.headers["cache-control"] == "no-store"
+    assert first.headers["cache-control"] == "no-store"
+    assert second.headers["cache-control"] == "no-store"
+    assert first.json()["data"]["content"] == original
+    assert second.json()["data"]["content"] == edited
+
+
 @pytest.mark.parametrize("scenario_id", ["missing", "Li4vc2VjcmV0Lmpzb24", "bm90ZXMudHh0"])
 def test_get_scenario_hides_invalid_or_outside_paths(
     scenario_directory: Path, scenario_id: str
@@ -68,6 +93,7 @@ def test_get_scenario_distinguishes_invalid_json(scenario_directory: Path) -> No
     response = client().get(f"/api/scenarios/{_scenario_id('broken.json')}")
 
     assert response.status_code == 422
+    assert response.headers["cache-control"] == "no-store"
     assert response.json()["error"]["code"] == "SCENARIO_INVALID_JSON"
 
 
